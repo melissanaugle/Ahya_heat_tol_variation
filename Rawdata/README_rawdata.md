@@ -4,7 +4,7 @@ This file gives further explanations for column names on raw data sheets
 
 
 Within 1.) Raw data    
-A. Coral colony metadata from the ECT1_RRAP_2023_11_16_AhyaCh1.xlxs: Metadata associated with coral colonies sampled for RRAP ECT-1    
+A. Coral colony metadata from the ECT1_RRAP_2023_11_16_AhyaCh1.xlxs: Metadata associated with coral colonies sampled for RRAP ECT    
     - column names described in tab 1  
 B. TideData.csv: data on tides at reef sites on sampling dates   
     - locationID: location of site   
