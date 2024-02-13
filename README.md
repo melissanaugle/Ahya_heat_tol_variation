@@ -42,7 +42,7 @@ Files include:
 ## 3. Data processing:
 Includes R scripts for processing raw data and data exploration.     
 
-Scripts include:
+Scripts include:     
     - 1_Correct_colony_depth.Rmd: adjust colony depths using tide data     
     - 2_standardizeenvvra_depth.Rmd: standardize environmental variables to tide-adjusted depths    
     - 3_iPAM_generate_ed50_retention.Rmd: generate ED50s and retained fvfm phenotypic metrics      
@@ -53,7 +53,7 @@ Scripts include:
 ## 4. Data analysis:
 Includes R scripts for generating figures and results presented in the publication.   
 
-Scripts include:  
+Scripts include:     
     - Data_overview.Rmd: quality control steps and overview of data (**Figs 1, 2, S1, S2, S3; Table 1**)     
     - Boosted_Regression_trees.Rmd: script to run boosted regression trees (**Fig 6**)      
     - Cryptic_spp_analysis.Rmd: script to explore genomic cluster variation spatially and with phenotype (**Figs 4 and S4**)      
