@@ -47,7 +47,7 @@ Scripts include:
     - 2_standardizeenvvra_depth.Rmd: standardize environmental variables to tide-adjusted depths    
     - 3_iPAM_generate_ed50_retention.Rmd: generate ED50s and retained fvfm phenotypic metrics      
     - 4_NDVI_generate_ed50_retention.Rmd: generate ED50s and retained NDVI phenotypic metrics      
-    - 5_consolidate_phenos.Rmd: consolidate phenotypes and metadata into one file, polish datasheets, quality control of data    
+    - 5_consolidate_phenos.Rmd: consolidate phenotypes and metadata, polish datasheets, quality control of data    
     - 6_Symbiont_dataprep.Rmd: prepare symbiont data, quality control, and early analyses     
 
 ## 4. Data analysis:
@@ -55,11 +55,11 @@ Includes R scripts for generating figures and results presented in the publicati
 
 Scripts include:     
     - Data_overview.Rmd: quality control steps and overview of data (**Figs 1, 2, S1, S2, S3; Table 1**)     
-    - Boosted_Regression_trees.Rmd: script to run boosted regression trees (**Fig 6**)      
-    - Cryptic_spp_analysis.Rmd: script to explore genomic cluster variation spatially and with phenotype (**Figs 4 and S4**)      
-    - Environmental_analysis.Rmd: script to explore environmental metric relationships to phenotype (**Fig S8**)      
-    - ITS2_analysis.Rmd: script to explore symbiodiniacae relationships to phenotype (**Figs 5, S5, S6, S7; Tables S4 and S5**)     
-    - LMERs.Rmd: script to run linear mixed effects models (**Fig S9; Table S6**)     
+    - Boosted_Regression_trees.Rmd: to run boosted regression trees (**Fig 6**)      
+    - Cryptic_spp_analysis.Rmd: to explore genomic cluster variation spatially and with phenotype (**Figs 4 and S4**)      
+    - Environmental_analysis.Rmd: to explore environmental metric relationships to phenotype (**Fig S8**)      
+    - ITS2_analysis.Rmd: to explore symbiodiniacae relationships to phenotype (**Figs 5, S5, S6, S7; Tables S4 and S5**)     
+    - LMERs.Rmd: to run linear mixed effects models (**Fig S9; Table S6**)     
 
 ## 5. Outputs:
 Includes figures in the publication as well as additional figures     
