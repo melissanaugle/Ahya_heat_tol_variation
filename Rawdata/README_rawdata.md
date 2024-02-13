@@ -71,14 +71,14 @@ G. ECT1_sites_environmental_data_depthsadjusted2023_11_30.csv: Environmental dat
     - Depth.adjusted: adjusted depths at which metrics are measured using tide data      
     - TOTAL_NITROGEN_HMsd: standard deviation of total nitrogen during the warmest month (eReefs)      
     - PIP_HMsd: standard deviation of particulate inorganic phosphate during the warmest month (eReefs)      
-    - PH_HMsd: standard deviation oh pH during the warmest month (eReefs) 
-    - Oxygen_HMsd: standard deviation of dissolved oxygen during the warmest month (eReefs) 
-    - NO3_HMsd: standard deviation of nitrate during the warmest month (eReefs) 
-    - Kd_490_HMsd: standard deviation of light attenuation at 490nm during the warmest month (eReefs) 
-    - Chl_a_HMsd: standard deviation of chlorophyll a during the warmest month (eReefs) 
-    - TOTAL_NITROGEN_HM: total nitrigen during the warmest month (eReefs) 
-    - PIP_HM: particulate inorganic phosphate during the warmest month (eReefs)    
-    - PH_HM: pH during the warmest month (eReefs)     
+    - PH_HMsd: standard deviation oh pH during the warmest month (eReefs)    
+    - Oxygen_HMsd: standard deviation of dissolved oxygen during the warmest month (eReefs)    
+    - NO3_HMsd: standard deviation of nitrate during the warmest month (eReefs)     
+    - Kd_490_HMsd: standard deviation of light attenuation at 490nm during the warmest month (eReefs)     
+    - Chl_a_HMsd: standard deviation of chlorophyll a during the warmest month (eReefs)     
+    - TOTAL_NITROGEN_HM: total nitrigen during the warmest month (eReefs)     
+    - PIP_HM: particulate inorganic phosphate during the warmest month (eReefs)       
+    - PH_HM: pH during the warmest month (eReefs)      
     - Oxygen_HM: dissolved oxygen during the warmest month (eReefs)     
     - NO3_HM: nitrate during the warmest month (eReefs) 
     - Kd_490_HM: light attenuation at 490nm during the warmest month (eReefs)     
@@ -99,13 +99,13 @@ G. ECT1_sites_environmental_data_depthsadjusted2023_11_30.csv: Environmental dat
     - NO3_OM: mean nitrate (eReefs)     
     - Kd_490_OM: mean light attenuation at 490 kd (eReefs)     
     - Chl_a_OM: mean chlorophyll a (eReefs)   
-    - SSTA_freq_mean_eReefs: mean frequency of thermal anomalies (relative to eReefs climatology) 
-    - SSTA_freq_stdev_eReefs: standard deviation of thermal anomalies (relative to eReefs climatology) 
-    - DHW_max_eReefs: maximum degree heating weeks (eReefs)    
-    - DHW_freq_sup4_eReefs: frequency of degree heating weeks > 4 (eReefs)
-    - TSA_DHW_stdev_eReefs: standard deviation of degree heating weeks (caluclated relative to eReefs MMM)  
-    - TSA_DHW_mean_eReefs: mean degree heating weeks (caluclated relative to eReefs MMM)      
-    - ROTC_ss: rate of temperature change in spring and summer months (eReefs)     
+    - SSTA_freq_mean_eReefs: mean frequency of thermal anomalies (relative to eReefs climatology)    
+    - SSTA_freq_stdev_eReefs: standard deviation of thermal anomalies (relative to eReefs climatology)     
+    - DHW_max_eReefs: maximum degree heating weeks (eReefs)      
+    - DHW_freq_sup4_eReefs: frequency of degree heating weeks > 4 (eReefs)      
+    - TSA_DHW_stdev_eReefs: standard deviation of degree heating weeks (caluclated relative to eReefs MMM)    
+    - TSA_DHW_mean_eReefs: mean degree heating weeks (caluclated relative to eReefs MMM)        
+    - ROTC_ss: rate of temperature change in spring and summer months (eReefs)      
     - AR: annual range in temperature (eReefs)     
     - LMMsd: standard deviation of the temperature in the coolest month  (eReefs)     
     - MMMsd: standard deviation of the temperature in the warmest month (eReefs)     
@@ -124,13 +124,13 @@ G. ECT1_sites_environmental_data_depthsadjusted2023_11_30.csv: Environmental dat
     - SSTA_freq_mean: mean frequency of thermal anomalies (CoralWatch)     
     - MMM: maximum monthly mean  adjusted to historical baseline (CoralWatch)    
     - CF_OM: mean cloud fraction (NASA)    
-    - CF_ss: mean cloud fraction in spring and summer months (NASA)
-    - Secchi_OM: mean secchi depth (eReefs) 
-    - Secchi_OMsd: standard deviation of secchi depth (eReefs)    
-    - Secchi_HM: secchi depth during the warmest month (eReefs)         
-    - Secchi_HMsd: standard deviation of secchi depth during the warmest month (eReefs)      
+    - CF_ss: mean cloud fraction in spring and summer months (NASA)     
+    - Secchi_OM: mean secchi depth (eReefs)    
+    - Secchi_OMsd: standard deviation of secchi depth (eReefs)      
+    - Secchi_HM: secchi depth during the warmest month (eReefs)            
+    - Secchi_HMsd: standard deviation of secchi depth during the warmest month (eReefs)        
     - DHW_collection: degree heating weeks at the time of sampling  
-H: full_iPAM_data_2023_12_04: raw iPAM data on the 569 genotypes measured in this project
+H: full_iPAM_data_2023_12_04: raw iPAM data on the 569 genotypes measured in this project       
     - Site: unique heat stress assay run    
     - Site.name: sample site    
     - Reef.name: name of reef sampled    
@@ -154,7 +154,7 @@ H: full_iPAM_data_2023_12_04: raw iPAM data on the 569 genotypes measured in thi
     - FMmean: mean of Fm.1-3      
     - meanTemp_hold: mean temperature of the 3 hour heat stress hold in that tank     
     - meanTemp_hold_corr:  mean temperature of the 3 hour heat stress hold in that tank, corrected for slight differences between probe and hobo temperatures    
-I. hyperspecdata_2023_12_04v: raw NDVI values from hyperspectral data for 555 genotypes in this project 
+I. hyperspecdata_2023_12_04v: raw NDVI values from hyperspectral data for 555 genotypes in this project      
     - Site: unique heat stress assay run        
     - Site_year: unique heat stress assay run and year           
     - SampleYear: year sampled      
