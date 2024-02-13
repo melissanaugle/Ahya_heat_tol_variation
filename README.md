@@ -10,6 +10,8 @@ The repository is organized in multiple parts:
     
 ## 1. Raw data:
  Includes raw environmental, heat tolerance, and ITS2 data.  
+ 
+ Files include:  
     - Coral colony metadata...xlxs: Metadata associated with coral colonies sampled for RRAP ECT-1  
     - TideData.csv: data on tides at reef sites on sampling dates  
     - TotalChlorophyll.csv: data on lab-assayed chlorophyll  
@@ -25,7 +27,9 @@ Raw WGS reads will be found on the NCBI Sequence Read Archive (SRA) database: PR
 Raw ITS2 sequence data will be made available on the NCBI Sequence Read Archive (SRA) database soon.     
      
 ## 2. Clean data:
-Includes cleaned heat tolerance trait data, environmental data associated with each colony, ITS2 data, and host cluster assignments.   
+Includes cleaned heat tolerance trait data, environmental data associated with each colony, ITS2 data, and host cluster assignments. 
+
+Files include:  
     - 2023_05_03_naturalbleachingnorthdirection_clust.csv: cluster identities of colonies sampled during a natural bleaching event and their color scores    
     - 2023_10_17_clust_data_edited.csv: cluster identities of colonies ran in acute heat stress     
     - Environmental_data_PCs...csv: environmental data with PC values to group similar categories of metrics     
@@ -37,6 +41,8 @@ Includes cleaned heat tolerance trait data, environmental data associated with e
 
 ## 3. Data processing:
 Includes R scripts for processing raw data and data exploration.     
+
+Scripts include:
     - 1_Correct_colony_depth.Rmd: adjust colony depths using tide data     
     - 2_standardizeenvvra_depth.Rmd: standardize environmental variables to tide-adjusted depths    
     - 3_iPAM_generate_ed50_retention.Rmd: generate ED50s and retained fvfm phenotypic metrics      
@@ -45,7 +51,9 @@ Includes R scripts for processing raw data and data exploration.
     - 6_Symbiont_dataprep.Rmd: prepare symbiont data, quality control, and early analyses     
 
 ## 4. Data analysis:
-Includes R scripts for generating figures and results presented in the publication.     
+Includes R scripts for generating figures and results presented in the publication.   
+
+Scripts include:  
     - Data_overview.Rmd: quality control steps and overview of data (**Figs 1, 2, S1, S2, S3; Table 1**)     
     - Boosted_Regression_trees.Rmd: script to run boosted regression trees (**Fig 6**)      
     - Cryptic_spp_analysis.Rmd: script to explore genomic cluster variation spatially and with phenotype (**Figs 4 and S4**)      
