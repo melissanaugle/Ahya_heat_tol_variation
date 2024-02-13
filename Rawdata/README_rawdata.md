@@ -1,0 +1,178 @@
+# ReadMe: for raw data
+
+This file gives further explanations for column names on raw data sheets
+
+
+Within 1.) Raw data
+A. Coral colony metadata from the ECT1_RRAP_2023_11_16_AhyaCh1.xlxs: Metadata associated with coral colonies sampled for RRAP ECT-1
+    - column names described in tab 1
+B. TideData.csv: data on tides at reef sites on sampling dates 
+    - locationID: location of site 
+    - yearCollected: year coloies were sampled 
+    - monthCollected: month colonies were sampled
+    - dayCollected: day colonies were sampled
+    - Tide_chart_used: tide chart closest to sampling site, used from WillyWeather.com for tide data 
+    - Times 1-4: tide times according to WillyWeather.com
+    - Levels 1-4: tide levels according to WillyWeather.com
+    - Site: site and heat stress assay run details  
+    - Site_year: site, heat stress assay run, and year sampled details  
+C. TotalChlorophyll.csv: data on lab-assayed chlorophyll 
+    - Species: coral species
+    - Site: site sampled
+    - SampleYear: year sampled
+    - Treatment: heat stress treatment (MMM for control temp, or +6C for MMM + 6˚C)
+    - Genotype: Genotype ID
+    - Rack.Pos: Rack position ID for rack placed in acute stress assay
+    - Tube_label: label on tube for chlorophyll
+    - Chlorophyll batch: batch ID for chlorophyll measurements
+    - AFDW%: ash free dry weight (as %)
+    - Chla / AFDW: chlorphyll a per ash free dry weight
+    - Chlc / AFDW: chlorphyll c per ash free dry weight
+    - Total Chl / AFDW: total chlorphyll per ash free dry weight
+    - Total Chl (ug/mg dry weight): total chlorphyll 
+D. SiteCharacteristics.csv: metadata associated with each reef site 
+    - Site.name: name of sample site
+    - Lat: latitude
+    - Lon: longitude
+    - MMM: maximum monthly mean temperature
+    - Km_to_coastline: kilometers to coastline
+    - Subregion: subregion 
+    - Shelf.pos: shelf poition (inshore/offshore/mid)
+    - Region: region 
+E. SeaSim_holdtemps.csv: temperatures of tanks in acute heat stress experiment  
+    - Site_year: ID for each heat assay run (site/year/run)
+    - Treatment: treatment temperature in assay
+    - Tank: tank in assay
+    - meanTemp_hold: mean temperature of the 3 hour heat stress hold in that tank
+    - Type: type of temp measurement (temp probe or hobo logger)
+    - Site_year_tank: ID for each tank and heat assay run (site/year/run/tank)
+    - meanTemp_hold_corr:  mean temperature of the 3 hour heat stress hold in that tank, corrected for slight differences between probe and hobo temperatures 
+F. ECT1_sites_environmental_data.csv: Environmental data associated with each colony 
+    - Site.name: name of sample site
+    - Variable: class of environmental variable
+    - Metric: specific environmental metric
+    - Value: value of that metric
+    - Depth: depth stratification at which that metric was recorded 
+    - Source: source of that metric (e.g., coral watch or ereefs)
+    - Spat_res: spatial resolution of metric
+    - Time_res: temporal resolution of metric
+    - Period: temporal range at which metric encompasses
+    - Multi_level: yes/no is that metric at multiple depth levels
+    - Depth.adjusted: adjusted depths at which metrics are measured using tide data 
+G. ECT1_sites_environmental_data_depthsadjusted2023_11_30.csv: Environmental data associated with each colony, adjusted to colony depth 
+    - Site.name: name of sample site
+    - Variable: class of environmental variable
+    - Metric: specific environmental metric
+    - Value: value of that metric
+    - Depth: depth stratification at which that metric was recorded 
+    - Source: source of that metric (e.g., coral watch or ereefs)
+    - Spat_res: spatial resolution of metric
+    - Time_res: temporal resolution of metric
+    - Period: temporal range at which metric encompasses
+    - Multi_level: yes/no is that metric at multiple depth levels
+    - Depth.adjusted: adjusted depths at which metrics are measured using tide data 
+    - TOTAL_NITROGEN_HMsd: standard deviation of total nitrogen during the warmest month (eReefs) 
+    - PIP_HMsd: standard deviation of particulate inorganic phosphate during the warmest month (eReefs) 
+    - PH_HMsd: standard deviation oh pH during the warmest month (eReefs) 
+    - Oxygen_HMsd: standard deviation of dissolved oxygen during the warmest month (eReefs) 
+    - NO3_HMsd: standard deviation of nitrate during the warmest month (eReefs) 
+    - Kd_490_HMsd: standard deviation of light attenuation at 490nm during the warmest month (eReefs) 
+    - Chl_a_HMsd: standard deviation of chlorophyll a during the warmest month (eReefs) 
+    - TOTAL_NITROGEN_HM: total nitrigen during the warmest month (eReefs) 
+    - PIP_HM: particulate inorganic phosphate during the warmest month (eReefs)    
+    - PH_HM: pH during the warmest month (eReefs)     
+    - Oxygen_HM: dissolved oxygen during the warmest month (eReefs)     
+    - NO3_HM: nitrate during the warmest month (eReefs) 
+    - Kd_490_HM: light attenuation at 490nm during the warmest month (eReefs)     
+    - Chl_a_HM: chlorophyll a during the warmest month (eReefs)    
+    - TOTAL_NITROGEN_OMsd:standard deviation of total nitrogen (eReefs)     
+    - PIP_OMsd: standard deviation of particulate inorganic phosphate (eReefs)     
+    - PH_OMsd: standard deviation oh pH (eReefs)   
+    - Oxygen_OMsd: standard deviation of dissolved oxygen (eReefs)     
+    - NO3_OMsd: standard deviation of nitrate (eReefs) 
+    - Kd_490_OMsd: standard deviation of light attenuation at 490nm (eReefs) 
+    - Chl_a_OMsd: standard deviation of chlorophyll a (eReefs) 
+    - salt_OM: mean salinity (eReefs)
+    - alk_OM: mean alkalinity (eReefs)   
+    - TOTAL_NITROGEN_OM: mean nitrogen (eReefs)
+    - PIP_OM: mean particulate inorganic phosphate (eReefs)
+    - PH_OM: mean pH (eReefs)
+    - Oxygen_OM: mean dissolved oxygen (eReefs)
+    - NO3_OM: mean nitrate (eReefs)
+    - Kd_490_OM: mean light attenuation at 490 kd (eReefs)
+    - Chl_a_OM: mean chlorophyll a (eReefs)
+    - SSTA_freq_mean_eReefs: mean frequency of thermal anomalies (relative to eReefs climatology) 
+    - SSTA_freq_stdev_eReefs: standard deviation of thermal anomalies (relative to eReefs climatology) 
+    - DHW_max_eReefs: maximum degree heating weeks (eReefs)    
+    - DHW_freq_sup4_eReefs: frequency of degree heating weeks > 4 (eReefs)
+    - TSA_DHW_stdev_eReefs: standard deviation of degree heating weeks (caluclated relative to eReefs MMM)  
+    - TSA_DHW_mean_eReefs: mean degree heating weeks (caluclated relative to eReefs MMM)      
+    - ROTC_ss: rate of temperature change in spring and summer months (eReefs)
+    - AR: annual range in temperature (eReefs)
+    - LMMsd: standard deviation of the temperature in the coolest month  (eReefs) 
+    - MMMsd: standard deviation of the temperature in the warmest month (eReefs)
+    - OMsd: standard deviation of temperature  (eReefs)   
+    - OM: mean temperature (eReefs)   
+    - LMM: minimum monthly mean temperature (eReefs)   
+    - MMM_eReefs: maximum monthly mean not adjusted to historical baseline (eReefs)       
+    - DTR_ss: daily thermal range during spring and summer (eReefs)    
+    - DTR: daily thermal range (eReefs)    
+    - TSA_DHW_mean: mean degree heating weeks (CoralWatch)
+    - TSA_DHW_stdev: standard deviation of degree heating weeks (CoralWatch)
+    - DHW_freq_sup4: frequency of degree heating weeks > 4 (CoralWatch)       
+    - DHW_freq_sup8: frequency of degree heating weeks > 8 (CoralWatch)   
+    - DHW_max: maximum degree heating weeks (CoralWatch)   
+    - SSTA_freq_stdev: standard deviation of thermal anomalies (CoralWatch)     
+    - SSTA_freq_mean: mean frequency of thermal anomalies (CoralWatch)     
+    - MMM: maximum monthly mean  adjusted to historical baseline (CoralWatch)    
+    - CF_OM: mean cloud fraction (NASA)    
+    - CF_ss: mean cloud fraction in spring and summer months (NASA)
+    - Secchi_OM: mean secchi depth (eReefs) 
+    - Secchi_OMsd: standard deviation of secchi depth (eReefs)    
+    - Secchi_HM: secchi depth during the warmest month (eReefs)         
+    - Secchi_HMsd: standard deviation of secchi depth during the warmest month (eReefs)      
+    - DHW_collection: degree heating weeks at the time of sampling  
+H: full_iPAM_data_2023_12_04: raw iPAM data on the 569 genotypes measured in this project
+    - Site: unique heat stress assay run    
+    - Site.name: sample site    
+    - Reef.name: name of reef sampled    
+    - SampleYear: year sampled    
+    - Genotype: genotype    
+    - Tank: tank in heat stress assay    
+    - Treatment: treatment in heat stress assay     
+    - Site_Rack: heat stress assay run and rack number to identify fragment position     
+    - Site_Rack_Year: heat stress assay run, rack number, and year to identify fragment position           
+    - Collection.date: date sample was collected    
+    - Type: type of sample (seasim = heat stress assay)     
+    - Qualityscore: adjusted based on lower quality iPAM image     
+    - PAM_date: date iPAM was taken     
+    - PAM_time: time of iPAM     
+    - F1-F3: F value of 3 areas of interest selected on each fragment    
+    - Fm.1- 3: Fm values of 3 areas of interest selected on each fragment        
+    - Y.II.1-3: Fv/Fm of 3 areas of interest selected on each fragment        
+    - Y.II.mean: mean of Y.II.1-3     
+    - Y.II.sd: standard deviation of Y.II.1-3    
+    - F0mean: mean of F1-F3    
+    - FMmean: mean of Fm.1-3
+    - meanTemp_hold: mean temperature of the 3 hour heat stress hold in that tank  
+    - meanTemp_hold_corr:  mean temperature of the 3 hour heat stress hold in that tank, corrected for slight differences between probe and hobo temperatures 
+I. hyperspecdata_2023_12_04v: raw NDVI values from hyperspectral data for 555 genotypes in this project 
+    - Site: unique heat stress assay run        
+    - Site_year: unique heat stress assay run and year          
+    - SampleYear: year sampled     
+    - Tank: tank in heat stress assay    
+    - Site_Rack: unique heat stress assay run and rack position in heat stress assay     
+    - Genotype: genotype    
+    - Rack.Pos: rack position in heat stress assay     
+    - Treatment: treatment    
+    - MedNDVI: median NDVI value     
+    - Label: label on matlab       
+    - eventID: unique ID associated with each colony 
+J. Raw data associated with ITS2 analysis of Symbiodiniacae 
+    - ITS2profiles.absolute.abund_only.flip.txt: Symportal its2 type profile abundances 
+    - ITS2profiles.absolute.abund_only.txt: Symportal its2 type profile abundances 
+    - ITS2profiles.meta_only.txt: Symportal its2 type profile metadata
+    - ITS2seqs.absolute.abund_only_otuflip.txt: Symportal OTU (its2 sequence variant) abundances 
+    - ITS2seqs.absolute.abund_only.txt: Symportal OTU (its2 sequence variant) abundances 
+    - ITS2seqs.absolute.meta_reef.txt: Symportal OTU (its2 sequence variant) metadata
+    - RRAP.taxonomy.txt: taxonomy for each OTU (its2 sequence variant) 
