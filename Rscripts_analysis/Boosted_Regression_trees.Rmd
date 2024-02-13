@@ -1,0 +1,361 @@
+---
+title: "BRT"
+author: "Melissa Naugle"
+date: "1/20/2023"
+output: html_document
+---
+
+# Script to build individual and site level BRTs to test effects of predictors on heat tolerance traits
+- Select top predictors and plot their effect on traits (Fig 6)
+
+```{r setup, include=FALSE}
+setwd("/Users/Melissa/Desktop/GitHub/Ahya_heat_tol_variation//Rscripts_analysis/")
+#rm(list = ls())
+graphics.off()
+library(tidyverse)
+library(gbm)
+library(dismo)
+library(patchwork)
+date = format(Sys.Date(), "%Y_%m_%d")
+outputpath <- "/Users/Melissa/Desktop/GitHub/Ahya_heat_tol_variation//Outputs/BRTs/"
+```
+
+#data in
+```{r}
+pheno <- read.csv("../CleanData/pheno_metadata_clean_2024_01_08.csv")
+env <- read.csv("../CleanData/Environmental_data_PCs_2024_01_08.csv")
+clust <- read.csv("../CleanData/2023_10_17_clust_data_edited.csv")
+symbiont <- read.csv("../CleanData/ITS2_types_OTUs_17_10_2023.csv") %>% dplyr::select(Site.name_geno_year,dominant_type,all_typeprofs,OTU_PC1, OTU_PC2, OTU_PC3)
+pred_types <- read.csv("../CleanData/EnvMetric_categories.csv")
+
+dat_all <- left_join(pheno, env, by = "Site_geno_year",suffix = c("", ".z")) %>%
+  dplyr::select(-ends_with(".z"))
+
+dat_all$Sitename_geno_year = paste0(dat_all$Site.name,"_",dat_all$Genotype,"_",dat_all$SampleYear)
+
+dat_all2 <- left_join(dat_all, clust, by = "Sitename_geno_year",suffix = c("", ".z")) %>%
+  dplyr::select(-ends_with(".z"))
+
+dat_all2$Site.name_geno_year <- dat_all2$Sitename_geno_year
+
+dat_all3 <- dat_all2 %>% left_join(symbiont, by = "Site.name_geno_year",suffix = c("", ".z")) %>%
+  dplyr::select(-ends_with(".z"))
+
+```
+
+
+# select predictors and set up datasets 
+```{r }
+#move single occurance dominant types to group into "other" and reduce bias of categorical predictors with too many categories 
+dat_all3$dominant_type.adj <- dat_all3$dominant_type
+dat_all3 %>% dplyr::select(Site_geno_year,dominant_type.adj) %>% group_by(dominant_type.adj) %>% tally()
+
+dat_all3$dominant_type.adj[dat_all3$dominant_type.adj == "C3k-C50a-C3wy-C50b-C3ba-C3wu"] <- "Other"
+dat_all3$dominant_type.adj[dat_all3$dominant_type.adj == "C50b/C50p-C3-C50f-C3bm-C3dt"] <- "Other"
+
+dat_all3 %>% dplyr::select(Site_geno_year,dominant_type.adj) %>% group_by(dominant_type.adj) %>% tally()
+```
+#Choose predictors to include and set up data to run in BRT models 
+```{r }
+dat_all3$Region <- "M"
+dat_all3$Region[dat_all3$Subregion == "Swains" | dat_all3$Subregion == "Capricorn Bunker"] <- "South"
+dat_all3$Region[dat_all3$Subregion == "Cooktown" | dat_all3$Subregion == "Innisfail/Townsville" | dat_all3$Subregion == "Townsville" | dat_all3$Subregion == "Cairns"] <- "North-Central"
+
+#choose factors to include
+dat_all_touse <- dat_all3 %>% filter(!is.na(fvfm_ED50)) %>% dplyr::select(c(
+"Site_geno_year", 
+#temp
+"MMM","Depth_corrected","DHW_collection","TSA_DHW_mean",
+"TSA_DHW_stdev", "DHW_freq_sup4","DHW_freq_sup8","DHW_max","SSTA_freq_stdev",
+"SSTA_freq_mean", "ROTC_ss", "AR" ,"DTR_ss","DTR","OM","Lat",
+#nutrients
+"TOTAL_NITROGEN_OM","NO3_OM","PIP_OM",
+#light
+"Secchi_OM","CF_OM",
+#symbiont
+"dominant_type.adj",
+"OTU_PC1","OTU_PC2",
+#clust
+"Clust",
+"Shelf.pos",
+#pheno
+"fvfm_ED50", "ndvi_ED50","RelativeNDVI9C","RelativeFvFm9C","fvfm_ED50CIrange","ndvi_ED50CIrange" , 
+"Region", "Site.name", "Subregion","Health.Chart.num","Site"
+))
+
+dat_all_touse$dominant_type.adj <- as.factor(dat_all_touse$dominant_type.adj)
+dat_all_touse$Clust <- as.factor(dat_all_touse$Clust)
+dat_all_touse$Site <- as.factor(dat_all_touse$Site)
+dat_all_touse$Shelf.pos <- as.factor(dat_all_touse$Shelf.pos)
+
+
+
+###
+dat_all_fvfmED50_filt <- dat_all_touse %>% dplyr::select(-c("ndvi_ED50","RelativeNDVI9C", "RelativeFvFm9C","fvfm_ED50CIrange","ndvi_ED50CIrange","Site_geno_year","Region","Site.name", "Subregion","Site"))%>% filter(!is.na(fvfm_ED50)) 
+
+dat_all_ndviED50_filt <- dat_all_touse %>% dplyr::select(-c("fvfm_ED50","RelativeNDVI9C", "RelativeFvFm9C","fvfm_ED50CIrange","ndvi_ED50CIrange","Site_geno_year","Region","Site.name", "Subregion","Site"))%>% filter(!is.na(ndvi_ED50)) 
+
+dat_all_touse_fvfmrel9c <- dat_all_touse%>% dplyr::select(-c("fvfm_ED50","ndvi_ED50","RelativeNDVI9C", "fvfm_ED50CIrange","ndvi_ED50CIrange","Site_geno_year","Region","Site.name", "Subregion","Site")) %>% filter(!is.na(RelativeFvFm9C)) 
+
+dat_all_touse_ndvirel9c <- dat_all_touse  %>% dplyr::select(-c("fvfm_ED50","ndvi_ED50",  "RelativeFvFm9C","fvfm_ED50CIrange","ndvi_ED50CIrange","Site_geno_year","Region","Site.name", "Subregion","Site"))%>% filter(!is.na(RelativeNDVI9C)) 
+
+
+cols = c("Temperature: Climatology" = "royalblue2", "Temperature: Recent Heat Stress" = "navyblue", "Depth" = "lightsteelblue",  "Temperature: Anomalies" = "deepskyblue2","Symbiont Community" = "tomato3" , "Latitude" = "seagreen4", "Temperature: Variability" = "cornflowerblue", "Nutrient Availability" = "orange", "Pigmentation" = "violetred3", "Host Genomic Cluster" = "darkgoldenrod2", "Latitude" = "red")
+
+
+```
+
+#Make a correlation matrix of predictors going into BRTs
+Some variables are correlated 
+```{r}
+
+library(Hmisc)
+library(corrplot)
+library(factoextra)
+library(reshape2)
+
+get_upper_tri <- function(cormat){
+  cormat[lower.tri(cormat)]<- NA
+  return(cormat)}
+reorder_cormat <- function(cormat){
+dd <- as.dist((1-cormat)/2)
+hc <- hclust(dd)
+cormat <-cormat[hc$order, hc$order]}
+env.data_corr <- dat_all_touse %>% dplyr::select(-c("fvfm_ED50","ndvi_ED50",  "RelativeFvFm9C","RelativeNDVI9C","fvfm_ED50CIrange","ndvi_ED50CIrange","Site_geno_year","Region","Site.name", "Subregion","Site","dominant_type.adj","Clust","Shelf.pos"))
+rcorr(as.matrix(env.data_corr, type = c("pearson","spearman")))
+cor <- cor(env.data_corr, use="complete.obs")
+cormat <- reorder_cormat(cor)
+upper_tri <- get_upper_tri(cormat)
+melted_cormat <- melt(upper_tri, na.rm = TRUE)
+ggplot(data = melted_cormat, aes(Var2, Var1, fill = value))+
+ geom_tile(color = "white")+
+ scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
+   midpoint = 0, limit = c(-1,1), space = "Lab", 
+   name="Pearson\nCorrelation") +
+  theme_minimal()+ 
+ theme(axis.text.x = element_text(angle = 90, vjust = 1, 
+    size = 10, hjust = 1), axis.text.y = element_text(size = 10))+
+ coord_fixed() + xlab("") + ylab("")
+ggsave(paste0("../Outputs/BRTs/corrmatrix_brt",date,".png"), width = 8, height = 7)
+
+```
+
+##BRT for FvFm ed50
+Workflow:
+-use gbm.step to get total and cv deviance to get deviance explained; and to get # of trees 
+-lr, tree complexity, and bag fraction set to be conservative and allow slow learning rate 
+-additional parameter search was completed beforehand without much change in results using diff lr, tc, and bf values 
+```{r }
+
+set.seed(123)
+brt.fvfmed50 <- gbm.step(data = dat_all_fvfmED50_filt,
+  gbm.x = c(1:26,28),
+  gbm.y = 27,
+  family = "gaussian",
+  tree.complexity = 5,
+  learning.rate = 0.001,
+  bag.fraction = 0.5)  
+```
+
+```{r}
+# mean total deviance = 0.436 
+# mean residual deviance = 0.095 
+# estimated cv deviance = 0.144 
+
+Dfvfmed50 = (0.436 - 0.144) / 0.436
+
+gbm.plot(brt.fvfmed50)
+
+#use number of trees suggested above 
+brt.fvfmed50.gbm <- gbm(formula = fvfm_ED50 ~ .,
+  distribution = "gaussian",
+  data = dat_all_fvfmED50_filt,
+  n.trees = 4800,
+  interaction.depth = 5,
+  shrinkage = 0.001,
+  bag.fraction = 0.5,
+  cv.folds = 10)
+summary(brt.fvfmed50.gbm)
+```
+#Plot top variables and partial dependance plots 
+```{r }
+brt.fvfm.best_pred <- summary(brt.fvfmed50, cBars = 10,method = relative.influence,  las = 2)%>% left_join(pred_types, by = "var")
+
+p1 <- brt.fvfm.best_pred %>% slice(1:4) %>% ggplot(aes(reorder(name, rel.inf), rel.inf, fill = Predictor.Type)) + geom_bar(stat = "identity") + theme_bw() + coord_flip() + ylab("Relative Influence") + xlab("")  + ggtitle("ED50 (Fv/Fm) \nDeviance explained: 0.670")+ ylim(0,42)+ scale_fill_manual(name = "Predictor Type", values = cols)
+
+MMM <- pdp::partial(brt.fvfmed50.gbm, pred.var = "MMM", n.trees = 4800)%>% autoplot() + theme_bw() + xlab("Maximum Monthly Mean (˚C)") + ylab("ED50 (Fv/Fm)") + ylim(c(36.15,36.65))
+ 
+dhw_coll <- pdp::partial(brt.fvfmed50.gbm, pred.var = "DHW_collection", n.trees = 4800)%>% autoplot() + theme_bw() + xlab("DHW at time of collection") + ylab("ED50 (Fv/Fm)")+ ylim(c(36.15,36.65))
+
+pfvfmed50 <- p1 + MMM + dhw_coll + plot_layout(guides = 'collect')+ plot_annotation(tag_levels = 'A') 
+
+#similar between two slightly diff brt functions 
+summary(brt.fvfmed50)
+summary(brt.fvfmed50.gbm)
+
+
+```
+
+#ndvi ed50 
+```{r ndvi_ed50}
+set.seed(123)
+
+brt.ndvied50 <- gbm.step(data = dat_all_ndviED50_filt,
+  gbm.x = c(1:26,28),
+  gbm.y = 27,
+  family = "gaussian",
+  tree.complexity = 5,
+  learning.rate = 0.001,
+  bag.fraction = 0.5)  
+```
+
+#rerun with gbm and correct ideal number of trees
+```{r }
+# mean total deviance = 0.883 
+# mean residual deviance = 0.436 
+# estimated cv deviance = 0.566
+
+
+(0.883 - 0.566) / 0.883
+
+summary(brt.ndvied50)
+gbm.plot(brt.ndvied50)
+
+brt.ndvied50.gbm <- gbm(formula = ndvi_ED50 ~ .,
+  distribution = "gaussian",
+  data = dat_all_ndviED50_filt,
+  n.trees = 2350,
+  interaction.depth = 5,
+  shrinkage = 0.001,
+  bag.fraction = 0.5,
+  cv.folds = 10)
+summary(brt.ndvied50.gbm)
+```
+
+#variable and pdp plots 
+```{r }
+
+MMM2 <- pdp::partial(brt.ndvied50.gbm, pred.var = "MMM", n.trees = 2350)%>% autoplot() + theme_bw() + xlab("Maximum Monthly Mean (˚C)") + ylab("ED50 (NDVI)") +ylim(c(35.35,36))
+
+om <- pdp::partial(brt.ndvied50.gbm, pred.var = "OM", n.trees = 2350)%>% autoplot() + theme_bw() + xlab("Mean Temperature (˚C)") + ylab("ED50 (NDVI)")+ylim(c(35.35,36))
+
+brt.ndvied50_pred <- summary(brt.ndvied50, cBars = 10,method = relative.influence,  las = 2)%>% left_join(pred_types, by = "var")
+p1 <- brt.ndvied50_pred %>% slice(1:4) %>% ggplot(aes(reorder(name, rel.inf), rel.inf, fill = Predictor.Type)) + geom_bar(stat = "identity") + theme_bw() + coord_flip() + ylab("Relative Influence") + xlab("")  + ggtitle("ED50 (NDVI) \nDeviance explained: 0.359")+ ylim(0,42)+ scale_fill_manual(name = "Predictor Type", values = cols)
+
+pndvied50 <- p1 + MMM2 + om + plot_layout(guides = 'collect')+ plot_annotation(tag_levels = 'A') 
+
+summary(brt.ndvied50)
+summary(brt.ndvied50.gbm)
+
+
+```
+
+#retained fvfm 
+```{r}
+set.seed(123)
+brt.fvfmrel <- gbm.step(gbm.x = c(1:26,28), gbm.y = 27,
+  family = "gaussian",
+  data = dat_all_touse_fvfmrel9c,
+  tree.complexity = 5,
+  learning.rate = 0.001,
+  bag.fraction = 0.5)  
+```
+
+
+```{r }
+# mean total deviance = 0.031 
+# mean residual deviance = 0.004 
+# estimated cv deviance = 0.006 
+
+(0.031 - 0.006)/0.031
+
+set.seed(123)
+brt.fvfmrel.gbm <- gbm(formula = RelativeFvFm9C ~ .,
+  distribution = "gaussian",
+  data = dat_all_touse_fvfmrel9c,
+  n.trees = 4950,
+  interaction.depth = 5,
+  shrinkage = 0.001,
+  bag.fraction = 0.5,
+  cv.folds = 10)
+
+summary(brt.fvfmrel)
+summary(brt.fvfmrel.gbm)
+
+lat <- pdp::partial(brt.fvfmrel.gbm, pred.var = "Lat", n.trees = 4950)%>% autoplot() + theme_bw() + xlab("Latitude") + ylab("Retained FvFm")
+
+
+dhw8 <- pdp::partial(brt.fvfmrel.gbm, pred.var = "DHW_freq_sup8", n.trees = 4950)%>% autoplot() + theme_bw() + xlab("Frequency of DHW > 8") + ylab("Retained FvFm")
+
+
+brt.fvfmrel_pred <- summary(brt.fvfmrel, cBars = 10,method = relative.influence,  las = 2)%>% left_join(pred_types, by = "var")
+p1 <- brt.fvfmrel_pred %>% slice(1:4) %>% ggplot(aes(reorder(name, rel.inf), rel.inf, fill = Predictor.Type)) + geom_bar(stat = "identity") + theme_bw() + coord_flip() + ylab("Relative Influence") + xlab("")  + ggtitle("Retained FvFm \nDeviance explained: 0.806")+ ylim(0,42)+ scale_fill_manual(name = "Predictor Type", values = cols)
+
+
+pfvfmrel <- p1 + lat + dhw8 + plot_layout(guides = 'collect')+ plot_annotation(tag_levels = 'A') 
+
+
+```
+
+##relative ndvi
+```{r}
+
+brt.ndvirel <- gbm.step(gbm.x = c(1:26,28), gbm.y = 27,
+  family = "gaussian",
+  data = dat_all_touse_ndvirel9c,
+  tree.complexity = 5,
+  learning.rate = 0.001,
+  bag.fraction = 0.5)  
+```
+
+```{r }
+# mean total deviance = 0.025 
+# mean residual deviance = 0.009 
+# estimated cv deviance = 0.013 
+
+(0.025 - 0.013)/ 0.025
+
+
+set.seed(123)
+brt.ndvirel.gbm <- gbm(formula = RelativeNDVI9C ~ .,
+  distribution = "gaussian",
+  data = dat_all_touse_ndvirel9c,
+  n.trees = 3950,
+  interaction.depth = 5,
+  shrinkage = 0.001,
+  bag.fraction = 0.5,
+  cv.folds = 10)
+```
+
+```{r }
+
+DHW_collection <- pdp::partial(brt.fvfmrel.gbm, pred.var = "DHW_collection", n.trees = 3950)%>% autoplot() + theme_bw() + xlab("DHW at time of collection") + ylab("Retained NDVI")+ ylim(c(0.33,0.44))
+
+TSA_DHW_mean <- pdp::partial(brt.fvfmrel.gbm, pred.var = "TSA_DHW_mean", n.trees = 3950)%>% autoplot() + theme_bw() + xlab("Mean DHW") + ylab("Retained NDVI")+ ylim(c(0.33,0.44))
+
+brt.ndvirel_pred <- summary(brt.ndvirel, cBars = 10,method = relative.influence,  las = 2)%>% left_join(pred_types, by = "var")
+p1 <- brt.ndvirel_pred %>% slice(1:4) %>% ggplot(aes(reorder(name, rel.inf), rel.inf, fill = Predictor.Type)) + geom_bar(stat = "identity") + theme_bw() + coord_flip() + ylab("Relative Influence") + xlab("")  + ggtitle("Retained NDVI \nDeviance explained: 0.480")+ ylim(0,42)+ scale_fill_manual(name = "Predictor Type", values = cols)
+
+
+pndvirel <- p1 + DHW_collection + TSA_DHW_mean + plot_layout(guides = 'collect')+ plot_annotation(tag_levels = 'A') 
+
+
+```
+
+
+#visualize as one figure
+##Figure 6
+```{r}
+
+((pfvfmed50) / (pfvfmrel) / (pndvied50) / (pndvirel)) + plot_layout(guides = 'collect') & theme(axis.text.y = element_text(size = 14), legend.text = element_text(size = 14), legend.title = element_text(size = 14), axis.title.x = element_text(size = 14), axis.title.y = element_text(size = 14), title = element_text(size = 14.5))
+ggsave(paste0("../Outputs/BRTs/Figure6_",date,".png"), width = 16, height = 10)
+
+```
+
+
+
+
+
+
+
+

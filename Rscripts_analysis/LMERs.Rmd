@@ -1,0 +1,313 @@
+---
+title: "LMERs"
+author: "Melissa Naugle"
+date: "1/20/2023"
+output: html_document
+---
+
+# Script to build LMERs to assess effect of predictor categories on heat tolerance traits 
+- Run and plot single-category LMERs (Fig S9)
+- Select best model linear model to explain heat tolerance traits (Table S6)
+
+```{r setup, include=FALSE}
+setwd("/Users/Melissa/Desktop/GitHub/Ahya_heat_tol_variation/Rscripts_analysis/")
+rm(list = ls())
+graphics.off()
+library(tidyverse)
+library(lmerTest) #must be lmertest not lme4
+library(Hmisc)
+library(mgcv)
+date = format(Sys.Date(), "%Y_%m_%d")
+outputpath <- "/Users/Melissa/Desktop/GitHub/Ahya_heat_tol_variation/Outputs/BRTs/"
+```
+
+#data in
+```{r}
+pheno <- read.csv("../CleanData/pheno_metadata_clean_2024_01_08.csv")
+env <- read.csv("../CleanData/Environmental_data_PCs_2024_01_08.csv")
+clust <- read.csv("../CleanData/2023_10_17_clust_data_edited.csv")
+symbiont <- read.csv("../CleanData/ITS2_types_OTUs_17_10_2023.csv") %>% dplyr::select(Site.name_geno_year,dominant_type,all_typeprofs,OTU_PC1, OTU_PC2, OTU_PC3, OTU_PC4, OTU_PC5, OTU_PC6)
+pred_types <- read.csv("../CleanData/EnvMetric_categories.csv")
+
+dat_all <- left_join(pheno, env, by = "Site_geno_year",suffix = c("", ".z")) %>%
+  dplyr::select(-ends_with(".z"))
+
+dat_all$Sitename_geno_year = paste0(dat_all$Site.name,"_",dat_all$Genotype,"_",dat_all$SampleYear)
+
+dat_all2 <- left_join(dat_all, clust, by = "Sitename_geno_year",suffix = c("", ".z")) %>%
+  dplyr::select(-ends_with(".z"))
+
+dat_all2$Site.name_geno_year <- dat_all2$Sitename_geno_year
+
+dat_all3 <- dat_all2 %>% left_join(symbiont, by = "Site.name_geno_year",suffix = c("", ".z")) %>%
+  dplyr::select(-ends_with(".z"))
+```
+
+
+```{r }
+
+#choose factors to include
+dat_all_touse <- dat_all3 %>% filter(!is.na(fvfm_ED50)) %>% dplyr::select(c(
+"Site_geno_year", 
+"Health.Chart.num", "Depth_corrected","DHW_collection",
+"TempVariability_PC1","TempVariability_PC2","TempClimatology_PC1","TempClimatology_PC2","TempAnomalies_PC1","TempAnomalies_PC2","Nutrients_PC1","Nutrients_PC2","Light_PC1","Light_PC2","Clust","OTU_PC1","OTU_PC2","dominant_type",
+"fvfm_ED50", "ndvi_ED50","RelativeNDVI9C","RelativeFvFm9C",
+"Region", "Site.name", "Subregion","Health.Chart.num","Site_year"
+))
+
+dat_all_touse$Clust <- as.factor(dat_all_touse$Clust)
+dat_all_touse$Site_year <- as.factor(dat_all_touse$Site_year)
+
+#filter datasets for each heat tol metric 
+dat_all_fvfmED50_filt <- dat_all_touse %>% dplyr::select(-c("ndvi_ED50","RelativeNDVI9C", "RelativeFvFm9C","Site_geno_year","Site.name", "Subregion"))%>% filter(!is.na(fvfm_ED50)) 
+
+dat_all_ndviED50_filt <- dat_all_touse %>% dplyr::select(-c("fvfm_ED50","RelativeNDVI9C", "RelativeFvFm9C","Site_geno_year","Site.name", "Subregion"))%>% filter(!is.na(ndvi_ED50)) 
+
+dat_all_touse_fvfmrel9c <- dat_all_touse%>% dplyr::select(-c("fvfm_ED50","ndvi_ED50","RelativeNDVI9C", "Site_geno_year","Site.name", "Subregion")) %>% filter(!is.na(RelativeFvFm9C)) 
+
+dat_all_touse_ndvirel9c <- dat_all_touse  %>% dplyr::select(-c("fvfm_ED50","ndvi_ED50",  "RelativeFvFm9C","Site_geno_year","Site.name", "Subregion"))%>% filter(!is.na(RelativeNDVI9C)) 
+
+#make correlation matrix to see which predictors are correlated 
+dat_all_touse_factors <- dat_all_touse %>% dplyr::select(-c(RelativeFvFm9C,RelativeNDVI9C, fvfm_ED50,ndvi_ED50,Site_geno_year,Site.name,Region,Subregion))
+env.data_corr <-  as.data.frame(lapply(dat_all_touse_factors,as.numeric))
+res2<-rcorr(as.matrix(env.data_corr))
+flattenCorrMatrix <- function(cormat, pmat) {
+  ut <- upper.tri(cormat)
+  data.frame(
+    row = rownames(cormat)[row(cormat)[ut]],
+    column = rownames(cormat)[col(cormat)[ut]],
+    cor  =(cormat)[ut],
+    p = pmat[ut]
+    )
+}
+cors <- flattenCorrMatrix(res2$r, res2$P)
+signif <- cors <- cors %>% filter(!is.na(cor)) %>% filter(cor > 0.8 | cor < -0.8)
+#significantly correlated variables (>0.8 or <-0.8)
+signif
+#don't use light and climatology in the same model 
+```
+
+
+#choose colors 
+```{r}
+cols = c("Temperature: Climatology" = "royalblue2", "Temperature: Recent Heat Stress" = "navyblue", "Depth" = "lightsteelblue",  "Temperature: Anomalies" = "deepskyblue2","Symbiont Community" = "tomato3" , "Light Availability" = "purple", "Temperature: Variability" = "cornflowerblue", "Nutrient Availability" = "orange", "Pigmentation" = "violetred3", "Host Genomic Cluster" = "pink")
+
+```
+
+#Run single variable linear models for each predictor variable and select to top AIC values (and top R2 values)
+Do this for each heat tolerance trait 
+```{r}
+#ndvied50
+
+vars <- names(dat_all_ndviED50_filt[,c(1:4,6,8,10,12,14,15)])
+ed50_lmers <- data.frame(metric = as.numeric(),pvalue = as.numeric(), tvalue =  as.numeric(), rsquared = as.numeric())
+
+
+dat_all_ndviED50_filt_cc <- dat_all_ndviED50_filt[complete.cases(dat_all_ndviED50_filt),]
+for (i in 1:length(vars)){
+  metric_touse <- paste(vars[i])
+  ed50_regress <- lm(paste("ndvi_ED50 ~",metric_touse),data = dat_all_ndviED50_filt_cc)
+  t <- summary(ed50_regress)
+  pvalue <- t$coefficients[10]
+  tvalue <- t$coefficients[8]
+  rsquared <- MuMIn::r.squaredGLMM(ed50_regress)[1]
+  aic <- AIC(ed50_regress)
+  newlmer <- c(metric_touse, pvalue,tvalue,rsquared,aic)
+  ed50_lmers <- rbind(ed50_lmers, newlmer)
+}
+names(ed50_lmers) <- c("Metric", "pvalue","tvalue","rsquared","aic")
+ed50_lmers$rsquared <- as.numeric(ed50_lmers$rsquared)
+ed50_lmers$pvalue <- as.numeric(ed50_lmers$pvalue)
+ed50_lmers$tvalue <- as.numeric(ed50_lmers$tvalue)
+ed50_lmers_aic <-ed50_lmers[order(as.numeric(ed50_lmers$aic)),]
+
+ndvied50_l_plot<- ed50_lmers_aic  %>% slice(1:3) %>% dplyr::rename(var = Metric) %>%left_join(pred_types) 
+ndvied50_l_plot2<- ed50_lmers_aic  %>% dplyr::rename(var = Metric) %>%left_join(pred_types) 
+ndvied50_l_plot$Type <- "ED50 (NDVI)"
+ndvied50_l_plot2$Type <- "ED50 (NDVI)"
+
+#fvfmed50
+ed50_lmers <- data.frame(metric = as.numeric(),pvalue = as.numeric(), tvalue =  as.numeric(), rsquared = as.numeric())
+dat_all_fvfmED50_filt_cc <- dat_all_fvfmED50_filt[complete.cases(dat_all_fvfmED50_filt),]
+for (i in 1:length(vars)){
+  metric_touse <- paste(vars[i])
+  ed50_regress <- lm(paste("fvfm_ED50 ~",metric_touse),data = dat_all_fvfmED50_filt_cc)
+  t <- summary(ed50_regress)
+  pvalue <- t$coefficients[10]
+  tvalue <- t$coefficients[8]
+  rsquared <- MuMIn::r.squaredGLMM(ed50_regress)[1]
+  aic <- AIC(ed50_regress)
+  newlmer <- c(metric_touse, pvalue,tvalue,rsquared,aic)
+  ed50_lmers <- rbind(ed50_lmers, newlmer)
+}
+names(ed50_lmers) <- c("Metric", "pvalue","tvalue","rsquared","aic")
+ed50_lmers$rsquared <- as.numeric(ed50_lmers$rsquared)
+ed50_lmers$pvalue <- as.numeric(ed50_lmers$pvalue)
+ed50_lmers$tvalue <- as.numeric(ed50_lmers$tvalue)
+ed50_lmers_aic <-ed50_lmers[order(as.numeric(ed50_lmers$aic)),]
+
+fvfmed50_l_plot<- ed50_lmers_aic  %>% slice(1:3) %>% dplyr::rename(var = Metric) %>%left_join(pred_types) 
+fvfmed50_l_plot2<- ed50_lmers_aic  %>% dplyr::rename(var = Metric) %>%left_join(pred_types) 
+fvfmed50_l_plot$Type <- "ED50 (Fv/Fm)"
+fvfmed50_l_plot2$Type <- "ED50 (Fv/Fm)"
+
+#fvfm relative
+ed50_lmers <- data.frame(metric = as.numeric(),pvalue = as.numeric(), tvalue =  as.numeric(), rsquared = as.numeric())
+dat_all_touse_fvfmrel9c_cc <- dat_all_touse_fvfmrel9c[complete.cases(dat_all_touse_fvfmrel9c),]
+
+for (i in 1:length(vars)){
+  metric_touse <- paste(vars[i])
+  ed50_regress <- lm(paste("RelativeFvFm9C ~",metric_touse),data = dat_all_touse_fvfmrel9c_cc)
+  t <- summary(ed50_regress)
+  pvalue <- t$coefficients[10]
+  tvalue <- t$coefficients[8]
+  rsquared <- MuMIn::r.squaredGLMM(ed50_regress)[1]
+  aic <- AIC(ed50_regress)
+  newlmer <- c(metric_touse, pvalue,tvalue,rsquared,aic)
+  ed50_lmers <- rbind(ed50_lmers, newlmer)
+}
+names(ed50_lmers) <- c("Metric", "pvalue","tvalue","rsquared","aic")
+ed50_lmers$rsquared <- as.numeric(ed50_lmers$rsquared)
+ed50_lmers$pvalue <- as.numeric(ed50_lmers$pvalue)
+ed50_lmers$tvalue <- as.numeric(ed50_lmers$tvalue)
+ed50_lmers_aic <-ed50_lmers[order(as.numeric(ed50_lmers$aic)),]
+
+relfvfm_l_plot<- ed50_lmers_aic  %>% slice(1:3) %>% dplyr::rename(var = Metric) %>%left_join(pred_types) 
+relfvfm_l_plot2<- ed50_lmers_aic  %>%  dplyr::rename(var = Metric) %>%left_join(pred_types) 
+relfvfm_l_plot$Type <- "Retained Fv/Fm"
+relfvfm_l_plot2$Type <- "Retained Fv/Fm"
+
+#ndvi relative
+ed50_lmers <- data.frame(metric = as.numeric(),pvalue = as.numeric(), tvalue =  as.numeric(), rsquared = as.numeric())
+dat_all_touse_ndvirel9c_cc <- dat_all_touse_ndvirel9c[complete.cases(dat_all_touse_ndvirel9c),]
+for (i in 1:length(vars)){
+  metric_touse <- paste(vars[i])
+  ed50_regress <- lm(paste("RelativeNDVI9C ~",metric_touse),data = dat_all_touse_ndvirel9c_cc)
+  t <- summary(ed50_regress)
+  pvalue <- t$coefficients[10]
+  tvalue <- t$coefficients[8]
+  rsquared <- MuMIn::r.squaredGLMM(ed50_regress)[1]
+  aic <- AIC(ed50_regress)
+  newlmer <- c(metric_touse, pvalue,tvalue,rsquared,aic)
+  ed50_lmers <- rbind(ed50_lmers, newlmer)
+}
+names(ed50_lmers) <- c("Metric", "pvalue","tvalue","rsquared","aic")
+ed50_lmers$rsquared <- as.numeric(ed50_lmers$rsquared)
+ed50_lmers$pvalue <- as.numeric(ed50_lmers$pvalue)
+ed50_lmers$tvalue <- as.numeric(ed50_lmers$tvalue)
+ed50_lmers_aic <-ed50_lmers[order(as.numeric(ed50_lmers$aic)),]
+
+relndvi_l_plot<- ed50_lmers_aic  %>% slice(1:3) %>% dplyr::rename(var = Metric) %>%left_join(pred_types) 
+relndvi_l_plot2<- ed50_lmers_aic   %>% dplyr::rename(var = Metric) %>%left_join(pred_types) 
+relndvi_l_plot$Type <- "Retained NDVI"
+relndvi_l_plot2$Type <- "Retained NDVI"
+```
+
+#Plot top single variables using to make best linear models for each heat tolerance trait 
+```{r }
+plotdata <- rbind(fvfmed50_l_plot,relfvfm_l_plot,relndvi_l_plot,ndvied50_l_plot)
+fullplotdata <- rbind(fvfmed50_l_plot2,relfvfm_l_plot2,relndvi_l_plot2,ndvied50_l_plot2)
+plotdata$aic <- as.numeric(plotdata$aic)
+library(tidytext)
+d <- plotdata %>% filter(!var == "Site") %>%  ggplot(aes(x=reorder_within(var,-rsquared,Type),rsquared)) + geom_col(aes(fill = Predictor.Type)) + theme_bw() + xlab("") + ylab("R squared                                                  R squared")+ scale_fill_manual(name = "Predictor Category", values= cols) + theme(axis.text.x = element_text(angle = 45, hjust = 1), text = element_text(size = 14), axis.text.y = element_text(hjust = 1)) + facet_wrap(~Type, scales = "free_x") +
+  scale_x_reordered()
+d
+ggsave(paste0("../Outputs/BRTs/FigureS9_",date,".png"), width = 10, height = 7)
+
+
+#can check R2 values for each predictor on each trait
+fullplotdata %>% filter(var == "TempAnomalies_PC1")
+fullplotdata %>% filter(var == "TempClimatology_PC1")
+fullplotdata %>% filter(var == "DHW_collection")
+fullplotdata %>% filter(var == "Clust")
+fullplotdata %>% filter(var == "Health.Chart.num") 
+fullplotdata %>% filter(var == "Light_PC1") 
+```
+
+
+#Use stepwise model selection to choose best model for each heat tolerance trait
+##Table S6
+
+Reminder:
+corrs > 0.8: 
+TempClimatology_PC1	Light_PC1
+Don't allow in same model 
+
+FVFM ED50
+```{r}
+library(PerformanceAnalytics)
+
+ ### model selection
+
+model.null = lm(fvfm_ED50 ~ 1,
+                data=dat_all_fvfmED50_filt_cc)
+model.full = lm(fvfm_ED50 ~ Depth_corrected + TempClimatology_PC1  + TempVariability_PC1 +Health.Chart.num +TempAnomalies_PC1 + Nutrients_PC1 + OTU_PC1 + Clust+ DHW_collection , data=dat_all_fvfmED50_filt_cc)
+    
+step(model.null,
+     scope = list(upper=model.full),
+             direction="both",
+             data=dat_all_fvfmED50_filt_cc) 
+
+##best model 
+summary(lm(formula = fvfm_ED50 ~ TempClimatology_PC1 + Depth_corrected + Clust + OTU_PC1 + Health.Chart.num + Nutrients_PC1, data = dat_all_fvfmED50_filt_cc)) 
+```
+
+
+Retained NDVI 
+```{r }
+model.null = lm(RelativeNDVI9C ~ 1,
+                data=dat_all_touse_ndvirel9c_cc)
+model.full = lm(RelativeNDVI9C ~ TempClimatology_PC1  + TempVariability_PC1 + Depth_corrected +Health.Chart.num +TempAnomalies_PC1 + Nutrients_PC1 + OTU_PC1 + Clust+ DHW_collection , data=dat_all_touse_ndvirel9c_cc)
+    
+step(model.null,
+     scope = list(upper=model.full),
+             direction="both",
+             data=dat_all_touse_ndvirel9c_cc) 
+
+##best model 
+summary(lm(formula = RelativeNDVI9C ~ TempClimatology_PC1 + DHW_collection + 
+    TempVariability_PC1 + Health.Chart.num + Depth_corrected, 
+    data = dat_all_touse_ndvirel9c_cc)) 
+```
+
+Retained FvFm 
+
+```{r }
+
+model.null = lm(RelativeFvFm9C ~ 1,
+                data=dat_all_touse_fvfmrel9c_cc)
+model.full = lm(RelativeFvFm9C ~ TempClimatology_PC1  + TempVariability_PC1 + Depth_corrected +Health.Chart.num +TempAnomalies_PC1 + Nutrients_PC1 + OTU_PC1 + Clust+ DHW_collection , data=dat_all_touse_fvfmrel9c_cc)
+    
+step(model.null,
+     scope = list(upper=model.full),
+             direction="both",
+             data=dat_all_touse_fvfmrel9c_cc) 
+
+##best model 
+summary(lm(formula = RelativeFvFm9C ~ TempClimatology_PC1 + Depth_corrected + 
+    Clust + Health.Chart.num + TempAnomalies_PC1 + DHW_collection, 
+    data = dat_all_touse_fvfmrel9c_cc)) 
+```
+
+NDVI ED50
+
+```{r }
+
+model.null = lm(ndvi_ED50 ~ 1,
+                data=dat_all_ndviED50_filt_cc)
+model.full = lm(ndvi_ED50 ~ TempClimatology_PC1  + TempVariability_PC1 + Depth_corrected +Health.Chart.num +TempAnomalies_PC1 + Nutrients_PC1 + OTU_PC1 + Clust+ DHW_collection , data=dat_all_ndviED50_filt_cc)
+    
+step(model.null,
+     scope = list(upper=model.full),
+             direction="both",
+             data=dat_all_ndviED50_filt_cc) 
+
+##best model 
+summary(lm(formula = ndvi_ED50 ~ TempClimatology_PC1 + Health.Chart.num +  Clust, data = dat_all_ndviED50_filt_cc))
+```
+
+
+
+
+
+

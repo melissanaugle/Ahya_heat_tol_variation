@@ -1,0 +1,223 @@
+---
+title: "pam_ed50_relativefvfm_bygeno"
+author: "Melissa Naugle"
+date: "5/20/2022"
+output: html_document
+---
+
+# Script to consolidate and quality control sampling metadata, heat toleance phenotypes, and site data
+- Remove ED50s with large confidence intervals
+- Remove data missign control values
+- Generate heat tolerance trait values adjusted for site 
+
+```{r setup, include=FALSE}
+setwd("/Users/Melissa/Desktop/GitHub/Ahya_heat_tol_variation/Rscripts_dataprocessing/")
+rm( list = ls())
+graphics.off()
+library(tidyverse)
+library(reshape2)
+library(gridExtra)
+library(PupillometryR)
+library(Rmisc)
+date = format(Sys.Date(), "%Y_%m_%d")
+```
+
+```{r}
+chl <- read.csv("../Rawdata/TotalChlorophyll.csv")
+chl$Site_geno_year <- paste0(chl$Site,"_",chl$Genotype,"_",chl$SampleYear)
+events <- read.csv("../Rawdata/GenomicdatafromtheECT1_RRAP_2023_10_29_depths2023-10-30.csv") %>% dplyr::select(eventID, Site_geno_year)
+chl2 <- left_join(chl, events)
+write.csv(chl2, "../Rawdata/TotalChlorophyll.csv", row.names = F)
+```
+
+
+```{r }
+metadata <- read.csv("../Rawdata/GenomicdatafromtheECT1_RRAP_2023_10_29_depths2023-10-30.csv")
+
+#load fvfm metrics
+absoluteed50s <- read.csv("../CleanData/iPAM/ed50s_genos_2023_12_06.csv") 
+relativefvfm <- read.csv("../CleanData/iPAM/relativeFvFm_correctedtemps_2023_12_06.csv")
+
+site_characteristics <- read.csv("../Rawdata/Site_characteristics.csv") %>% dplyr::select(-MMM.)
+
+absoluteed50s$Site_geno_year <- paste0(absoluteed50s$Site,"_",absoluteed50s$Genotype,"_",absoluteed50s$SampleYear)
+
+ed50_dat <- left_join(relativefvfm, absoluteed50s,by = "Site_geno_year", suffix = c("", ".z")) %>%
+  dplyr::select(-ends_with(".z")) %>%
+  distinct()
+
+
+ipam_data <- left_join(ed50_dat, metadata,by = "Site_geno_year", suffix = c("", ".z")) %>%
+  dplyr::select(-ends_with(".z")) %>%
+  left_join(. ,site_characteristics,by = "Site.name", suffix = c("", ".z")) %>%
+  dplyr::select(-ends_with(".z")) %>%
+  distinct() %>%
+  dplyr::rename(fvfm_ED50 = Absolute_estimate_ED50) %>%
+  dplyr::rename(fvfm_ed50_std_error = Std..Error)%>%
+  dplyr::select(-X)
+
+#load hyperspec metrics
+ndvi_absoluteed50s <- read.csv("../CleanData/NDVI/NDVI_ed50s_genos_2023_12_06.csv") 
+ndvi_relativefvfm <- read.csv("../CleanData/NDVI/relativeNDVI_correctedtemps_2023_12_06.csv")
+
+hyperspecdat <- left_join(ndvi_relativefvfm,ndvi_absoluteed50s, by = "Site_geno_year", suffix = c("", ".z")) %>%
+  dplyr::select(-ends_with(".z"))%>%
+  dplyr::rename(ndvi_ED50 = Absolute_estimate_ED50) %>%
+  dplyr::rename(ndvi_ed50_std_error = Std..Error) %>%
+  dplyr::select(-X)
+
+all_data <- left_join(ipam_data,hyperspecdat, by = "Site_geno_year", suffix = c("", ".z")) %>%
+  dplyr::select(-ends_with(".z"))
+
+```
+
+#fix health chart and field ID
+```{r, include=FALSE}
+all_data$Health.Chart.num <- all_data$Health.Chart
+all_data$Health.Chart.num <- gsub("D3/4","3.5",all_data$Health.Chart.num)
+all_data$Health.Chart.num <- gsub("E3/4","3.5",all_data$Health.Chart.num)
+all_data$Health.Chart.num <- gsub("C3/4","3.5",all_data$Health.Chart.num)
+all_data$Health.Chart.num <- gsub("C2/3","2.5",all_data$Health.Chart.num)
+all_data$Health.Chart.num <- gsub("D2/3","2.5",all_data$Health.Chart.num)
+all_data$Health.Chart.num <- gsub("E2/3","2.5",all_data$Health.Chart.num)
+all_data$Health.Chart.num <- gsub("C4/5","4.5",all_data$Health.Chart.num)
+all_data$Health.Chart.num <- gsub("D4/5","4.5",all_data$Health.Chart.num)
+all_data$Health.Chart.num <- gsub("E4/5","4.5",all_data$Health.Chart.num)
+all_data$Health.Chart.num <- gsub("2/3","2.5",all_data$Health.Chart.num)
+all_data$Health.Chart.num <- gsub("3/4","3.5",all_data$Health.Chart.num)
+all_data$Health.Chart.num <- gsub("4/5","4.5",all_data$Health.Chart.num)
+all_data$Health.Chart.num <- gsub("5/6","5.5",all_data$Health.Chart.num)
+all_data$Health.Chart.num <- gsub("E2/E3","2.5",all_data$Health.Chart.num)
+all_data$Health.Chart.num <- gsub("E3/E4","3.5",all_data$Health.Chart.num)
+all_data$Health.Chart.num <- gsub("E4/E5","4.5",all_data$Health.Chart.num)
+all_data$Health.Chart.num <- gsub("C2/C3","2.5",all_data$Health.Chart.num)
+all_data$Health.Chart.num <- gsub("C3/C4","3.5",all_data$Health.Chart.num)
+all_data$Health.Chart.num <- gsub("C4/C5","4.5",all_data$Health.Chart.num)
+all_data$Health.Chart.num <- gsub("C5/C6","5.5",all_data$Health.Chart.num)
+all_data$Health.Chart.num <- gsub("D2/D3","2.5",all_data$Health.Chart.num)
+all_data$Health.Chart.num <- gsub("D3/D4","3.5",all_data$Health.Chart.num)
+all_data$Health.Chart.num <- gsub("D4/D5","4.5",all_data$Health.Chart.num)
+all_data$Health.Chart.num <- gsub("D5/D6","5.5",all_data$Health.Chart.num)
+all_data$Health.Chart.num <- parse_number(all_data$Health.Chart.num)
+
+#manually add in missing Health chart data 
+all_data[is.na(all_data$Health.Chart.num),]
+all_data$Health.Chart.num[all_data$Site_geno_year == "LadyMusgrave_107_2021"] <- 4
+all_data$Health.Chart.num[all_data$Site_geno_year == "Sykes_126_2021"] <- 4.5
+all_data$Health.Chart.num[all_data$Site_geno_year == "Sykes_127_2021"] <- 5
+all_data$Health.Chart.num[all_data$Site_geno_year == "Sykes_128_2021"] <- 5
+all_data$Health.Chart.num[all_data$Site_geno_year == "Sykes_129_2021"] <- 3
+all_data$Health.Chart.num[all_data$Site_geno_year == "Sykes_130_2021"] <- 5.5
+all_data$Health.Chart.num[all_data$Site_geno_year == "Sykes_131_2021"] <- 4.5
+all_data$Health.Chart.num[all_data$Site_geno_year == "Sykes_124_2021"] <- 4
+
+
+
+#select only relevant variables
+all_data <- all_data %>% dplyr::select("Site_year", "Collection.date","Site","Site_geno_year","Site.name","Genotype","Depth_corrected", "Time","Health.Chart","Health.Chart.num","SampleYear","Tide_adjust","Depth_corrected","fvfm_ED50","fvfm_ED50CIrange","LowerCI_fvfmED50","UpperCI_fvfmED50","fvfm_ed50_std_error","ndvi_ED50","ndvi_ED50CIrange","LowerCI_ndviED50","UpperCI_ndviED50","ndvi_ed50_std_error","RelativeNDVI9C","RelativeFvFm9C","Lat","Lon","Km_to_coastline", "Subregion","Shelf.pos","Region","acuteHeatStress" ,"naturalBleaching", "resampled" ,"subproject")
+
+```
+
+
+Add trip variable
+```{r}
+#add trip num variable
+all_data$Trip <- 0
+all_data$Trip[all_data$Site_year == "Reef21550-20Jan_2021" | all_data$Site_year == "Reef21550-21Jan_2021" | all_data$Site_year == "EastCay-22Jan_2021" | all_data$Site_year == "EastCay-23Jan_2021" | all_data$Site_year == "LadyMusgrave_2021" | all_data$Site_year == "Sykes_2021"] <- 1
+all_data$Trip[all_data$Site_year == "Hicks-21March_2021" | all_data$Site_year == "Hicks-20March_2021" | all_data$Site_year == "NorthDirection-23March_2021" | all_data$Site_year == "NorthDirection-24March_2021" | all_data$Site_year == "NoName_2021" | all_data$Site_year == "Martin_2021" |all_data$Site_year == "StCrispin-30Mar_2021" ] <- 2
+
+all_data$Trip[all_data$Site_year == "Kelso_2021" | all_data$Site_year == "Pelorus_2021" | all_data$Site_year == "StCrispin-15April_2021" | all_data$Site_year == "Mackay_2021" | all_data$Site_year == "Chicken_2021" | all_data$Site_year == "Davies_2021"] <- 3
+
+all_data$Trip[all_data$Site_year == "Fitzroy_2021" | all_data$Site_year == "Moore_2021" ] <- 4
+
+all_data$Trip[all_data$Site_year == "Mackay_2022" | all_data$Site_year == "Chicken_2022" | all_data$Site_year == "Davies_2022" & all_data$Collection.date == "2022-03-11"] <- 5
+
+all_data$Trip[all_data$Site_year == "LadyMusgrave_2022" | all_data$Site_year == "Heron_2022"] <- 6
+
+```
+
+
+#quality control 
+```{r }
+pheno2 <- all_data %>% 
+  filter(!Site == "Reef21550-21Jan") %>% #remove Reef21550 run on 21 jan bc bad temp profile did not reach +9
+  filter(!Site_geno_year == "Chicken_310_2021") #colony lost and no pheno data collected
+
+#missing ndvi?
+pheno2 %>% filter(is.na(ndvi_ED50))
+
+#remove hicks-20 march from NDVI bc MMM is missing
+pheno2$ndvi_ED50[pheno2$Site == "Hicks-20March"] <- NA
+pheno2$ndvi_ED50CIrange[pheno2$Site == "Hicks-20March"] <- NA
+pheno2$LowerCI_ndviED50[pheno2$Site == "Hicks-20March"] <- NA
+pheno2$UpperCI_ndviED50[pheno2$Site == "Hicks-20March"] <- NA
+pheno2$ndvi_ed50_std_error[pheno2$Site == "Hicks-20March"] <- NA
+pheno2$RelativeNDVI9C[pheno2$Site == "Hicks-20March"] <- NA
+
+pheno2 %>% filter(ndvi_ED50CIrange < 5) #490
+pheno2 %>% filter(!is.na(ndvi_ED50)) #534
+493/534
+
+pheno2 %>% filter(fvfm_ED50CIrange < 5) #476
+pheno2 %>% filter(!is.na(fvfm_ED50)) #569
+474/569
+
+pheno2[is.na(pheno2$fvfm_ED50),] # 0
+pheno2[is.na(pheno2$ndvi_ED50),] # 35
+pheno2$ndvi_ED50[pheno2$ndvi_ED50CIrange > 5] <- NA
+pheno2$ndvi_ED50[is.na(pheno2$ndvi_ED50CIrange)] <- NA
+pheno2$fvfm_ED50[pheno2$fvfm_ED50CIrange > 5] <- NA
+pheno2$fvfm_ED50[is.na(pheno2$fvfm_ED50CIrange)] <- NA
+pheno2[is.na(pheno2$fvfm_ED50),] # 95 missing
+pheno2[!is.na(pheno2$fvfm_ED50),] # 474 total
+pheno2[is.na(pheno2$ndvi_ED50),] # 76 missing
+pheno2[!is.na(pheno2$ndvi_ED50),] #  493 total
+```
+
+# Adjust phenotype values by site 
+```{r }
+
+#get values adjusted for site
+dat_all_red <- pheno2 %>% filter(!is.na(RelativeFvFm9C))
+dat_all_mod <- lm(RelativeFvFm9C ~ Site.name, data = dat_all_red)
+dat_all_relfvfm.adj <- broom::augment(dat_all_mod, data = dat_all_red) %>%
+  mutate(RelativeFvFm9C.adj = mean(dat_all_red$RelativeFvFm9C) + .resid)%>% dplyr::select(Site_geno_year,RelativeFvFm9C.adj)
+
+
+
+dat_all_red <- pheno2 %>% filter(!is.na(RelativeNDVI9C))
+dat_all_mod <- lm(RelativeNDVI9C ~ Site.name, data = dat_all_red)
+dat_all_relndvi.adj <- broom::augment(dat_all_mod, data = dat_all_red) %>%
+  mutate(RelativeNDVI9C.adj = mean(dat_all_red$RelativeNDVI9C) + .resid)%>% dplyr::select(Site_geno_year,RelativeNDVI9C.adj)
+
+
+dat_all_red <- pheno2 %>% filter(!is.na(ndvi_ED50))
+dat_all_mod <- lm(ndvi_ED50 ~ Site.name, data = dat_all_red)
+dat_all_ndvi_ED50.adj <- broom::augment(dat_all_mod, data = dat_all_red) %>%
+  mutate(ndvi_ED50.adj = mean(dat_all_red$ndvi_ED50) + .resid)%>% dplyr::select(Site_geno_year,ndvi_ED50.adj)
+
+
+dat_all_red <- pheno2 %>% filter(!is.na(fvfm_ED50))
+dat_all_mod <- lm(fvfm_ED50 ~ Site.name, data = dat_all_red)
+dat_all_fvfm_ED50.adj <- broom::augment(dat_all_mod, data = dat_all_red) %>%
+  mutate(fvfm_ED50.adj = mean(dat_all_red$fvfm_ED50) + .resid) %>% dplyr::select(Site_geno_year,fvfm_ED50.adj)
+
+
+dat_all.adj <- full_join(pheno2, dat_all_relfvfm.adj, by = "Site_geno_year") %>% full_join(dat_all_relndvi.adj, by = "Site_geno_year")%>% full_join(dat_all_ndvi_ED50.adj, by = "Site_geno_year") %>% full_join(dat_all_fvfm_ED50.adj, by = "Site_geno_year")
+
+```
+
+#make sitename_geno_year variable
+```{r}
+dat_all.adj$Sitename_geno_year <- paste0(dat_all.adj$Site.name,"_",dat_all.adj$Genotype,"_",dat_all.adj$SampleYear)
+```
+
+
+```{r }
+write.csv(dat_all.adj,paste0("../CleanData/pheno_metadata_clean_",date,".csv"), row.names = F)
+```
+
+
+
+
+

@@ -1,0 +1,592 @@
+V1,Clust,Species,Sitecode,Genotype,SampleYear,Project,Site.name,Type,Sitename_geno_year
+RRAP-ECT01-2021-Ahya-21550-10,Group4,Ahya,21550,10,2021,ECT01,Reef21550,Experimental,Reef21550_10_2021
+RRAP-ECT01-2021-Ahya-21550-11_L4,Group4,Ahya,21550,11,2021,ECT01,Reef21550,Experimental,Reef21550_11_2021
+RRAP-ECT01-2021-Ahya-21550-13_L3,Group4,Ahya,21550,13,2021,ECT01,Reef21550,Experimental,Reef21550_13_2021
+RRAP-ECT01-2021-Ahya-21550-14_L3,Group4,Ahya,21550,14,2021,ECT01,Reef21550,Experimental,Reef21550_14_2021
+RRAP-ECT01-2021-Ahya-21550-15_L3,Group4,Ahya,21550,15,2021,ECT01,Reef21550,Experimental,Reef21550_15_2021
+RRAP-ECT01-2021-Ahya-21550-16_L4,Group4,Ahya,21550,16,2021,ECT01,Reef21550,Experimental,Reef21550_16_2021
+RRAP-ECT01-2021-Ahya-21550-18_L2,Group4,Ahya,21550,18,2021,ECT01,Reef21550,Experimental,Reef21550_18_2021
+RRAP-ECT01-2021-Ahya-21550-19_L4,Group4,Ahya,21550,19,2021,ECT01,Reef21550,Experimental,Reef21550_19_2021
+RRAP-ECT01-2021-Ahya-21550-20_L4,Group4,Ahya,21550,20,2021,ECT01,Reef21550,Experimental,Reef21550_20_2021
+RRAP-ECT01-2021-Ahya-21550-25_L4,Group4,Ahya,21550,25,2021,ECT01,Reef21550,Experimental,Reef21550_25_2021
+RRAP-ECT01-2021-Ahya-21550-27_L2,Group4,Ahya,21550,27,2021,ECT01,Reef21550,Experimental,Reef21550_27_2021
+RRAP-ECT01-2021-Ahya-21550-28-LEG5346-84_L2,Group4,Ahya,21550,28,2021,ECT01,Reef21550,Experimental,Reef21550_28_2021
+RRAP-ECT01-2021-Ahya-21550-2_L4,Group4,Ahya,21550,2,2021,ECT01,Reef21550,Experimental,Reef21550_2_2021
+RRAP-ECT01-2021-Ahya-21550-30-LEG5346-43_L2,Group4,Ahya,21550,30,2021,ECT01,Reef21550,Experimental,Reef21550_30_2021
+RRAP-ECT01-2021-Ahya-21550-31_L4,Group4,Ahya,21550,31,2021,ECT01,Reef21550,Experimental,Reef21550_31_2021
+RRAP-ECT01-2021-Ahya-21550-32_L2,Group4,Ahya,21550,32,2021,ECT01,Reef21550,Experimental,Reef21550_32_2021
+RRAP-ECT01-2021-Ahya-21550-33_L3,Group4,Ahya,21550,33,2021,ECT01,Reef21550,Experimental,Reef21550_33_2021
+RRAP-ECT01-2021-Ahya-21550-34a-LEG5346-68_L2,Group4,Ahya,21550,34,2021,ECT01,Reef21550,Experimental,Reef21550_34_2021
+RRAP-ECT01-2021-Ahya-21550-35_L4,Group4,Ahya,21550,35,2021,ECT01,Reef21550,Experimental,Reef21550_35_2021
+RRAP-ECT01-2021-Ahya-21550-36_L2,Group4,Ahya,21550,36,2021,ECT01,Reef21550,Experimental,Reef21550_36_2021
+RRAP-ECT01-2021-Ahya-21550-37_L2,Group4,Ahya,21550,37,2021,ECT01,Reef21550,Experimental,Reef21550_37_2021
+RRAP-ECT01-2021-Ahya-21550-48a_L3,Group4,Ahya,21550,48,2021,ECT01,Reef21550,Experimental,Reef21550_48_2021
+RRAP-ECT01-2021-Ahya-21550-49,Group4,Ahya,21550,49,2021,ECT01,Reef21550,Experimental,Reef21550_49_2021
+RRAP-ECT01-2021-Ahya-21550-4a-LEG5346-64_L2,Group4,Ahya,21550,4,2021,ECT01,Reef21550,Experimental,Reef21550_4_2021
+RRAP-ECT01-2021-Ahya-21550-50,Group4,Ahya,21550,50,2021,ECT01,Reef21550,Experimental,Reef21550_50_2021
+RRAP-ECT01-2021-Ahya-21550-5_L2,Group4,Ahya,21550,5,2021,ECT01,Reef21550,Experimental,Reef21550_5_2021
+RRAP-ECT01-2021-Ahya-21550-6_L2,Group4,Ahya,21550,6,2021,ECT01,Reef21550,Experimental,Reef21550_6_2021
+RRAP-ECT01-2021-Ahya-21550-7_L2,Group4,Ahya,21550,7,2021,ECT01,Reef21550,Experimental,Reef21550_7_2021
+RRAP-ECT01-2021-Ahya-21550-8a_L3,Group4,Ahya,21550,8,2021,ECT01,Reef21550,Experimental,Reef21550_8_2021
+RRAP-ECT01-2021-Ahya-21550-9_L4,Group4,Ahya,21550,9,2021,ECT01,Reef21550,Experimental,Reef21550_9_2021
+RRAP-ECT01-2021-Ahya-CBLM-110_L3,Group4,Ahya,CBLM,110,2021,ECT01,Lady Musgrave,Experimental,Lady Musgrave_110_2021
+RRAP-ECT01-2021-Ahya-CBLM-112,Group4,Ahya,CBLM,112,2021,ECT01,Lady Musgrave,Experimental,Lady Musgrave_112_2021
+RRAP-ECT01-2021-Ahya-CBLM-114_L4,Group4,Ahya,CBLM,114,2021,ECT01,Lady Musgrave,Experimental,Lady Musgrave_114_2021
+RRAP-ECT01-2021-Ahya-CBLM-115_L2,Group4,Ahya,CBLM,115,2021,ECT01,Lady Musgrave,Experimental,Lady Musgrave_115_2021
+RRAP-ECT01-2021-Ahya-CBLM-78_L4,Group4,Ahya,CBLM,78,2021,ECT01,Lady Musgrave,Experimental,Lady Musgrave_78_2021
+RRAP-ECT01-2021-Ahya-CBLM-95_L2,Group4,Ahya,CBLM,95,2021,ECT01,Lady Musgrave,Experimental,Lady Musgrave_95_2021
+RRAP-ECT01-2021-Ahya-ECAY-38a_L3,Group4,Ahya,ECAY,38,2021,ECT01,East Cay,Experimental,East Cay_38_2021
+RRAP-ECT01-2021-Ahya-ECAY-39_L3,Group4,Ahya,ECAY,39,2021,ECT01,East Cay,Experimental,East Cay_39_2021
+RRAP-ECT01-2021-Ahya-ECAY-40,Group4,Ahya,ECAY,40,2021,ECT01,East Cay,Experimental,East Cay_40_2021
+RRAP-ECT01-2021-Ahya-ECAY-41_L4,Group4,Ahya,ECAY,41,2021,ECT01,East Cay,Experimental,East Cay_41_2021
+RRAP-ECT01-2021-Ahya-ECAY-43,Group4,Ahya,ECAY,43,2021,ECT01,East Cay,Experimental,East Cay_43_2021
+RRAP-ECT01-2021-Ahya-ECAY-44_L2,Group4,Ahya,ECAY,44,2021,ECT01,East Cay,Experimental,East Cay_44_2021
+RRAP-ECT01-2021-Ahya-ECAY-45_L4,Group4,Ahya,ECAY,45,2021,ECT01,East Cay,Experimental,East Cay_45_2021
+RRAP-ECT01-2021-Ahya-ECAY-51,Group4,Ahya,ECAY,51,2021,ECT01,East Cay,Experimental,East Cay_51_2021
+RRAP-ECT01-2021-Ahya-ECAY-52_L2,Group4,Ahya,ECAY,52,2021,ECT01,East Cay,Experimental,East Cay_52_2021
+RRAP-ECT01-2021-Ahya-ECAY-53_L4,Group4,Ahya,ECAY,53,2021,ECT01,East Cay,Experimental,East Cay_53_2021
+RRAP-ECT01-2021-Ahya-ECAY-54_L2,Group4,Ahya,ECAY,54,2021,ECT01,East Cay,Experimental,East Cay_54_2021
+RRAP-ECT01-2021-Ahya-ECAY-56_L3,Group4,Ahya,ECAY,56,2021,ECT01,East Cay,Experimental,East Cay_56_2021
+RRAP-ECT01-2021-Ahya-ECAY-57_L4,Group4,Ahya,ECAY,57,2021,ECT01,East Cay,Experimental,East Cay_57_2021
+RRAP-ECT01-2021-Ahya-ECAY-67_L4,Group4,Ahya,ECAY,67,2021,ECT01,East Cay,Experimental,East Cay_67_2021
+RRAP-ECT01-2021-Ahya-ECAY-68,Group4,Ahya,ECAY,68,2021,ECT01,East Cay,Experimental,East Cay_68_2021
+RRAP-ECT01-2021-Ahya-ECAY-70_L3,Group4,Ahya,ECAY,70,2021,ECT01,East Cay,Experimental,East Cay_70_2021
+RRAP-ECT01-2021-Ahya-ECAY-72_L2,Group4,Ahya,ECAY,72,2021,ECT01,East Cay,Experimental,East Cay_72_2021
+RRAP-ECT01-2021-Ahya-ECAY-74_L2,Group4,Ahya,ECAY,74,2021,ECT01,East Cay,Experimental,East Cay_74_2021
+RRAP-ECT01-2021-Ahya-ECAY-81_L2,Group4,Ahya,ECAY,81,2021,ECT01,East Cay,Experimental,East Cay_81_2021
+RRAP-ECT01-2021-Ahya-ECAY-82_L2,Group4,Ahya,ECAY,82,2021,ECT01,East Cay,Experimental,East Cay_82_2021
+RRAP-ECT01-2021-Ahya-ECAY-85_L2,Group4,Ahya,ECAY,85,2021,ECT01,East Cay,Experimental,East Cay_85_2021
+RRAP-ECT01-2021-Ahya-FITZ-362_L2,Group4,Ahya,FITZ,362,2021,ECT01,Fitzroy Island,Experimental,Fitzroy Island_362_2021
+RRAP-ECT01-2021-Ahya-FITZ-363_L4,Group4,Ahya,FITZ,363,2021,ECT01,Fitzroy Island,Experimental,Fitzroy Island_363_2021
+RRAP-ECT01-2021-Ahya-FITZ-364_L2,Group4,Ahya,FITZ,364,2021,ECT01,Fitzroy Island,Experimental,Fitzroy Island_364_2021
+RRAP-ECT01-2021-Ahya-FITZ-365_L3,Group4,Ahya,FITZ,365,2021,ECT01,Fitzroy Island,Experimental,Fitzroy Island_365_2021
+RRAP-ECT01-2021-Ahya-FITZ-367_L2,Group4,Ahya,FITZ,367,2021,ECT01,Fitzroy Island,Experimental,Fitzroy Island_367_2021
+RRAP-ECT01-2021-Ahya-NDIR-48_L3,Group4,Ahya,NDIR,48,2021,ECT01,North Direction,Experimental,North Direction_48_2021
+RRAP-ECT01-2021-Ahya-NDIR-50,Group4,Ahya,NDIR,50,2021,ECT01,North Direction,Experimental,North Direction_50_2021
+RRAP-ECT01-2021-Ahya-NDIR-54_L2,Group4,Ahya,NDIR,54,2021,ECT01,North Direction,Experimental,North Direction_54_2021
+RRAP-ECT01-2021-Ahya-SYKE-123_L2,Group4,Ahya,SYKE,123,2021,ECT01,Sykes,Experimental,Sykes_123_2021
+RRAP-ECT01-2021-Ahya-SYKE-125a_L4,Group4,Ahya,SYKE,125,2021,ECT01,Sykes,Experimental,Sykes_125_2021
+RRAP-ECT01-2021-Ahya-SYKE-127_L4,Group4,Ahya,SYKE,127,2021,ECT01,Sykes,Experimental,Sykes_127_2021
+RRAP-ECT01-2021-Ahya-SYKE-128_L2,Group4,Ahya,SYKE,128,2021,ECT01,Sykes,Experimental,Sykes_128_2021
+RRAP-ECT01-2021-Ahya-SYKE-129_L2,Group4,Ahya,SYKE,129,2021,ECT01,Sykes,Experimental,Sykes_129_2021
+RRAP-ECT01-2021-Ahya-SYKE-130,Group4,Ahya,SYKE,130,2021,ECT01,Sykes,Experimental,Sykes_130_2021
+RRAP-ECT01-2021-Ahya-SYKE-133_L3,Group4,Ahya,SYKE,133,2021,ECT01,Sykes,Experimental,Sykes_133_2021
+RRAP-ECT01-2021-Ahya-SYKE-141a_L3,Group4,Ahya,SYKE,141,2021,ECT01,Sykes,Experimental,Sykes_141_2021
+RRAP-ECT01-2021-Ahya-SYKE-145-B_L4,Group4,Ahya,SYKE,145,2021,ECT01,Sykes,Experimental,Sykes_145_2021
+RRAP-ECT01-2021-Ahya-SYKE-153-LEG5344-28_L4,Group4,Ahya,SYKE,153,2021,ECT01,Sykes,Experimental,Sykes_153_2021
+RRAP-ECT01-2021-Ahya-SYKE-154_L4,Group4,Ahya,SYKE,154,2021,ECT01,Sykes,Experimental,Sykes_154_2021
+RRAP-ECT01-2021-Ahya-SYKE-157,Group4,Ahya,SYKE,157,2021,ECT01,Sykes,Experimental,Sykes_157_2021
+RRAP-ECT01-2022-Ahya-CBLM-1780_L2,Group4,Ahya,CBLM,1780,2022,ECT01,Lady Musgrave,Experimental,Lady Musgrave_1780_2022
+RRAP-ECT01-2022-Ahya-CBLM-1783_L2,Group4,Ahya,CBLM,1783,2022,ECT01,Lady Musgrave,Experimental,Lady Musgrave_1783_2022
+RRAP-ECT01-2022-Ahya-CBLM-1791_L2,Group4,Ahya,CBLM,1791,2022,ECT01,Lady Musgrave,Experimental,Lady Musgrave_1791_2022
+RRAP-ECT01-2021-Ahya-21550-12_L3,Group1,Ahya,21550,12,2021,ECT01,Reef21550,Experimental,Reef21550_12_2021
+RRAP-ECT01-2021-Ahya-CBLM-100_L3,Group1,Ahya,CBLM,100,2021,ECT01,Lady Musgrave,Experimental,Lady Musgrave_100_2021
+RRAP-ECT01-2021-Ahya-CBLM-101,Group1,Ahya,CBLM,101,2021,ECT01,Lady Musgrave,Experimental,Lady Musgrave_101_2021
+RRAP-ECT01-2021-Ahya-CBLM-102_L3,Group1,Ahya,CBLM,102,2021,ECT01,Lady Musgrave,Experimental,Lady Musgrave_102_2021
+RRAP-ECT01-2021-Ahya-CBLM-103,Group1,Ahya,CBLM,103,2021,ECT01,Lady Musgrave,Experimental,Lady Musgrave_103_2021
+RRAP-ECT01-2021-Ahya-CBLM-104a_L3,Group1,Ahya,CBLM,104,2021,ECT01,Lady Musgrave,Experimental,Lady Musgrave_104_2021
+RRAP-ECT01-2021-Ahya-CBLM-106_L3,Group1,Ahya,CBLM,106,2021,ECT01,Lady Musgrave,Experimental,Lady Musgrave_106_2021
+RRAP-ECT01-2021-Ahya-CBLM-109_L3,Group1,Ahya,CBLM,109,2021,ECT01,Lady Musgrave,Experimental,Lady Musgrave_109_2021
+RRAP-ECT01-2021-Ahya-CBLM-113_L4,Group1,Ahya,CBLM,113,2021,ECT01,Lady Musgrave,Experimental,Lady Musgrave_113_2021
+RRAP-ECT01-2021-Ahya-CBLM-116_L3,Group1,Ahya,CBLM,116,2021,ECT01,Lady Musgrave,Experimental,Lady Musgrave_116_2021
+RRAP-ECT01-2021-Ahya-CBLM-117,Group1,Ahya,CBLM,117,2021,ECT01,Lady Musgrave,Experimental,Lady Musgrave_117_2021
+RRAP-ECT01-2021-Ahya-CBLM-118_L4,Group1,Ahya,CBLM,118,2021,ECT01,Lady Musgrave,Experimental,Lady Musgrave_118_2021
+RRAP-ECT01-2021-Ahya-CBLM-119_L2,Group1,Ahya,CBLM,119,2021,ECT01,Lady Musgrave,Experimental,Lady Musgrave_119_2021
+RRAP-ECT01-2021-Ahya-CBLM-79_L2,Group1,Ahya,CBLM,79,2021,ECT01,Lady Musgrave,Experimental,Lady Musgrave_79_2021
+RRAP-ECT01-2021-Ahya-CBLM-80_L2,Group1,Ahya,CBLM,80,2021,ECT01,Lady Musgrave,Experimental,Lady Musgrave_80_2021
+RRAP-ECT01-2021-Ahya-CBLM-96_L2,Group1,Ahya,CBLM,96,2021,ECT01,Lady Musgrave,Experimental,Lady Musgrave_96_2021
+RRAP-ECT01-2021-Ahya-CBLM-97_L4,Group1,Ahya,CBLM,97,2021,ECT01,Lady Musgrave,Experimental,Lady Musgrave_97_2021
+RRAP-ECT01-2021-Ahya-CBLM-98_L4,Group1,Ahya,CBLM,98,2021,ECT01,Lady Musgrave,Experimental,Lady Musgrave_98_2021
+RRAP-ECT01-2021-Ahya-CBLM-99,Group1,Ahya,CBLM,99,2021,ECT01,Lady Musgrave,Experimental,Lady Musgrave_99_2021
+RRAP-ECT01-2021-Ahya-ECAY-42_L3,Group1,Ahya,ECAY,42,2021,ECT01,East Cay,Experimental,East Cay_42_2021
+RRAP-ECT01-2021-Ahya-ECAY-55_L2,Group1,Ahya,ECAY,55,2021,ECT01,East Cay,Experimental,East Cay_55_2021
+RRAP-ECT01-2021-Ahya-ECAY-58,Group1,Ahya,ECAY,58,2021,ECT01,East Cay,Experimental,East Cay_58_2021
+RRAP-ECT01-2021-Ahya-ECAY-59,Group1,Ahya,ECAY,59,2021,ECT01,East Cay,Experimental,East Cay_59_2021
+RRAP-ECT01-2021-Ahya-ECAY-60_L4,Group1,Ahya,ECAY,60,2021,ECT01,East Cay,Experimental,East Cay_60_2021
+RRAP-ECT01-2021-Ahya-ECAY-61_L2,Group1,Ahya,ECAY,61,2021,ECT01,East Cay,Experimental,East Cay_61_2021
+RRAP-ECT01-2021-Ahya-ECAY-69_L2,Group1,Ahya,ECAY,69,2021,ECT01,East Cay,Experimental,East Cay_69_2021
+RRAP-ECT01-2021-Ahya-ECAY-71_L2,Group1,Ahya,ECAY,71,2021,ECT01,East Cay,Experimental,East Cay_71_2021
+RRAP-ECT01-2021-Ahya-ECAY-73_L2,Group1,Ahya,ECAY,73,2021,ECT01,East Cay,Experimental,East Cay_73_2021
+RRAP-ECT01-2021-Ahya-ECAY-75_L2,Group1,Ahya,ECAY,75,2021,ECT01,East Cay,Experimental,East Cay_75_2021
+RRAP-ECT01-2021-Ahya-ECAY-83_L2,Group1,Ahya,ECAY,83,2021,ECT01,East Cay,Experimental,East Cay_83_2021
+RRAP-ECT01-2021-Ahya-ECAY-84_L2,Group1,Ahya,ECAY,84,2021,ECT01,East Cay,Experimental,East Cay_84_2021
+RRAP-ECT01-2021-Ahya-FITZ-361_L4,Group1,Ahya,FITZ,361,2021,ECT01,Fitzroy Island,Experimental,Fitzroy Island_361_2021
+RRAP-ECT01-2021-Ahya-FITZ-366_L3,Group1,Ahya,FITZ,366,2021,ECT01,Fitzroy Island,Experimental,Fitzroy Island_366_2021
+RRAP-ECT01-2021-Ahya-FITZ-371_L2,Group1,Ahya,FITZ,371,2021,ECT01,Fitzroy Island,Experimental,Fitzroy Island_371_2021
+RRAP-ECT01-2021-Ahya-HICK-10_L4,Group1,Ahya,HICK,10,2021,ECT01,Hicks,Experimental,Hicks_10_2021
+RRAP-ECT01-2021-Ahya-HICK-11,Group1,Ahya,HICK,11,2021,ECT01,Hicks,Experimental,Hicks_11_2021
+RRAP-ECT01-2021-Ahya-HICK-12_L2,Group1,Ahya,HICK,12,2021,ECT01,Hicks,Experimental,Hicks_12_2021
+RRAP-ECT01-2021-Ahya-HICK-13_L3,Group1,Ahya,HICK,13,2021,ECT01,Hicks,Experimental,Hicks_13_2021
+RRAP-ECT01-2021-Ahya-HICK-14_L2,Group1,Ahya,HICK,14,2021,ECT01,Hicks,Experimental,Hicks_14_2021
+RRAP-ECT01-2021-Ahya-HICK-15_L2,Group1,Ahya,HICK,15,2021,ECT01,Hicks,Experimental,Hicks_15_2021
+RRAP-ECT01-2021-Ahya-HICK-16_L2,Group1,Ahya,HICK,16,2021,ECT01,Hicks,Experimental,Hicks_16_2021
+RRAP-ECT01-2021-Ahya-HICK-17_L2,Group1,Ahya,HICK,17,2021,ECT01,Hicks,Experimental,Hicks_17_2021
+RRAP-ECT01-2021-Ahya-HICK-18_L2,Group1,Ahya,HICK,18,2021,ECT01,Hicks,Experimental,Hicks_18_2021
+RRAP-ECT01-2021-Ahya-HICK-19_L3,Group1,Ahya,HICK,19,2021,ECT01,Hicks,Experimental,Hicks_19_2021
+RRAP-ECT01-2021-Ahya-HICK-20,Group1,Ahya,HICK,20,2021,ECT01,Hicks,Experimental,Hicks_20_2021
+RRAP-ECT01-2021-Ahya-HICK-21_L2,Group1,Ahya,HICK,21,2021,ECT01,Hicks,Experimental,Hicks_21_2021
+RRAP-ECT01-2021-Ahya-HICK-22_L3,Group1,Ahya,HICK,22,2021,ECT01,Hicks,Experimental,Hicks_22_2021
+RRAP-ECT01-2021-Ahya-HICK-23_L2,Group1,Ahya,HICK,23,2021,ECT01,Hicks,Experimental,Hicks_23_2021
+RRAP-ECT01-2021-Ahya-HICK-24_L3,Group1,Ahya,HICK,24,2021,ECT01,Hicks,Experimental,Hicks_24_2021
+RRAP-ECT01-2021-Ahya-HICK-25_L2,Group1,Ahya,HICK,25,2021,ECT01,Hicks,Experimental,Hicks_25_2021
+RRAP-ECT01-2021-Ahya-HICK-26_L4,Group1,Ahya,HICK,26,2021,ECT01,Hicks,Experimental,Hicks_26_2021
+RRAP-ECT01-2021-Ahya-HICK-27_L2,Group1,Ahya,HICK,27,2021,ECT01,Hicks,Experimental,Hicks_27_2021
+RRAP-ECT01-2021-Ahya-HICK-28_L3,Group1,Ahya,HICK,28,2021,ECT01,Hicks,Experimental,Hicks_28_2021
+RRAP-ECT01-2021-Ahya-HICK-29_L4,Group1,Ahya,HICK,29,2021,ECT01,Hicks,Experimental,Hicks_29_2021
+RRAP-ECT01-2021-Ahya-HICK-1B,Group1,Ahya,HICK,1,2021,ECT01,Hicks,Experimental,Hicks_1_2021
+RRAP-ECT01-2021-Ahya-HICK-2_L4,Group1,Ahya,HICK,2,2021,ECT01,Hicks,Experimental,Hicks_2_2021
+RRAP-ECT01-2021-Ahya-HICK-30_L3,Group1,Ahya,HICK,30,2021,ECT01,Hicks,Experimental,Hicks_30_2021
+RRAP-ECT01-2021-Ahya-HICK-31_L3,Group1,Ahya,HICK,31,2021,ECT01,Hicks,Experimental,Hicks_31_2021
+RRAP-ECT01-2021-Ahya-HICK-32_L4,Group1,Ahya,HICK,32,2021,ECT01,Hicks,Experimental,Hicks_32_2021
+RRAP-ECT01-2021-Ahya-HICK-33b_L4,Group1,Ahya,HICK,33,2021,ECT01,Hicks,Experimental,Hicks_33_2021
+RRAP-ECT01-2021-Ahya-HICK-34,Group1,Ahya,HICK,34,2021,ECT01,Hicks,Experimental,Hicks_34_2021
+RRAP-ECT01-2021-Ahya-HICK-35_L2,Group1,Ahya,HICK,35,2021,ECT01,Hicks,Experimental,Hicks_35_2021
+RRAP-ECT01-2021-Ahya-HICK-36_L4,Group1,Ahya,HICK,36,2021,ECT01,Hicks,Experimental,Hicks_36_2021
+RRAP-ECT01-2021-Ahya-HICK-37b_L4,Group1,Ahya,HICK,37,2021,ECT01,Hicks,Experimental,Hicks_37_2021
+RRAP-ECT01-2021-Ahya-HICK-38b_L4,Group1,Ahya,HICK,38,2021,ECT01,Hicks,Experimental,Hicks_38_2021
+RRAP-ECT01-2021-Ahya-HICK-39b_L3,Group1,Ahya,HICK,39,2021,ECT01,Hicks,Experimental,Hicks_39_2021
+RRAP-ECT01-2021-Ahya-HICK-3,Group1,Ahya,HICK,3,2021,ECT01,Hicks,Experimental,Hicks_3_2021
+RRAP-ECT01-2021-Ahya-HICK-40_L3,Group1,Ahya,HICK,40,2021,ECT01,Hicks,Experimental,Hicks_40_2021
+RRAP-ECT01-2021-Ahya-HICK-41,Group1,Ahya,HICK,41,2021,ECT01,Hicks,Experimental,Hicks_41_2021
+RRAP-ECT01-2021-Ahya-HICK-42,Group1,Ahya,HICK,42,2021,ECT01,Hicks,Experimental,Hicks_42_2021
+RRAP-ECT01-2021-Ahya-HICK-43,Group1,Ahya,HICK,43,2021,ECT01,Hicks,Experimental,Hicks_43_2021
+RRAP-ECT01-2021-Ahya-HICK-4_L4,Group1,Ahya,HICK,4,2021,ECT01,Hicks,Experimental,Hicks_4_2021
+RRAP-ECT01-2021-Ahya-HICK-5_L2,Group1,Ahya,HICK,5,2021,ECT01,Hicks,Experimental,Hicks_5_2021
+RRAP-ECT01-2021-Ahya-HICK-6_L2,Group1,Ahya,HICK,6,2021,ECT01,Hicks,Experimental,Hicks_6_2021
+RRAP-ECT01-2021-Ahya-HICK-7-B_L4,Group1,Ahya,HICK,7,2021,ECT01,Hicks,Experimental,Hicks_7_2021
+RRAP-ECT01-2021-Ahya-HICK-8_L4,Group1,Ahya,HICK,8,2021,ECT01,Hicks,Experimental,Hicks_8_2021
+RRAP-ECT01-2021-Ahya-HICK-9_L2,Group1,Ahya,HICK,9,2021,ECT01,Hicks,Experimental,Hicks_9_2021
+RRAP-ECT01-2021-Ahya-KELS-188,Group1,Ahya,HICK,188,2021,ECT01,Kelso,Experimental,Kelso_188_2021
+RRAP-ECT01-2021-Ahya-KELS-189-LEJ7621-156_L4,Group1,Ahya,KELS,189,2021,ECT01,Kelso,Experimental,Kelso_189_2021
+RRAP-ECT01-2021-Ahya-KELS-190,Group1,Ahya,KELS,190,2021,ECT01,Kelso,Experimental,Kelso_190_2021
+RRAP-ECT01-2021-Ahya-KELS-191,Group1,Ahya,KELS,191,2021,ECT01,Kelso,Experimental,Kelso_191_2021
+RRAP-ECT01-2021-Ahya-KELS-192_L2,Group1,Ahya,KELS,192,2021,ECT01,Kelso,Experimental,Kelso_192_2021
+RRAP-ECT01-2021-Ahya-KELS-193,Group1,Ahya,KELS,193,2021,ECT01,Kelso,Experimental,Kelso_193_2021
+RRAP-ECT01-2021-Ahya-KELS-194,Group1,Ahya,KELS,194,2021,ECT01,Kelso,Experimental,Kelso_194_2021
+RRAP-ECT01-2021-Ahya-KELS-195,Group1,Ahya,KELS,195,2021,ECT01,Kelso,Experimental,Kelso_195_2021
+RRAP-ECT01-2021-Ahya-KELS-196_L4,Group1,Ahya,KELS,196,2021,ECT01,Kelso,Experimental,Kelso_196_2021
+RRAP-ECT01-2021-Ahya-KELS-197_L3,Group1,Ahya,KELS,197,2021,ECT01,Kelso,Experimental,Kelso_197_2021
+RRAP-ECT01-2021-Ahya-KELS-198,Group1,Ahya,KELS,198,2021,ECT01,Kelso,Experimental,Kelso_198_2021
+RRAP-ECT01-2021-Ahya-KELS-199,Group1,Ahya,KELS,199,2021,ECT01,Kelso,Experimental,Kelso_199_2021
+RRAP-ECT01-2021-Ahya-KELS-200_L4,Group1,Ahya,KELS,200,2021,ECT01,Kelso,Experimental,Kelso_200_2021
+RRAP-ECT01-2021-Ahya-KELS-201_L3,Group1,Ahya,KELS,201,2021,ECT01,Kelso,Experimental,Kelso_201_2021
+RRAP-ECT01-2021-Ahya-KELS-202_L3,Group1,Ahya,KELS,202,2021,ECT01,Kelso,Experimental,Kelso_202_2021
+RRAP-ECT01-2021-Ahya-KELS-203_L4,Group1,Ahya,KELS,203,2021,ECT01,Kelso,Experimental,Kelso_203_2021
+RRAP-ECT01-2021-Ahya-KELS-204_L4,Group1,Ahya,KELS,204,2021,ECT01,Kelso,Experimental,Kelso_204_2021
+RRAP-ECT01-2021-Ahya-KELS-205_L4,Group1,Ahya,KELS,205,2021,ECT01,Kelso,Experimental,Kelso_205_2021
+RRAP-ECT01-2021-Ahya-KELS-206_L3,Group1,Ahya,KELS,206,2021,ECT01,Kelso,Experimental,Kelso_206_2021
+RRAP-ECT01-2021-Ahya-KELS-207-B_L4,Group1,Ahya,KELS,207,2021,ECT01,Kelso,Experimental,Kelso_207_2021
+RRAP-ECT01-2021-Ahya-KELS-208_L4,Group1,Ahya,KELS,208,2021,ECT01,Kelso,Experimental,Kelso_208_2021
+RRAP-ECT01-2021-Ahya-KELS-209_L3,Group1,Ahya,KELS,209,2021,ECT01,Kelso,Experimental,Kelso_209_2021
+RRAP-ECT01-2021-Ahya-KELS-210-LEG5345-112_L3,Group1,Ahya,KELS,210,2021,ECT01,Kelso,Experimental,Kelso_210_2021
+RRAP-ECT01-2021-Ahya-KELS-211_L4,Group1,Ahya,KELS,211,2021,ECT01,Kelso,Experimental,Kelso_211_2021
+RRAP-ECT01-2021-Ahya-KELS-212,Group1,Ahya,KELS,212,2021,ECT01,Kelso,Experimental,Kelso_212_2021
+RRAP-ECT01-2021-Ahya-KELS-213_L3,Group1,Ahya,KELS,213,2021,ECT01,Kelso,Experimental,Kelso_213_2021
+RRAP-ECT01-2021-Ahya-KELS-214_L3,Group1,Ahya,KELS,214,2021,ECT01,Kelso,Experimental,Kelso_214_2021
+RRAP-ECT01-2021-Ahya-KELS-215_L3,Group1,Ahya,KELS,215,2021,ECT01,Kelso,Experimental,Kelso_215_2021
+RRAP-ECT01-2021-Ahya-KELS-216_L4,Group1,Ahya,KELS,216,2021,ECT01,Kelso,Experimental,Kelso_216_2021
+RRAP-ECT01-2021-Ahya-KELS-217_L2,Group1,Ahya,KELS,217,2021,ECT01,Kelso,Experimental,Kelso_217_2021
+RRAP-ECT01-2021-Ahya-KELS-218,Group1,Ahya,KELS,218,2021,ECT01,Kelso,Experimental,Kelso_218_2021
+RRAP-ECT01-2021-Ahya-KELS-219_L2,Group1,Ahya,KELS,219,2021,ECT01,Kelso,Experimental,Kelso_219_2021
+RRAP-ECT01-2021-Ahya-KELS-220_L2,Group1,Ahya,KELS,220,2021,ECT01,Kelso,Experimental,Kelso_220_2021
+RRAP-ECT01-2021-Ahya-MACK-268_L2,Group1,Ahya,MACK,268,2021,ECT01,Mackay,Experimental,Mackay_268_2021
+RRAP-ECT01-2021-Ahya-MACK-269_L2,Group1,Ahya,MACK,269,2021,ECT01,Mackay,Experimental,Mackay_269_2021
+RRAP-ECT01-2021-Ahya-MACK-270_L2,Group1,Ahya,MACK,270,2021,ECT01,Mackay,Experimental,Mackay_270_2021
+RRAP-ECT01-2021-Ahya-MACK-271_L4,Group1,Ahya,MACK,271,2021,ECT01,Mackay,Experimental,Mackay_271_2021
+RRAP-ECT01-2021-Ahya-MACK-272_L2,Group1,Ahya,MACK,272,2021,ECT01,Mackay,Experimental,Mackay_272_2021
+RRAP-ECT01-2021-Ahya-MACK-273_L2,Group1,Ahya,MACK,273,2021,ECT01,Mackay,Experimental,Mackay_273_2021
+RRAP-ECT01-2021-Ahya-MACK-274-LEG5345-119_L3,Group1,Ahya,MACK,274,2021,ECT01,Mackay,Experimental,Mackay_274_2021
+RRAP-ECT01-2021-Ahya-MACK-275_L3,Group1,Ahya,MACK,275,2021,ECT01,Mackay,Experimental,Mackay_275_2021
+RRAP-ECT01-2021-Ahya-MACK-276_L2,Group1,Ahya,MACK,276,2021,ECT01,Mackay,Experimental,Mackay_276_2021
+RRAP-ECT01-2021-Ahya-MACK-277_L2,Group1,Ahya,MACK,277,2021,ECT01,Mackay,Experimental,Mackay_277_2021
+RRAP-ECT01-2021-Ahya-MACK-278_L2,Group1,Ahya,MACK,278,2021,ECT01,Mackay,Experimental,Mackay_278_2021
+RRAP-ECT01-2021-Ahya-MACK-279,Group1,Ahya,MACK,279,2021,ECT01,Mackay,Experimental,Mackay_279_2021
+RRAP-ECT01-2021-Ahya-MACK-280_L3,Group1,Ahya,MACK,280,2021,ECT01,Mackay,Experimental,Mackay_280_2021
+RRAP-ECT01-2021-Ahya-MACK-281_L3,Group1,Ahya,MACK,281,2021,ECT01,Mackay,Experimental,Mackay_281_2021
+RRAP-ECT01-2021-Ahya-MACK-282_L3,Group1,Ahya,MACK,282,2021,ECT01,Mackay,Experimental,Mackay_282_2021
+RRAP-ECT01-2021-Ahya-MACK-283,Group1,Ahya,MACK,283,2021,ECT01,Mackay,Experimental,Mackay_283_2021
+RRAP-ECT01-2021-Ahya-MACK-285_L2,Group1,Ahya,MACK,285,2021,ECT01,Mackay,Experimental,Mackay_285_2021
+RRAP-ECT01-2021-Ahya-MACK-286_L2,Group1,Ahya,MACK,286,2021,ECT01,Mackay,Experimental,Mackay_286_2021
+RRAP-ECT01-2021-Ahya-MACK-287_L4,Group1,Ahya,MACK,287,2021,ECT01,Mackay,Experimental,Mackay_287_2021
+RRAP-ECT01-2021-Ahya-MACK-288,Group1,Ahya,MACK,288,2021,ECT01,Mackay,Experimental,Mackay_288_2021
+RRAP-ECT01-2021-Ahya-MACK-289,Group1,Ahya,MACK,289,2021,ECT01,Mackay,Experimental,Mackay_289_2021
+RRAP-ECT01-2021-Ahya-MACK-290-LEG5345-109_L3,Group1,Ahya,MACK,290,2021,ECT01,Mackay,Experimental,Mackay_290_2021
+RRAP-ECT01-2021-Ahya-MACK-292,Group1,Ahya,MACK,292,2021,ECT01,Mackay,Experimental,Mackay_292_2021
+RRAP-ECT01-2021-Ahya-MACK-293_L4,Group1,Ahya,MACK,293,2021,ECT01,Mackay,Experimental,Mackay_293_2021
+RRAP-ECT01-2021-Ahya-MACK-294_L4,Group1,Ahya,MACK,294,2021,ECT01,Mackay,Experimental,Mackay_294_2021
+RRAP-ECT01-2021-Ahya-MACK-295_L2,Group1,Ahya,MACK,295,2021,ECT01,Mackay,Experimental,Mackay_295_2021
+RRAP-ECT01-2021-Ahya-MACK-296_L2,Group1,Ahya,MACK,296,2021,ECT01,Mackay,Experimental,Mackay_296_2021
+RRAP-ECT01-2021-Ahya-MACK-297_L2,Group1,Ahya,MACK,297,2021,ECT01,Mackay,Experimental,Mackay_297_2021
+RRAP-ECT01-2021-Ahya-MACK-298,Group1,Ahya,MACK,298,2021,ECT01,Mackay,Experimental,Mackay_298_2021
+RRAP-ECT01-2021-Ahya-MACK-299_L3,Group1,Ahya,MACK,299,2021,ECT01,Mackay,Experimental,Mackay_299_2021
+RRAP-ECT01-2021-Ahya-MACK-300_L3,Group1,Ahya,MACK,300,2021,ECT01,Mackay,Experimental,Mackay_300_2021
+RRAP-ECT01-2021-Ahya-MART-131_L4,Group1,Ahya,MART,131,2021,ECT01,Martin,Experimental,Martin_131_2021
+RRAP-ECT01-2021-Ahya-MART-132_L4,Group1,Ahya,MART,132,2021,ECT01,Martin,Experimental,Martin_132_2021
+RRAP-ECT01-2021-Ahya-MART-133,Group1,Ahya,MART,133,2021,ECT01,Martin,Experimental,Martin_133_2021
+RRAP-ECT01-2021-Ahya-MART-134_L4,Group1,Ahya,MART,134,2021,ECT01,Martin,Experimental,Martin_134_2021
+RRAP-ECT01-2021-Ahya-MART-135_L2,Group1,Ahya,MART,135,2021,ECT01,Martin,Experimental,Martin_135_2021
+RRAP-ECT01-2021-Ahya-MART-136_L4,Group1,Ahya,MART,136,2021,ECT01,Martin,Experimental,Martin_136_2021
+RRAP-ECT01-2021-Ahya-MART-137_L4,Group1,Ahya,MART,137,2021,ECT01,Martin,Experimental,Martin_137_2021
+RRAP-ECT01-2021-Ahya-MART-138,Group1,Ahya,MART,138,2021,ECT01,Martin,Experimental,Martin_138_2021
+RRAP-ECT01-2021-Ahya-MART-139,Group1,Ahya,MART,139,2021,ECT01,Martin,Experimental,Martin_139_2021
+RRAP-ECT01-2021-Ahya-MART-140_L3,Group1,Ahya,MART,140,2021,ECT01,Martin,Experimental,Martin_140_2021
+RRAP-ECT01-2021-Ahya-MART-141,Group1,Ahya,MART,141,2021,ECT01,Martin,Experimental,Martin_141_2021
+RRAP-ECT01-2021-Ahya-MART-142_L3,Group1,Ahya,MART,142,2021,ECT01,Martin,Experimental,Martin_142_2021
+RRAP-ECT01-2021-Ahya-MART-143_L3,Group1,Ahya,MART,143,2021,ECT01,Martin,Experimental,Martin_143_2021
+RRAP-ECT01-2021-Ahya-MART-144_L2,Group1,Ahya,MART,144,2021,ECT01,Martin,Experimental,Martin_144_2021
+RRAP-ECT01-2021-Ahya-MART-145_L3,Group1,Ahya,MART,145,2021,ECT01,Martin,Experimental,Martin_145_2021
+RRAP-ECT01-2021-Ahya-MART-146_L2,Group1,Ahya,MART,146,2021,ECT01,Martin,Experimental,Martin_146_2021
+RRAP-ECT01-2021-Ahya-MART-147_L2,Group1,Ahya,MART,147,2021,ECT01,Martin,Experimental,Martin_147_2021
+RRAP-ECT01-2021-Ahya-MART-148_L2,Group1,Ahya,MART,148,2021,ECT01,Martin,Experimental,Martin_148_2021
+RRAP-ECT01-2021-Ahya-MART-149_L2,Group1,Ahya,MART,149,2021,ECT01,Martin,Experimental,Martin_149_2021
+RRAP-ECT01-2021-Ahya-MART-150_L2,Group1,Ahya,MART,150,2021,ECT01,Martin,Experimental,Martin_150_2021
+RRAP-ECT01-2021-Ahya-MART-151_L2,Group1,Ahya,MART,151,2021,ECT01,Martin,Experimental,Martin_151_2021
+RRAP-ECT01-2021-Ahya-MART-152_L2,Group1,Ahya,MART,152,2021,ECT01,Martin,Experimental,Martin_152_2021
+RRAP-ECT01-2021-Ahya-MART-153_L2,Group1,Ahya,MART,153,2021,ECT01,Martin,Experimental,Martin_153_2021
+RRAP-ECT01-2021-Ahya-MART-154_L2,Group1,Ahya,MART,154,2021,ECT01,Martin,Experimental,Martin_154_2021
+RRAP-ECT01-2021-Ahya-MART-155_L2,Group1,Ahya,MART,155,2021,ECT01,Martin,Experimental,Martin_155_2021
+RRAP-ECT01-2021-Ahya-MART-156b_L3,Group1,Ahya,MART,156,2021,ECT01,Martin,Experimental,Martin_156_2021
+RRAP-ECT01-2021-Ahya-MART-157_L2,Group1,Ahya,MART,157,2021,ECT01,Martin,Experimental,Martin_157_2021
+RRAP-ECT01-2021-Ahya-MART-158_L2,Group1,Ahya,MART,158,2021,ECT01,Martin,Experimental,Martin_158_2021
+RRAP-ECT01-2021-Ahya-MART-159_L2,Group1,Ahya,MART,159,2021,ECT01,Martin,Experimental,Martin_159_2021
+RRAP-ECT01-2021-Ahya-MART-160_L2,Group1,Ahya,MART,160,2021,ECT01,Martin,Experimental,Martin_160_2021
+RRAP-ECT01-2021-Ahya-MOOR-375_L4,Group1,Ahya,MOOR,375,2021,ECT01,Moore,Experimental,Moore_375_2021
+RRAP-ECT01-2021-Ahya-MOOR-376_L2,Group1,Ahya,MOOR,376,2021,ECT01,Moore,Experimental,Moore_376_2021
+RRAP-ECT01-2021-Ahya-MOOR-377_L4,Group1,Ahya,MOOR,377,2021,ECT01,Moore,Experimental,Moore_377_2021
+RRAP-ECT01-2021-Ahya-MOOR-378_L4,Group1,Ahya,MOOR,378,2021,ECT01,Moore,Experimental,Moore_378_2021
+RRAP-ECT01-2021-Ahya-MOOR-379_L4,Group1,Ahya,MOOR,379,2021,ECT01,Moore,Experimental,Moore_379_2021
+RRAP-ECT01-2021-Ahya-MOOR-380_L4,Group1,Ahya,MOOR,380,2021,ECT01,Moore,Experimental,Moore_380_2021
+RRAP-ECT01-2021-Ahya-MOOR-381,Group1,Ahya,MOOR,381,2021,ECT01,Moore,Experimental,Moore_381_2021
+RRAP-ECT01-2021-Ahya-MOOR-382_L2,Group1,Ahya,MOOR,382,2021,ECT01,Moore,Experimental,Moore_382_2021
+RRAP-ECT01-2021-Ahya-MOOR-383_L2,Group1,Ahya,MOOR,383,2021,ECT01,Moore,Experimental,Moore_383_2021
+RRAP-ECT01-2021-Ahya-MOOR-384_L2,Group1,Ahya,MOOR,384,2021,ECT01,Moore,Experimental,Moore_384_2021
+RRAP-ECT01-2021-Ahya-MOOR-385_L2,Group1,Ahya,MOOR,385,2021,ECT01,Moore,Experimental,Moore_385_2021
+RRAP-ECT01-2021-Ahya-MOOR-386_L2,Group1,Ahya,MOOR,386,2021,ECT01,Moore,Experimental,Moore_386_2021
+RRAP-ECT01-2021-Ahya-MOOR-387_L2,Group1,Ahya,MOOR,387,2021,ECT01,Moore,Experimental,Moore_387_2021
+RRAP-ECT01-2021-Ahya-MOOR-388-B_L4,Group1,Ahya,MOOR,388,2021,ECT01,Moore,Experimental,Moore_388_2021
+RRAP-ECT01-2021-Ahya-MOOR-389_L4,Group1,Ahya,MOOR,389,2021,ECT01,Moore,Experimental,Moore_389_2021
+RRAP-ECT01-2021-Ahya-MOOR-390,Group1,Ahya,MOOR,390,2021,ECT01,Moore,Experimental,Moore_390_2021
+RRAP-ECT01-2021-Ahya-MOOR-391_L4,Group1,Ahya,MOOR,391,2021,ECT01,Moore,Experimental,Moore_391_2021
+RRAP-ECT01-2021-Ahya-MOOR-392_L3,Group1,Ahya,MOOR,392,2021,ECT01,Moore,Experimental,Moore_392_2021
+RRAP-ECT01-2021-Ahya-MOOR-393,Group1,Ahya,MOOR,393,2021,ECT01,Moore,Experimental,Moore_393_2021
+RRAP-ECT01-2021-Ahya-MOOR-394,Group1,Ahya,MOOR,394,2021,ECT01,Moore,Experimental,Moore_394_2021
+RRAP-ECT01-2021-Ahya-MOOR-395,Group1,Ahya,MOOR,395,2021,ECT01,Moore,Experimental,Moore_395_2021
+RRAP-ECT01-2021-Ahya-MOOR-396_L2,Group1,Ahya,MOOR,396,2021,ECT01,Moore,Experimental,Moore_396_2021
+RRAP-ECT01-2021-Ahya-MOOR-397_L4,Group1,Ahya,MOOR,397,2021,ECT01,Moore,Experimental,Moore_397_2021
+RRAP-ECT01-2021-Ahya-MOOR-398_L3,Group1,Ahya,MOOR,398,2021,ECT01,Moore,Experimental,Moore_398_2021
+RRAP-ECT01-2021-Ahya-MOOR-399_L3,Group1,Ahya,MOOR,399,2021,ECT01,Moore,Experimental,Moore_399_2021
+RRAP-ECT01-2021-Ahya-MOOR-400_L3,Group1,Ahya,MOOR,400,2021,ECT01,Moore,Experimental,Moore_400_2021
+RRAP-ECT01-2021-Ahya-MOOR-401_L3,Group1,Ahya,MOOR,401,2021,ECT01,Moore,Experimental,Moore_401_2021
+RRAP-ECT01-2021-Ahya-MOOR-403,Group1,Ahya,MOOR,403,2021,ECT01,Moore,Experimental,Moore_403_2021
+RRAP-ECT01-2021-Ahya-MOOR-404,Group1,Ahya,MOOR,404,2021,ECT01,Moore,Experimental,Moore_404_2021
+RRAP-ECT01-2021-Ahya-MOOR-405_L4,Group1,Ahya,MOOR,405,2021,ECT01,Moore,Experimental,Moore_405_2021
+RRAP-ECT01-2021-Ahya-MOOR-406_L3,Group1,Ahya,MOOR,406,2021,ECT01,Moore,Experimental,Moore_406_2021
+RRAP-ECT01-2021-Ahya-MOOR-407_L3,Group1,Ahya,MOOR,407,2021,ECT01,Moore,Experimental,Moore_407_2021
+RRAP-ECT01-2021-Ahya-MOOR-408_L3,Group1,Ahya,MOOR,408,2021,ECT01,Moore,Experimental,Moore_408_2021
+RRAP-ECT01-2021-Ahya-MOOR-410_L3,Group1,Ahya,MOOR,410,2021,ECT01,Moore,Experimental,Moore_410_2021
+RRAP-ECT01-2021-Ahya-MOOR-411-LEG5345-120_L3,Group1,Ahya,MOOR,411,2021,ECT01,Moore,Experimental,Moore_411_2021
+RRAP-ECT01-2021-Ahya-MOOR-412_L4,Group1,Ahya,MOOR,412,2021,ECT01,Moore,Experimental,Moore_412_2021
+RRAP-ECT01-2021-Ahya-MOOR-413_L2,Group1,Ahya,MOOR,413,2021,ECT01,Moore,Experimental,Moore_413_2021
+RRAP-ECT01-2021-Ahya-MOOR-414_L2,Group1,Ahya,MOOR,414,2021,ECT01,Moore,Experimental,Moore_414_2021
+RRAP-ECT01-2021-Ahya-MOOR-415_L2,Group1,Ahya,MOOR,415,2021,ECT01,Moore,Experimental,Moore_415_2021
+RRAP-ECT01-2021-Ahya-MOOR-416_L4,Group1,Ahya,MOOR,416,2021,ECT01,Moore,Experimental,Moore_416_2021
+RRAP-ECT01-2021-Ahya-MOOR-417_L3,Group1,Ahya,MOOR,417,2021,ECT01,Moore,Experimental,Moore_417_2021
+RRAP-ECT01-2021-Ahya-MOOR-418_L4,Group1,Ahya,MOOR,418,2021,ECT01,Moore,Experimental,Moore_418_2021
+RRAP-ECT01-2021-Ahya-MOOR-419,Group1,Ahya,MOOR,419,2021,ECT01,Moore,Experimental,Moore_419_2021
+RRAP-ECT01-2021-Ahya-MOOR-420_L2,Group1,Ahya,MOOR,420,2021,ECT01,Moore,Experimental,Moore_420_2021
+RRAP-ECT01-2021-Ahya-MOOR-421_L4,Group1,Ahya,MOOR,421,2021,ECT01,Moore,Experimental,Moore_421_2021
+RRAP-ECT01-2021-Ahya-MOOR-422_L2,Group1,Ahya,MOOR,422,2021,ECT01,Moore,Experimental,Moore_422_2021
+RRAP-ECT01-2021-Ahya-MOOR-423_L2,Group1,Ahya,MOOR,423,2021,ECT01,Moore,Experimental,Moore_423_2021
+RRAP-ECT01-2021-Ahya-MOOR-424_L2,Group1,Ahya,MOOR,424,2021,ECT01,Moore,Experimental,Moore_424_2021
+RRAP-ECT01-2021-Ahya-MOOR-425,Group1,Ahya,MOOR,425,2021,ECT01,Moore,Experimental,Moore_425_2021
+RRAP-ECT01-2021-Ahya-NDIR-44,Group1,Ahya,NDIR,44,2021,ECT01,North Direction,Experimental,North Direction_44_2021
+RRAP-ECT01-2021-Ahya-NDIR-45b_L3,Group1,Ahya,NDIR,45,2021,ECT01,North Direction,Experimental,North Direction_45_2021
+RRAP-ECT01-2021-Ahya-NDIR-46,Group1,Ahya,NDIR,46,2021,ECT01,North Direction,Experimental,North Direction_46_2021
+RRAP-ECT01-2021-Ahya-NDIR-51_L4,Group1,Ahya,NDIR,51,2021,ECT01,North Direction,Experimental,North Direction_51_2021
+RRAP-ECT01-2021-Ahya-NDIR-52_L4,Group1,Ahya,NDIR,52,2021,ECT01,North Direction,Experimental,North Direction_52_2021
+RRAP-ECT01-2021-Ahya-NDIR-55_L2,Group1,Ahya,NDIR,55,2021,ECT01,North Direction,Experimental,North Direction_55_2021
+RRAP-ECT01-2021-Ahya-NDIR-56_L3,Group1,Ahya,NDIR,56,2021,ECT01,North Direction,Experimental,North Direction_56_2021
+RRAP-ECT01-2021-Ahya-NDIR-57_L2,Group1,Ahya,NDIR,57,2021,ECT01,North Direction,Experimental,North Direction_57_2021
+RRAP-ECT01-2021-Ahya-NDIR-58_L4,Group1,Ahya,NDIR,58,2021,ECT01,North Direction,Experimental,North Direction_58_2021
+RRAP-ECT01-2021-Ahya-NDIR-59_L4,Group1,Ahya,NDIR,59,2021,ECT01,North Direction,Experimental,North Direction_59_2021
+RRAP-ECT01-2021-Ahya-NDIR-60_L4,Group1,Ahya,NDIR,60,2021,ECT01,North Direction,Experimental,North Direction_60_2021
+RRAP-ECT01-2021-Ahya-NDIR-61_L4,Group1,Ahya,NDIR,61,2021,ECT01,North Direction,Experimental,North Direction_61_2021
+RRAP-ECT01-2021-Ahya-NDIR-62_L4,Group1,Ahya,NDIR,62,2021,ECT01,North Direction,Experimental,North Direction_62_2021
+RRAP-ECT01-2021-Ahya-NDIR-63_L4,Group1,Ahya,NDIR,63,2021,ECT01,North Direction,Experimental,North Direction_63_2021
+RRAP-ECT01-2021-Ahya-NDIR-64_L2,Group1,Ahya,NDIR,64,2021,ECT01,North Direction,Experimental,North Direction_64_2021
+RRAP-ECT01-2021-Ahya-NDIR-65_L2,Group1,Ahya,NDIR,65,2021,ECT01,North Direction,Experimental,North Direction_65_2021
+RRAP-ECT01-2021-Ahya-NDIR-66_L4,Group1,Ahya,NDIR,66,2021,ECT01,North Direction,Experimental,North Direction_66_2021
+RRAP-ECT01-2021-Ahya-NDIR-67-LEG5346-10_L2,Group1,Ahya,NDIR,67,2021,ECT01,North Direction,Experimental,North Direction_67_2021
+RRAP-ECT01-2021-Ahya-NDIR-68b_L3,Group1,Ahya,NDIR,68,2021,ECT01,North Direction,Experimental,North Direction_68_2021
+RRAP-ECT01-2021-Ahya-NDIR-70,Group1,Ahya,NDIR,70,2021,ECT01,North Direction,Experimental,North Direction_70_2021
+RRAP-ECT01-2021-Ahya-NDIR-71_L4,Group1,Ahya,NDIR,71,2021,ECT01,North Direction,Experimental,North Direction_71_2021
+RRAP-ECT01-2021-Ahya-NDIR-72_L4,Group1,Ahya,NDIR,72,2021,ECT01,North Direction,Experimental,North Direction_72_2021
+RRAP-ECT01-2021-Ahya-NDIR-73_L2,Group1,Ahya,NDIR,73,2021,ECT01,North Direction,Experimental,North Direction_73_2021
+RRAP-ECT01-2021-Ahya-NDIR-74_L2,Group1,Ahya,NDIR,74,2021,ECT01,North Direction,Experimental,North Direction_74_2021
+RRAP-ECT01-2021-Ahya-NDIR-75_L2,Group1,Ahya,NDIR,75,2021,ECT01,North Direction,Experimental,North Direction_75_2021
+RRAP-ECT01-2021-Ahya-NDIR-76_L2,Group1,Ahya,NDIR,76,2021,ECT01,North Direction,Experimental,North Direction_76_2021
+RRAP-ECT01-2021-Ahya-NDIR-77_L2,Group1,Ahya,NDIR,77,2021,ECT01,North Direction,Experimental,North Direction_77_2021
+RRAP-ECT01-2021-Ahya-NDIR-78_L2,Group1,Ahya,NDIR,78,2021,ECT01,North Direction,Experimental,North Direction_78_2021
+RRAP-ECT01-2021-Ahya-NDIR-79_L2,Group1,Ahya,NDIR,79,2021,ECT01,North Direction,Experimental,North Direction_79_2021
+RRAP-ECT01-2021-Ahya-NDIR-80_L2,Group1,Ahya,NDIR,80,2021,ECT01,North Direction,Experimental,North Direction_80_2021
+RRAP-ECT01-2021-Ahya-NDIR-81_L2,Group1,Ahya,NDIR,81,2021,ECT01,North Direction,Experimental,North Direction_81_2021
+RRAP-ECT01-2021-Ahya-NDIR-82,Group1,Ahya,NDIR,82,2021,ECT01,North Direction,Experimental,North Direction_82_2021
+RRAP-ECT01-2021-Ahya-NDIR-83_L4,Group1,Ahya,NDIR,83,2021,ECT01,North Direction,Experimental,North Direction_83_2021
+RRAP-ECT01-2021-Ahya-NDIR-84_L4,Group1,Ahya,NDIR,84,2021,ECT01,North Direction,Experimental,North Direction_84_2021
+RRAP-ECT01-2021-Ahya-NDIR-85_L4,Group1,Ahya,NDIR,85,2021,ECT01,North Direction,Experimental,North Direction_85_2021
+RRAP-ECT01-2021-Ahya-NDIR-86_L4,Group1,Ahya,NDIR,86,2021,ECT01,North Direction,Experimental,North Direction_86_2021
+RRAP-ECT01-2021-Ahya-NDIR-87_L2,Group1,Ahya,NDIR,87,2021,ECT01,North Direction,Experimental,North Direction_87_2021
+RRAP-ECT01-2021-Ahya-NDIR-88_L2,Group1,Ahya,NDIR,88,2021,ECT01,North Direction,Experimental,North Direction_88_2021
+RRAP-ECT01-2021-Ahya-NDIR-89_L4,Group1,Ahya,NDIR,89,2021,ECT01,North Direction,Experimental,North Direction_89_2021
+RRAP-ECT01-2021-Ahya-NDIR-90_L4,Group1,Ahya,NDIR,90,2021,ECT01,North Direction,Experimental,North Direction_90_2021
+RRAP-ECT01-2021-Ahya-NDIR-91,Group1,Ahya,NDIR,91,2021,ECT01,North Direction,Experimental,North Direction_91_2021
+RRAP-ECT01-2021-Ahya-NDIR-92,Group1,Ahya,NDIR,92,2021,ECT01,North Direction,Experimental,North Direction_92_2021
+RRAP-ECT01-2021-Ahya-NDIR-93_L4,Group1,Ahya,NDIR,93,2021,ECT01,North Direction,Experimental,North Direction_93_2021
+RRAP-ECT01-2021-Ahya-NDIR-94_L4,Group1,Ahya,NDIR,94,2021,ECT01,North Direction,Experimental,North Direction_94_2021
+RRAP-ECT01-2021-Ahya-NDIR-95_L2,Group1,Ahya,NDIR,95,2021,ECT01,North Direction,Experimental,North Direction_95_2021
+RRAP-ECT01-2021-Ahya-NDIR-96_L2,Group1,Ahya,NDIR,96,2021,ECT01,North Direction,Experimental,North Direction_96_2021
+RRAP-ECT01-2021-Ahya-NONA-100_L3,Group1,Ahya,NONA,100,2021,ECT01,No Name,Experimental,No Name_100_2021
+RRAP-ECT01-2021-Ahya-NONA-101_L4,Group1,Ahya,NONA,101,2021,ECT01,No Name,Experimental,No Name_101_2021
+RRAP-ECT01-2021-Ahya-NONA-102_L3,Group1,Ahya,NONA,102,2021,ECT01,No Name,Experimental,No Name_102_2021
+RRAP-ECT01-2021-Ahya-NONA-103b_L4,Group1,Ahya,NONA,103,2021,ECT01,No Name,Experimental,No Name_103_2021
+RRAP-ECT01-2021-Ahya-NONA-104_L3,Group1,Ahya,NONA,104,2021,ECT01,No Name,Experimental,No Name_104_2021
+RRAP-ECT01-2021-Ahya-NONA-105_L3,Group1,Ahya,NONA,105,2021,ECT01,No Name,Experimental,No Name_105_2021
+RRAP-ECT01-2021-Ahya-NONA-106b_L4,Group1,Ahya,NONA,106,2021,ECT01,No Name,Experimental,No Name_106_2021
+RRAP-ECT01-2021-Ahya-NONA-107_L4,Group1,Ahya,NONA,107,2021,ECT01,No Name,Experimental,No Name_107_2021
+RRAP-ECT01-2021-Ahya-NONA-108_L2,Group1,Ahya,NONA,108,2021,ECT01,No Name,Experimental,No Name_108_2021
+RRAP-ECT01-2021-Ahya-NONA-109_L2,Group1,Ahya,NONA,109,2021,ECT01,No Name,Experimental,No Name_109_2021
+RRAP-ECT01-2021-Ahya-NONA-110_L3,Group1,Ahya,NONA,110,2021,ECT01,No Name,Experimental,No Name_110_2021
+RRAP-ECT01-2021-Ahya-NONA-111_L3,Group1,Ahya,NONA,111,2021,ECT01,No Name,Experimental,No Name_111_2021
+RRAP-ECT01-2021-Ahya-NONA-112_L3,Group1,Ahya,NONA,112,2021,ECT01,No Name,Experimental,No Name_112_2021
+RRAP-ECT01-2021-Ahya-NONA-113_L3,Group1,Ahya,NONA,113,2021,ECT01,No Name,Experimental,No Name_113_2021
+RRAP-ECT01-2021-Ahya-NONA-114_L3,Group1,Ahya,NONA,114,2021,ECT01,No Name,Experimental,No Name_114_2021
+RRAP-ECT01-2021-Ahya-NONA-115b_L3,Group1,Ahya,NONA,115,2021,ECT01,No Name,Experimental,No Name_115_2021
+RRAP-ECT01-2021-Ahya-NONA-116_L4,Group1,Ahya,NONA,116,2021,ECT01,No Name,Experimental,No Name_116_2021
+RRAP-ECT01-2021-Ahya-NONA-117_L2,Group1,Ahya,NONA,117,2021,ECT01,No Name,Experimental,No Name_117_2021
+RRAP-ECT01-2021-Ahya-NONA-118_L2,Group1,Ahya,NONA,118,2021,ECT01,No Name,Experimental,No Name_118_2021
+RRAP-ECT01-2021-Ahya-NONA-119_L3,Group1,Ahya,NONA,119,2021,ECT01,No Name,Experimental,No Name_119_2021
+RRAP-ECT01-2021-Ahya-NONA-120_L4,Group1,Ahya,NONA,120,2021,ECT01,No Name,Experimental,No Name_120_2021
+RRAP-ECT01-2021-Ahya-NONA-121_L4,Group1,Ahya,NONA,121,2021,ECT01,No Name,Experimental,No Name_121_2021
+RRAP-ECT01-2021-Ahya-NONA-122,Group1,Ahya,NONA,122,2021,ECT01,No Name,Experimental,No Name_122_2021
+RRAP-ECT01-2021-Ahya-NONA-123,Group1,Ahya,NONA,123,2021,ECT01,No Name,Experimental,No Name_123_2021
+RRAP-ECT01-2021-Ahya-NONA-124,Group1,Ahya,NONA,124,2021,ECT01,No Name,Experimental,No Name_124_2021
+RRAP-ECT01-2021-Ahya-NONA-125_L2,Group1,Ahya,NONA,125,2021,ECT01,No Name,Experimental,No Name_125_2021
+RRAP-ECT01-2021-Ahya-NONA-126_L4,Group1,Ahya,NONA,126,2021,ECT01,No Name,Experimental,No Name_126_2021
+RRAP-ECT01-2021-Ahya-NONA-127_L2,Group1,Ahya,NONA,127,2021,ECT01,No Name,Experimental,No Name_127_2021
+RRAP-ECT01-2021-Ahya-NONA-128_L4,Group1,Ahya,NONA,128,2021,ECT01,No Name,Experimental,No Name_128_2021
+RRAP-ECT01-2021-Ahya-NONA-129,Group1,Ahya,NONA,129,2021,ECT01,No Name,Experimental,No Name_129_2021
+RRAP-ECT01-2021-Ahya-NONA-130,Group1,Ahya,NONA,130,2021,ECT01,No Name,Experimental,No Name_130_2021
+RRAP-ECT01-2021-Ahya-NONA-97b_L3,Group1,Ahya,NONA,97,2021,ECT01,No Name,Experimental,No Name_97_2021
+RRAP-ECT01-2021-Ahya-NONA-98_L2,Group1,Ahya,NONA,98,2021,ECT01,No Name,Experimental,No Name_98_2021
+RRAP-ECT01-2021-Ahya-NONA-99_L2,Group1,Ahya,NONA,99,2021,ECT01,No Name,Experimental,No Name_99_2021
+RRAP-ECT01-2021-Ahya-OCCH-301_L3,Group1,Ahya,OCCH,301,2021,ECT01,Chicken,Experimental,Chicken_301_2021
+RRAP-ECT01-2021-Ahya-OCCH-302-B_L4,Group1,Ahya,OCCH,302,2021,ECT01,Chicken,Experimental,Chicken_302_2021
+RRAP-ECT01-2021-Ahya-OCCH-303_L4,Group1,Ahya,OCCH,303,2021,ECT01,Chicken,Experimental,Chicken_303_2021
+RRAP-ECT01-2021-Ahya-OCCH-304_L2,Group1,Ahya,OCCH,304,2021,ECT01,Chicken,Experimental,Chicken_304_2021
+RRAP-ECT01-2021-Ahya-OCCH-305_L2,Group1,Ahya,OCCH,305,2021,ECT01,Chicken,Experimental,Chicken_305_2021
+RRAP-ECT01-2021-Ahya-OCCH-306_L2,Group1,Ahya,OCCH,306,2021,ECT01,Chicken,Experimental,Chicken_306_2021
+RRAP-ECT01-2021-Ahya-OCCH-307_L2,Group1,Ahya,OCCH,307,2021,ECT01,Chicken,Experimental,Chicken_307_2021
+RRAP-ECT01-2021-Ahya-OCCH-308_L3,Group1,Ahya,OCCH,308,2021,ECT01,Chicken,Experimental,Chicken_308_2021
+RRAP-ECT01-2021-Ahya-OCCH-309_L3,Group1,Ahya,OCCH,309,2021,ECT01,Chicken,Experimental,Chicken_309_2021
+RRAP-ECT01-2021-Ahya-OCCH-310_L3,Group1,Ahya,OCCH,310,2021,ECT01,Chicken,Experimental,Chicken_310_2021
+RRAP-ECT01-2021-Ahya-OCCH-311_L4,Group1,Ahya,OCCH,311,2021,ECT01,Chicken,Experimental,Chicken_311_2021
+RRAP-ECT01-2021-Ahya-OCCH-312_L3,Group1,Ahya,OCCH,312,2021,ECT01,Chicken,Experimental,Chicken_312_2021
+RRAP-ECT01-2021-Ahya-OCCH-313-B_L4,Group1,Ahya,OCCH,313,2021,ECT01,Chicken,Experimental,Chicken_313_2021
+RRAP-ECT01-2021-Ahya-OCCH-314_L2,Group1,Ahya,OCCH,314,2021,ECT01,Chicken,Experimental,Chicken_314_2021
+RRAP-ECT01-2021-Ahya-OCCH-315_L2,Group1,Ahya,OCCH,315,2021,ECT01,Chicken,Experimental,Chicken_315_2021
+RRAP-ECT01-2021-Ahya-OCCH-316_L4,Group1,Ahya,OCCH,316,2021,ECT01,Chicken,Experimental,Chicken_316_2021
+RRAP-ECT01-2021-Ahya-OCCH-317_L4,Group1,Ahya,OCCH,317,2021,ECT01,Chicken,Experimental,Chicken_317_2021
+RRAP-ECT01-2021-Ahya-OCCH-318_L3,Group1,Ahya,OCCH,318,2021,ECT01,Chicken,Experimental,Chicken_318_2021
+RRAP-ECT01-2021-Ahya-OCCH-319_L2,Group1,Ahya,OCCH,319,2021,ECT01,Chicken,Experimental,Chicken_319_2021
+RRAP-ECT01-2021-Ahya-OCCH-320_L4,Group1,Ahya,OCCH,320,2021,ECT01,Chicken,Experimental,Chicken_320_2021
+RRAP-ECT01-2021-Ahya-OCCH-321_L2,Group1,Ahya,OCCH,321,2021,ECT01,Chicken,Experimental,Chicken_321_2021
+RRAP-ECT01-2021-Ahya-OCCH-322_L2,Group1,Ahya,OCCH,322,2021,ECT01,Chicken,Experimental,Chicken_322_2021
+RRAP-ECT01-2021-Ahya-OCCH-323_L3,Group1,Ahya,OCCH,323,2021,ECT01,Chicken,Experimental,Chicken_323_2021
+RRAP-ECT01-2021-Ahya-OCCH-324_L2,Group1,Ahya,OCCH,324,2021,ECT01,Chicken,Experimental,Chicken_324_2021
+RRAP-ECT01-2021-Ahya-OCCH-325_L4,Group1,Ahya,OCCH,325,2021,ECT01,Chicken,Experimental,Chicken_325_2021
+RRAP-ECT01-2021-Ahya-OCCH-326,Group1,Ahya,OCCH,326,2021,ECT01,Chicken,Experimental,Chicken_326_2021
+RRAP-ECT01-2021-Ahya-OCCH-327,Group1,Ahya,OCCH,327,2021,ECT01,Chicken,Experimental,Chicken_327_2021
+RRAP-ECT01-2021-Ahya-OCCH-328_L2,Group1,Ahya,OCCH,328,2021,ECT01,Chicken,Experimental,Chicken_328_2021
+RRAP-ECT01-2021-Ahya-OCCH-329_L3,Group1,Ahya,OCCH,329,2021,ECT01,Chicken,Experimental,Chicken_329_2021
+RRAP-ECT01-2021-Ahya-OCCH-330,Group1,Ahya,OCCH,330,2021,ECT01,Chicken,Experimental,Chicken_330_2021
+RRAP-ECT01-2021-Ahya-OCDA-331_L4,Group1,Ahya,OCDA,331,2021,ECT01,Davies,Experimental,Davies_331_2021
+RRAP-ECT01-2021-Ahya-OCDA-332_L4,Group1,Ahya,OCDA,332,2021,ECT01,Davies,Experimental,Davies_332_2021
+RRAP-ECT01-2021-Ahya-OCDA-333_L3,Group1,Ahya,OCDA,333,2021,ECT01,Davies,Experimental,Davies_333_2021
+RRAP-ECT01-2021-Ahya-OCDA-334_L3,Group1,Ahya,OCDA,334,2021,ECT01,Davies,Experimental,Davies_334_2021
+RRAP-ECT01-2021-Ahya-OCDA-335,Group1,Ahya,OCDA,335,2021,ECT01,Davies,Experimental,Davies_335_2021
+RRAP-ECT01-2021-Ahya-OCDA-336_L3,Group1,Ahya,OCDA,336,2021,ECT01,Davies,Experimental,Davies_336_2021
+RRAP-ECT01-2021-Ahya-OCDA-337_L3,Group1,Ahya,OCDA,337,2021,ECT01,Davies,Experimental,Davies_337_2021
+RRAP-ECT01-2021-Ahya-OCDA-338,Group1,Ahya,OCDA,338,2021,ECT01,Davies,Experimental,Davies_338_2021
+RRAP-ECT01-2021-Ahya-OCDA-339,Group1,Ahya,OCDA,339,2021,ECT01,Davies,Experimental,Davies_339_2021
+RRAP-ECT01-2021-Ahya-OCDA-340_L2,Group1,Ahya,OCDA,340,2021,ECT01,Davies,Experimental,Davies_340_2021
+RRAP-ECT01-2021-Ahya-OCDA-341,Group1,Ahya,OCDA,341,2021,ECT01,Davies,Experimental,Davies_341_2021
+RRAP-ECT01-2021-Ahya-OCDA-342_L3,Group1,Ahya,OCDA,342,2021,ECT01,Davies,Experimental,Davies_342_2021
+RRAP-ECT01-2021-Ahya-OCDA-343_L4,Group1,Ahya,OCDA,343,2021,ECT01,Davies,Experimental,Davies_343_2021
+RRAP-ECT01-2021-Ahya-OCDA-344_L4,Group1,Ahya,OCDA,344,2021,ECT01,Davies,Experimental,Davies_344_2021
+RRAP-ECT01-2021-Ahya-OCDA-345_L3,Group1,Ahya,OCDA,345,2021,ECT01,Davies,Experimental,Davies_345_2021
+RRAP-ECT01-2021-Ahya-OCDA-346_L4,Group1,Ahya,OCDA,346,2021,ECT01,Davies,Experimental,Davies_346_2021
+RRAP-ECT01-2021-Ahya-OCDA-347_L4,Group1,Ahya,OCDA,347,2021,ECT01,Davies,Experimental,Davies_347_2021
+RRAP-ECT01-2021-Ahya-OCDA-348_L4,Group1,Ahya,OCDA,348,2021,ECT01,Davies,Experimental,Davies_348_2021
+RRAP-ECT01-2021-Ahya-OCDA-349_L2,Group1,Ahya,OCDA,349,2021,ECT01,Davies,Experimental,Davies_349_2021
+RRAP-ECT01-2021-Ahya-OCDA-350,Group1,Ahya,OCDA,350,2021,ECT01,Davies,Experimental,Davies_350_2021
+RRAP-ECT01-2021-Ahya-OCDA-351_L4,Group1,Ahya,OCDA,351,2021,ECT01,Davies,Experimental,Davies_351_2021
+RRAP-ECT01-2021-Ahya-OCDA-352_L4,Group1,Ahya,OCDA,352,2021,ECT01,Davies,Experimental,Davies_352_2021
+RRAP-ECT01-2021-Ahya-OCDA-353,Group1,Ahya,OCDA,353,2021,ECT01,Davies,Experimental,Davies_353_2021
+RRAP-ECT01-2021-Ahya-OCDA-354,Group1,Ahya,OCDA,354,2021,ECT01,Davies,Experimental,Davies_354_2021
+RRAP-ECT01-2021-Ahya-OCDA-355,Group1,Ahya,OCDA,355,2021,ECT01,Davies,Experimental,Davies_355_2021
+RRAP-ECT01-2021-Ahya-OCDA-356,Group1,Ahya,OCDA,356,2021,ECT01,Davies,Experimental,Davies_356_2021
+RRAP-ECT01-2021-Ahya-OCDA-357_L4,Group1,Ahya,OCDA,357,2021,ECT01,Davies,Experimental,Davies_357_2021
+RRAP-ECT01-2021-Ahya-OCDA-358-LEG5345-111_L3,Group1,Ahya,OCDA,358,2021,ECT01,Davies,Experimental,Davies_358_2021
+RRAP-ECT01-2021-Ahya-OCDA-359_L4,Group1,Ahya,OCDA,359,2021,ECT01,Davies,Experimental,Davies_359_2021
+RRAP-ECT01-2021-Ahya-OCDA-360_L3,Group1,Ahya,OCDA,360,2021,ECT01,Davies,Experimental,Davies_360_2021
+RRAP-ECT01-2021-Ahya-PAPE-221_L2,Group1,Ahya,PAPE,221,2021,ECT01,Pelorus,Experimental,Pelorus_221_2021
+RRAP-ECT01-2021-Ahya-PAPE-222_L2,Group1,Ahya,PAPE,222,2021,ECT01,Pelorus,Experimental,Pelorus_222_2021
+RRAP-ECT01-2021-Ahya-PAPE-223_L3,Group1,Ahya,PAPE,223,2021,ECT01,Pelorus,Experimental,Pelorus_223_2021
+RRAP-ECT01-2021-Ahya-PAPE-224_L4,Group1,Ahya,PAPE,224,2021,ECT01,Pelorus,Experimental,Pelorus_224_2021
+RRAP-ECT01-2021-Ahya-PAPE-225_L2,Group1,Ahya,PAPE,225,2021,ECT01,Pelorus,Experimental,Pelorus_225_2021
+RRAP-ECT01-2021-Ahya-PAPE-226_L2,Group1,Ahya,PAPE,226,2021,ECT01,Pelorus,Experimental,Pelorus_226_2021
+RRAP-ECT01-2021-Ahya-PAPE-227_L2,Group1,Ahya,PAPE,227,2021,ECT01,Pelorus,Experimental,Pelorus_227_2021
+RRAP-ECT01-2021-Ahya-PAPE-228_L2,Group1,Ahya,PAPE,228,2021,ECT01,Pelorus,Experimental,Pelorus_228_2021
+RRAP-ECT01-2021-Ahya-PAPE-229_L4,Group1,Ahya,PAPE,229,2021,ECT01,Pelorus,Experimental,Pelorus_229_2021
+RRAP-ECT01-2021-Ahya-PAPE-230_L2,Group1,Ahya,PAPE,230,2021,ECT01,Pelorus,Experimental,Pelorus_230_2021
+RRAP-ECT01-2021-Ahya-PAPE-231_L3,Group1,Ahya,PAPE,231,2021,ECT01,Pelorus,Experimental,Pelorus_231_2021
+RRAP-ECT01-2021-Ahya-PAPE-232_L3,Group1,Ahya,PAPE,232,2021,ECT01,Pelorus,Experimental,Pelorus_232_2021
+RRAP-ECT01-2021-Ahya-PAPE-233_L4,Group1,Ahya,PAPE,233,2021,ECT01,Pelorus,Experimental,Pelorus_233_2021
+RRAP-ECT01-2021-Ahya-PAPE-234_L3,Group1,Ahya,PAPE,234,2021,ECT01,Pelorus,Experimental,Pelorus_234_2021
+RRAP-ECT01-2021-Ahya-PAPE-235_L4,Group1,Ahya,PAPE,235,2021,ECT01,Pelorus,Experimental,Pelorus_235_2021
+RRAP-ECT01-2021-Ahya-PAPE-236_L4,Group1,Ahya,PAPE,236,2021,ECT01,Pelorus,Experimental,Pelorus_236_2021
+RRAP-ECT01-2021-Ahya-PAPE-237-B_L4,Group1,Ahya,PAPE,237,2021,ECT01,Pelorus,Experimental,Pelorus_237_2021
+RRAP-ECT01-2021-Ahya-PAPE-238,Group1,Ahya,PAPE,238,2021,ECT01,Pelorus,Experimental,Pelorus_238_2021
+RRAP-ECT01-2021-Ahya-PAPE-239,Group1,Ahya,PAPE,239,2021,ECT01,Pelorus,Experimental,Pelorus_239_2021
+RRAP-ECT01-2021-Ahya-PAPE-240_L3,Group1,Ahya,PAPE,240,2021,ECT01,Pelorus,Experimental,Pelorus_240_2021
+RRAP-ECT01-2021-Ahya-PAPE-241_L3,Group1,Ahya,PAPE,241,2021,ECT01,Pelorus,Experimental,Pelorus_241_2021
+RRAP-ECT01-2021-Ahya-PAPE-242_L2,Group1,Ahya,PAPE,242,2021,ECT01,Pelorus,Experimental,Pelorus_242_2021
+RRAP-ECT01-2021-Ahya-PAPE-243_L2,Group1,Ahya,PAPE,243,2021,ECT01,Pelorus,Experimental,Pelorus_243_2021
+RRAP-ECT01-2021-Ahya-PAPE-244,Group1,Ahya,PAPE,244,2021,ECT01,Pelorus,Experimental,Pelorus_244_2021
+RRAP-ECT01-2021-Ahya-PAPE-245,Group1,Ahya,PAPE,245,2021,ECT01,Pelorus,Experimental,Pelorus_245_2021
+RRAP-ECT01-2021-Ahya-PAPE-246_L3,Group1,Ahya,PAPE,246,2021,ECT01,Pelorus,Experimental,Pelorus_246_2021
+RRAP-ECT01-2021-Ahya-PAPE-247_L3,Group1,Ahya,PAPE,247,2021,ECT01,Pelorus,Experimental,Pelorus_247_2021
+RRAP-ECT01-2021-Ahya-PAPE-248,Group1,Ahya,PAPE,248,2021,ECT01,Pelorus,Experimental,Pelorus_248_2021
+RRAP-ECT01-2021-Ahya-PAPE-249_L4,Group1,Ahya,PAPE,249,2021,ECT01,Pelorus,Experimental,Pelorus_249_2021
+RRAP-ECT01-2021-Ahya-PAPE-250_L2,Group1,Ahya,PAPE,250,2021,ECT01,Pelorus,Experimental,Pelorus_250_2021
+RRAP-ECT01-2021-Ahya-STCR-161_L2,Group1,Ahya,STCR,161,2021,ECT01,St Crispin,Experimental,St Crispin_161_2021
+RRAP-ECT01-2021-Ahya-STCR-162,Group1,Ahya,STCR,162,2021,ECT01,St Crispin,Experimental,St Crispin_162_2021
+RRAP-ECT01-2021-Ahya-STCR-163_L4,Group1,Ahya,STCR,163,2021,ECT01,St Crispin,Experimental,St Crispin_163_2021
+RRAP-ECT01-2021-Ahya-STCR-164_L4,Group1,Ahya,STCR,164,2021,ECT01,St Crispin,Experimental,St Crispin_164_2021
+RRAP-ECT01-2021-Ahya-STCR-165_L4,Group1,Ahya,STCR,165,2021,ECT01,St Crispin,Experimental,St Crispin_165_2021
+RRAP-ECT01-2021-Ahya-STCR-166_L2,Group1,Ahya,STCR,166,2021,ECT01,St Crispin,Experimental,St Crispin_166_2021
+RRAP-ECT01-2021-Ahya-STCR-167_L2,Group1,Ahya,STCR,167,2021,ECT01,St Crispin,Experimental,St Crispin_167_2021
+RRAP-ECT01-2021-Ahya-STCR-168_L4,Group1,Ahya,STCR,168,2021,ECT01,St Crispin,Experimental,St Crispin_168_2021
+RRAP-ECT01-2021-Ahya-STCR-169,Group1,Ahya,STCR,169,2021,ECT01,St Crispin,Experimental,St Crispin_169_2021
+RRAP-ECT01-2021-Ahya-STCR-170_L2,Group1,Ahya,STCR,170,2021,ECT01,St Crispin,Experimental,St Crispin_170_2021
+RRAP-ECT01-2021-Ahya-STCR-171-B_L4,Group1,Ahya,STCR,171,2021,ECT01,St Crispin,Experimental,St Crispin_171_2021
+RRAP-ECT01-2021-Ahya-STCR-172_L2,Group1,Ahya,STCR,172,2021,ECT01,St Crispin,Experimental,St Crispin_172_2021
+RRAP-ECT01-2021-Ahya-STCR-174-B_L4,Group1,Ahya,STCR,174,2021,ECT01,St Crispin,Experimental,St Crispin_174_2021
+RRAP-ECT01-2021-Ahya-STCR-175_L2,Group1,Ahya,STCR,175,2021,ECT01,St Crispin,Experimental,St Crispin_175_2021
+RRAP-ECT01-2021-Ahya-STCR-176_L3,Group1,Ahya,STCR,176,2021,ECT01,St Crispin,Experimental,St Crispin_176_2021
+RRAP-ECT01-2021-Ahya-STCR-177_L3,Group1,Ahya,STCR,177,2021,ECT01,St Crispin,Experimental,St Crispin_177_2021
+RRAP-ECT01-2021-Ahya-STCR-178,Group1,Ahya,STCR,178,2021,ECT01,St Crispin,Experimental,St Crispin_178_2021
+RRAP-ECT01-2021-Ahya-STCR-179_L4,Group1,Ahya,STCR,179,2021,ECT01,St Crispin,Experimental,St Crispin_179_2021
+RRAP-ECT01-2021-Ahya-STCR-180_L4,Group1,Ahya,STCR,180,2021,ECT01,St Crispin,Experimental,St Crispin_180_2021
+RRAP-ECT01-2021-Ahya-STCR-181_L2,Group1,Ahya,STCR,181,2021,ECT01,St Crispin,Experimental,St Crispin_181_2021
+RRAP-ECT01-2021-Ahya-STCR-182_L2,Group1,Ahya,STCR,182,2021,ECT01,St Crispin,Experimental,St Crispin_182_2021
+RRAP-ECT01-2021-Ahya-STCR-183_L2,Group1,Ahya,STCR,183,2021,ECT01,St Crispin,Experimental,St Crispin_183_2021
+RRAP-ECT01-2021-Ahya-STCR-184_L2,Group1,Ahya,STCR,184,2021,ECT01,St Crispin,Experimental,St Crispin_184_2021
+RRAP-ECT01-2021-Ahya-STCR-185_L3,Group1,Ahya,STCR,185,2021,ECT01,St Crispin,Experimental,St Crispin_185_2021
+RRAP-ECT01-2021-Ahya-STCR-186_L2,Group1,Ahya,STCR,186,2021,ECT01,St Crispin,Experimental,St Crispin_186_2021
+RRAP-ECT01-2021-Ahya-STCR-187_L4,Group1,Ahya,STCR,187,2021,ECT01,St Crispin,Experimental,St Crispin_187_2021
+RRAP-ECT01-2021-Ahya-STCR-251_L2,Group1,Ahya,STCR,251,2021,ECT01,St Crispin,Experimental,St Crispin_251_2021
+RRAP-ECT01-2021-Ahya-STCR-252_L4,Group1,Ahya,STCR,252,2021,ECT01,St Crispin,Experimental,St Crispin_252_2021
+RRAP-ECT01-2021-Ahya-STCR-253,Group1,Ahya,STCR,253,2021,ECT01,St Crispin,Experimental,St Crispin_253_2021
+RRAP-ECT01-2021-Ahya-STCR-254_L4,Group1,Ahya,STCR,254,2021,ECT01,St Crispin,Experimental,St Crispin_254_2021
+RRAP-ECT01-2021-Ahya-STCR-255_L2,Group1,Ahya,STCR,255,2021,ECT01,St Crispin,Experimental,St Crispin_255_2021
+RRAP-ECT01-2021-Ahya-STCR-256_L2,Group1,Ahya,STCR,256,2021,ECT01,St Crispin,Experimental,St Crispin_256_2021
+RRAP-ECT01-2021-Ahya-STCR-257_L4,Group1,Ahya,STCR,257,2021,ECT01,St Crispin,Experimental,St Crispin_257_2021
+RRAP-ECT01-2021-Ahya-STCR-258_L2,Group1,Ahya,STCR,258,2021,ECT01,St Crispin,Experimental,St Crispin_258_2021
+RRAP-ECT01-2021-Ahya-STCR-259_L2,Group1,Ahya,STCR,259,2021,ECT01,St Crispin,Experimental,St Crispin_259_2021
+RRAP-ECT01-2021-Ahya-STCR-260_L2,Group1,Ahya,STCR,260,2021,ECT01,St Crispin,Experimental,St Crispin_260_2021
+RRAP-ECT01-2021-Ahya-STCR-261_L2,Group1,Ahya,STCR,261,2021,ECT01,St Crispin,Experimental,St Crispin_261_2021
+RRAP-ECT01-2021-Ahya-STCR-262_L4,Group1,Ahya,STCR,262,2021,ECT01,St Crispin,Experimental,St Crispin_262_2021
+RRAP-ECT01-2021-Ahya-STCR-263_L4,Group1,Ahya,STCR,263,2021,ECT01,St Crispin,Experimental,St Crispin_263_2021
+RRAP-ECT01-2021-Ahya-STCR-264-LEG5346-12_L2,Group1,Ahya,STCR,264,2021,ECT01,St Crispin,Experimental,St Crispin_264_2021
+RRAP-ECT01-2021-Ahya-STCR-265_L4,Group1,Ahya,STCR,265,2021,ECT01,St Crispin,Experimental,St Crispin_265_2021
+RRAP-ECT01-2021-Ahya-STCR-266_L2,Group1,Ahya,STCR,266,2021,ECT01,St Crispin,Experimental,St Crispin_266_2021
+RRAP-ECT01-2021-Ahya-STCR-267_L4,Group1,Ahya,STCR,267,2021,ECT01,St Crispin,Experimental,St Crispin_267_2021
+RRAP-ECT01-2021-Ahya-SYKE-144a_L4,Group1,Ahya,SYKE,144,2021,ECT01,Sykes,Experimental,Sykes_144_2021
+RRAP-ECT01-2021-Ahya-SYKE-150_L2,Group1,Ahya,SYKE,150,2021,ECT01,Sykes,Experimental,Sykes_150_2021
+RRAP-ECT01-2022-Ahya-CBHE-1802_L2,Group1,Ahya,CBHE,1802,2022,ECT01,Heron,Experimental,Heron_1802_2022
+RRAP-ECT01-2022-Ahya-CBHE-1806_L2,Group1,Ahya,CBHE,1806,2022,ECT01,Heron,Experimental,Heron_1806_2022
+RRAP-ECT01-2022-Ahya-CBHE-1808_L2,Group1,Ahya,CBHE,1808,2022,ECT01,Heron,Experimental,Heron_1808_2022
+RRAP-ECT01-2022-Ahya-CBHE-1809_L2,Group1,Ahya,CBHE,1809,2022,ECT01,Heron,Experimental,Heron_1809_2022
+RRAP-ECT01-2022-Ahya-CBLM-1781_L2,Group1,Ahya,CBLM,1781,2022,ECT01,Lady Musgrave,Experimental,Lady Musgrave_1781_2022
+RRAP-ECT01-2022-Ahya-CBLM-1784_L2,Group1,Ahya,CBLM,1784,2022,ECT01,Lady Musgrave,Experimental,Lady Musgrave_1784_2022
+RRAP-ECT01-2022-Ahya-CBLM-1785_L2,Group1,Ahya,CBLM,1785,2022,ECT01,Lady Musgrave,Experimental,Lady Musgrave_1785_2022
+RRAP-ECT01-2022-Ahya-CBLM-1786_L2,Group1,Ahya,CBLM,1786,2022,ECT01,Lady Musgrave,Experimental,Lady Musgrave_1786_2022
+RRAP-ECT01-2022-Ahya-CBLM-1787_L2,Group1,Ahya,CBLM,1787,2022,ECT01,Lady Musgrave,Experimental,Lady Musgrave_1787_2022
+RRAP-ECT01-2022-Ahya-CBLM-1788_L2,Group1,Ahya,CBLM,1788,2022,ECT01,Lady Musgrave,Experimental,Lady Musgrave_1788_2022
+RRAP-ECT01-2022-Ahya-CBLM-1789_L2,Group1,Ahya,CBLM,1789,2022,ECT01,Lady Musgrave,Experimental,Lady Musgrave_1789_2022
+RRAP-ECT01-2022-Ahya-CBLM-1790_L2,Group1,Ahya,CBLM,1790,2022,ECT01,Lady Musgrave,Experimental,Lady Musgrave_1790_2022
+RRAP-ECT01-2022-Ahya-MACK-787_L2,Group1,Ahya,MACK,787,2022,ECT01,Mackay,Experimental,Mackay_787_2022
+RRAP-ECT01-2022-Ahya-MACK-788_L2,Group1,Ahya,MACK,788,2022,ECT01,Mackay,Experimental,Mackay_788_2022
+RRAP-ECT01-2022-Ahya-MACK-789_L2,Group1,Ahya,MACK,789,2022,ECT01,Mackay,Experimental,Mackay_789_2022
+RRAP-ECT01-2022-Ahya-MACK-790_L2,Group1,Ahya,MACK,790,2022,ECT01,Mackay,Experimental,Mackay_790_2022
+RRAP-ECT01-2022-Ahya-MACK-791_L2,Group1,Ahya,MACK,791,2022,ECT01,Mackay,Experimental,Mackay_791_2022
+RRAP-ECT01-2022-Ahya-MACK-792_L2,Group1,Ahya,MACK,792,2022,ECT01,Mackay,Experimental,Mackay_792_2022
+RRAP-ECT01-2022-Ahya-MACK-793_L2,Group1,Ahya,MACK,793,2022,ECT01,Mackay,Experimental,Mackay_793_2022
+RRAP-ECT01-2022-Ahya-MACK-794_L2,Group1,Ahya,MACK,794,2022,ECT01,Mackay,Experimental,Mackay_794_2022
+RRAP-ECT01-2022-Ahya-MACK-795_L2,Group1,Ahya,MACK,795,2022,ECT01,Mackay,Experimental,Mackay_795_2022
+RRAP-ECT01-2022-Ahya-MACK-796_L2,Group1,Ahya,MACK,796,2022,ECT01,Mackay,Experimental,Mackay_796_2022
+RRAP-ECT01-2021-Ahya-21550-17,Group2,Ahya,21550,17,2021,ECT01,Reef21550,Experimental,Reef21550_17_2021
+RRAP-ECT01-2021-Ahya-21550-21_L2,Group2,Ahya,21550,21,2021,ECT01,Reef21550,Experimental,Reef21550_21_2021
+RRAP-ECT01-2021-Ahya-21550-22_L3,Group2,Ahya,21550,22,2021,ECT01,Reef21550,Experimental,Reef21550_22_2021
+RRAP-ECT01-2021-Ahya-21550-23_L3,Group2,Ahya,21550,23,2021,ECT01,Reef21550,Experimental,Reef21550_23_2021
+RRAP-ECT01-2021-Ahya-21550-24_L3,Group2,Ahya,21550,24,2021,ECT01,Reef21550,Experimental,Reef21550_24_2021
+RRAP-ECT01-2021-Ahya-21550-26,Group2,Ahya,21550,26,2021,ECT01,Reef21550,Experimental,Reef21550_26_2021
+RRAP-ECT01-2021-Ahya-21550-3_L4,Group2,Ahya,21550,3,2021,ECT01,Reef21550,Experimental,Reef21550_3_2021
+RRAP-ECT01-2021-Ahya-CBLM-105_L2,Group2,Ahya,CBLM,105,2021,ECT01,Lady Musgrave,Experimental,Lady Musgrave_105_2021
+RRAP-ECT01-2021-Ahya-CBLM-107_L3,Group2,Ahya,CBLM,107,2021,ECT01,Lady Musgrave,Experimental,Lady Musgrave_107_2021
+RRAP-ECT01-2021-Ahya-FITZ-368_L2,Group2,Ahya,FITZ,368,2021,ECT01,Fitzroy Island,Experimental,Fitzroy Island_368_2021
+RRAP-ECT01-2021-Ahya-FITZ-369_L4,Group2,Ahya,FITZ,369,2021,ECT01,Fitzroy Island,Experimental,Fitzroy Island_369_2021
+RRAP-ECT01-2021-Ahya-FITZ-370_L4,Group2,Ahya,FITZ,370,2021,ECT01,Fitzroy Island,Experimental,Fitzroy Island_370_2021
+RRAP-ECT01-2021-Ahya-FITZ-372,Group2,Ahya,FITZ,372,2021,ECT01,Fitzroy Island,Experimental,Fitzroy Island_372_2021
+RRAP-ECT01-2021-Ahya-FITZ-373_L2,Group2,Ahya,FITZ,373,2021,ECT01,Fitzroy Island,Experimental,Fitzroy Island_373_2021
+RRAP-ECT01-2021-Ahya-FITZ-374_L2,Group2,Ahya,FITZ,374,2021,ECT01,Fitzroy Island,Experimental,Fitzroy Island_374_2021
+RRAP-ECT01-2021-Ahya-NDIR-49,Group2,Ahya,NDIR,49,2021,ECT01,North Direction,Experimental,North Direction_49_2021
+RRAP-ECT01-2021-Ahya-NDIR-69b_L3,Group2,Ahya,NDIR,69,2021,ECT01,North Direction,Experimental,North Direction_69_2021
+RRAP-ECT01-2021-Ahya-SYKE-126_L4,Group2,Ahya,SYKE,126,2021,ECT01,Sykes,Experimental,Sykes_126_2021
+RRAP-ECT01-2021-Ahya-SYKE-156,Group2,Ahya,SYKE,156,2021,ECT01,Sykes,Experimental,Sykes_156_2021
+RRAP-ECT01-2021-Ahya-SYKE-160,Group2,Ahya,SYKE,160,2021,ECT01,Sykes,Experimental,Sykes_160_2021
+RRAP-ECT01-2022-Ahya-CBHE-1796_L2,Group2,Ahya,CBHE,1796,2022,ECT01,Heron,Experimental,Heron_1796_2022
+RRAP-ECT01-2022-Ahya-CBHE-1797_L2,Group2,Ahya,CBHE,1797,2022,ECT01,Heron,Experimental,Heron_1797_2022
+RRAP-ECT01-2022-Ahya-CBHE-1800_L2,Group2,Ahya,CBHE,1800,2022,ECT01,Heron,Experimental,Heron_1800_2022
+RRAP-ECT01-2022-Ahya-CBHE-1805_L2,Group2,Ahya,CBHE,1805,2022,ECT01,Heron,Experimental,Heron_1805_2022
+RRAP-ECT01-2021-Ahya-21550-29a_L4,Group3,Ahya,21550,29,2021,ECT01,Reef21550,Experimental,Reef21550_29_2021
+RRAP-ECT01-2021-Ahya-21550-47-LEG5346-86_L2,Group3,Ahya,21550,47,2021,ECT01,Reef21550,Experimental,Reef21550_47_2021
+RRAP-ECT01-2021-Ahya-CBLM-108_L3,Group3,Ahya,CBLM,108,2021,ECT01,Lady Musgrave,Experimental,Lady Musgrave_108_2021
+RRAP-ECT01-2021-Ahya-CBLM-111_L4,Group3,Ahya,CBLM,111,2021,ECT01,Lady Musgrave,Experimental,Lady Musgrave_111_2021
+RRAP-ECT01-2021-Ahya-CBLM-120_L2,Group3,Ahya,CBLM,120,2021,ECT01,Lady Musgrave,Experimental,Lady Musgrave_120_2021
+RRAP-ECT01-2021-Ahya-CBLM-76_L4,Group3,Ahya,CBLM,76,2021,ECT01,Lady Musgrave,Experimental,Lady Musgrave_76_2021
+RRAP-ECT01-2021-Ahya-CBLM-77_L4,Group3,Ahya,CBLM,77,2021,ECT01,Lady Musgrave,Experimental,Lady Musgrave_77_2021
+RRAP-ECT01-2021-Ahya-NDIR-47_L3,Group3,Ahya,NDIR,47,2021,ECT01,North Direction,Experimental,North Direction_47_2021
+RRAP-ECT01-2021-Ahya-NDIR-53_L4,Group3,Ahya,NDIR,53,2021,ECT01,North Direction,Experimental,North Direction_53_2021
+RRAP-ECT01-2021-Ahya-SYKE-121_L4,Group3,Ahya,SYKE,121,2021,ECT01,Sykes,Experimental,Sykes_121_2021
+RRAP-ECT01-2021-Ahya-SYKE-122_L4,Group3,Ahya,SYKE,122,2021,ECT01,Sykes,Experimental,Sykes_122_2021
+RRAP-ECT01-2021-Ahya-SYKE-124_L3,Group3,Ahya,SYKE,124,2021,ECT01,Sykes,Experimental,Sykes_124_2021
+RRAP-ECT01-2021-Ahya-SYKE-131,Group3,Ahya,SYKE,131,2021,ECT01,Sykes,Experimental,Sykes_131_2021
+RRAP-ECT01-2021-Ahya-SYKE-132_L2,Group3,Ahya,SYKE,132,2021,ECT01,Sykes,Experimental,Sykes_132_2021
+RRAP-ECT01-2021-Ahya-SYKE-134,Group3,Ahya,SYKE,134,2021,ECT01,Sykes,Experimental,Sykes_134_2021
+RRAP-ECT01-2021-Ahya-SYKE-135a-LEG5344-31_L4,Group3,Ahya,SYKE,135,2021,ECT01,Sykes,Experimental,Sykes_135_2021
+RRAP-ECT01-2021-Ahya-SYKE-142_L3,Group3,Ahya,SYKE,142,2021,ECT01,Sykes,Experimental,Sykes_142_2021
+RRAP-ECT01-2021-Ahya-SYKE-143_L3,Group3,Ahya,SYKE,143,2021,ECT01,Sykes,Experimental,Sykes_143_2021
+RRAP-ECT01-2021-Ahya-SYKE-151a_L3,Group3,Ahya,SYKE,151,2021,ECT01,Sykes,Experimental,Sykes_151_2021
+RRAP-ECT01-2021-Ahya-SYKE-152_L4,Group3,Ahya,SYKE,152,2021,ECT01,Sykes,Experimental,Sykes_152_2021
+RRAP-ECT01-2021-Ahya-SYKE-155,Group3,Ahya,SYKE,155,2021,ECT01,Sykes,Experimental,Sykes_155_2021
+RRAP-ECT01-2021-Ahya-SYKE-158_L4,Group3,Ahya,SYKE,158,2021,ECT01,Sykes,Experimental,Sykes_158_2021
+RRAP-ECT01-2021-Ahya-SYKE-159_L4,Group3,Ahya,SYKE,159,2021,ECT01,Sykes,Experimental,Sykes_159_2021
+RRAP-ECT01-2021-Ahya-SYKE-161,Group3,Ahya,SYKE,161,2021,ECT01,Sykes,Experimental,Sykes_161_2021
+RRAP-ECT01-2022-Ahya-CBHE-1798_L2,Group3,Ahya,CBHE,1798,2022,ECT01,Heron,Experimental,Heron_1798_2022
+RRAP-ECT01-2022-Ahya-CBHE-1799_L2,Group3,Ahya,CBHE,1799,2022,ECT01,Heron,Experimental,Heron_1799_2022
+RRAP-ECT01-2022-Ahya-CBHE-1801_L2,Group3,Ahya,CBHE,1801,2022,ECT01,Heron,Experimental,Heron_1801_2022
+RRAP-ECT01-2022-Ahya-CBHE-1803_L2,Group3,Ahya,CBHE,1803,2022,ECT01,Heron,Experimental,Heron_1803_2022
+RRAP-ECT01-2022-Ahya-CBHE-1804_L2,Group3,Ahya,CBHE,1804,2022,ECT01,Heron,Experimental,Heron_1804_2022
+RRAP-ECT01-2022-Ahya-CBHE-1807_L2,Group3,Ahya,CBHE,1807,2022,ECT01,Heron,Experimental,Heron_1807_2022

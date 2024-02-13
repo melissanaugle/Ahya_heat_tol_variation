@@ -1,0 +1,442 @@
+---
+title: "Symbiont_analysis"
+author: "Melissa Naugle"
+date: "12/12/2022"
+output: html_document
+---
+
+# Script to analyze how ITS2 varied spatially, by host cluster, and by heat tolerance phenotype 
+- Examine relationship between symbiont PCs and heat tolerance (Figure S6)
+- Examine those site-level relationships between symbiont PCs and heat tolerance with a stronger trend (Figure S7)
+
+- See how ITS2 seqs vary by shelf position (Figure 5)
+- Visualize relationship between ITS2 seqs, type profiles, host clusters, and shelf position (Fig S5)
+- use PERMANOVA to measure relationship between latitude, shelf position, host cluster and ITS2 sequences and type profiles (Table S4 and S5)
+- Visualize spatial variation in ITS2 type profiles 
+
+```{r setup, include=FALSE}
+setwd("/Users/Melissa/Desktop/GitHub/Ahya_heat_tol_variation/Rscripts_analysis/")
+#rm(list = ls())
+graphics.off()
+library(tidyverse)
+library(lmerTest)
+library(Hmisc)
+library(corrplot)
+library(factoextra)
+library(ggpmisc)
+library(ggpubr)
+library(patchwork)
+library(reshape2)
+library(AMR)
+library(rstatix)
+date = format(Sys.Date(), "%Y_%m_%d")
+img_path=paste0("/Users/Melissa/Desktop/GitHub/Ahya_heat_tol_variation/Outputs/Symbionts/", date)
+```
+
+```{r}
+pheno <- read.csv("../CleanData/pheno_metadata_clean_2024_01_08.csv") %>% dplyr::select(Site_geno_year, Site.name
+, Site, Genotype, SampleYear, Health.Chart.num, fvfm_ED50, ndvi_ED50, RelativeFvFm9C, RelativeNDVI9C, Depth_corrected, Shelf.pos,Lat,Lon, Km_to_coastline, Subregion,Shelf.pos,ndvi_ED50CIrange,fvfm_ED50CIrange, Sitename_geno_year,fvfm_ED50.adj,RelativeFvFm9C.adj,ndvi_ED50.adj,RelativeNDVI9C.adj)
+
+clust <- read.csv("../CleanData/2023_10_17_clust_data_edited.csv") %>% dplyr::select(Sitename_geno_year, Site.name,Clust) 
+
+dat <- left_join(pheno, clust, by = c("Sitename_geno_year","Site.name"))
+
+dat$Sitename_geno_year <- paste0(dat$Site.name,"_",dat$Genotype,"_",dat$SampleYear)
+
+symbionts <- read.csv("../CleanData/ITS2_types_OTUs_17_10_2023.csv")  %>% dplyr::rename(Sitename_geno_year = Site.name_geno_year) 
+
+
+dat_all_symbionts <- left_join(dat, symbionts, by = c("Sitename_geno_year","Site.name","Genotype","SampleYear")) 
+anti_join(dat, symbionts, by = "Sitename_geno_year") #no symbiont data for these or filtered out due to low read counts 
+anti_join(symbionts, dat, by = "Sitename_geno_year") #these werent ran in acute heat stress assay
+
+lat <- dat_all_symbionts %>% dplyr::select(Site.name, Lat, Shelf.pos) %>% distinct() %>% filter(!is.na(Lat))
+mmm <- read.csv("../Rawdata/Site_characteristics.csv") %>% dplyr::select(c(Site.name, MMM.)) %>% filter(!Site.name == "Hicks_2")
+
+```
+
+#data overview
+```{r}
+symbionts[!is.na(symbionts$C3k),] #421 with sequence data, 
+symbionts[!is.na(symbionts$C3k) & symbionts$C3k == 0,]#and all have c3k 
+```
+
+
+
+#How do symbiont communities (PCs) relate to heat tolerance traits? 
+##Figure S6
+Also facet by site to see within site trends 
+Also examine relationships between heat tol traits and PC2 (minimal relationship)
+
+```{r fig.height=9}
+
+#OTU PCs
+p1 <- dat_all_symbionts %>% ggplot(aes(OTU_PC1,fvfm_ED50.adj)) + xlab("ITS2 Sequence PC1") + ylab("ED50 (Fv/Fm) adjusted") + geom_point() + theme_bw()+ geom_smooth(method = "lm", se = F, color = "blue")  + ggpubr::stat_cor(method = "pearson", size = 4) + ylim(c(min(dat_all_symbionts$fvfm_ED50.adj, na.rm = T)* 0.99,max(dat_all_symbionts$fvfm_ED50.adj, na.rm = T)* 1.01))
+
+p2 <- dat_all_symbionts %>% ggplot(aes(OTU_PC1,RelativeFvFm9C.adj)) + xlab("ITS2 Sequence PC1") + ylab("Retained Fv/Fm adjusted") + geom_point() + theme_bw()+ geom_smooth(method = "lm", se = F, color = "blue")  + ggpubr::stat_cor(method = "pearson", size = 4)
+
+
+p4 <- dat_all_symbionts %>% ggplot(aes(OTU_PC1,ndvi_ED50.adj)) + xlab("ITS2 Sequence PC1") + ylab("ED50 (NDVI) adjusted") + geom_point() + theme_bw()+ geom_smooth(method = "lm", se = F, color = "blue")  + ggpubr::stat_cor(method = "pearson", size = 4)
+
+p5 <- dat_all_symbionts %>% ggplot(aes(OTU_PC1,RelativeNDVI9C.adj)) + xlab("ITS2 Sequence PC1") + ylab("Retained NDVI adjusted") + geom_point() + theme_bw()+ geom_smooth(method = "lm", se = F, color = "blue")  + ggpubr::stat_cor(method = "pearson", size = 4)
+
+dat_all_symbionts %>% filter(!is.na(OTU_PC1))
+(p1+p2)/(p4+p5) + plot_annotation(tag_levels = 'A') 
+ggsave(paste0("../Outputs/Symbionts/FigureS6_",date,".png"), width = 9, height = 7)
+
+#facet by site
+dat_all_symbionts %>% ggplot(aes(OTU_PC1,fvfm_ED50)) + xlab("ITS2 Sequence PC1") + ylab("ED50 (Fv/Fm)") + geom_point() + theme_bw()+ geom_smooth(method = "lm", se = F, color = "blue")  + ggpubr::stat_cor(method = "pearson", size = 4) + facet_wrap(~Site.name)
+
+dat_all_symbionts %>% ggplot(aes(OTU_PC1,RelativeFvFm9C)) + xlab("ITS2 Sequence PC1") + ylab("Relative 9˚C (Fv/Fm)") + geom_point() + theme_bw()+ geom_smooth(method = "lm", se = F, color = "blue")  + ggpubr::stat_cor(method = "pearson", size = 4)+ facet_wrap(~Site.name)
+
+
+dat_all_symbionts %>% ggplot(aes(OTU_PC1,ndvi_ED50)) + xlab("ITS2 Sequence PC1") + ylab("ED50 (NDVI)") + geom_point() + theme_bw()+ geom_smooth(method = "lm", se = F, color = "blue")  + ggpubr::stat_cor(method = "pearson", size = 4)+ facet_wrap(~Site.name)
+
+dat_all_symbionts %>% ggplot(aes(OTU_PC1,RelativeNDVI9C)) + xlab("ITS2 Sequence PC1") + ylab("Relative (NDVI)") + geom_point() + theme_bw()+ geom_smooth(method = "lm", se = F, color = "blue")  + ggpubr::stat_cor(method = "pearson", size = 4)+ facet_wrap(~Site.name)
+
+#pc2
+dat_all_symbionts %>% ggplot(aes(OTU_PC2,fvfm_ED50, col = Subregion)) + xlab("ITS2 Sequence PC2") + ylab("ED50 (Fv/Fm)") + geom_point() + theme_bw()+ geom_smooth(method = "lm", se = F, color = "blue")  + ggpubr::stat_cor(method = "pearson", size = 4) + facet_wrap(~Site.name)
+
+dat_all_symbionts %>% ggplot(aes(OTU_PC2,RelativeFvFm9C)) + xlab("ITS2 Sequence PC2") + ylab("Relative 9˚C (Fv/Fm)") + geom_point() + theme_bw()+ geom_smooth(method = "lm", se = F, color = "blue")  + ggpubr::stat_cor(method = "pearson", size = 4)+ facet_wrap(~Site.name)
+
+
+dat_all_symbionts %>% ggplot(aes(OTU_PC2,ndvi_ED50)) + xlab("ITS2 Sequence PC2") + ylab("ED50 (NDVI)") + geom_point() + theme_bw()+ geom_smooth(method = "lm", se = F, color = "blue")  + ggpubr::stat_cor(method = "pearson", size = 4)+ facet_wrap(~Site.name)
+
+dat_all_symbionts %>% ggplot(aes(OTU_PC2,RelativeNDVI9C)) + xlab("ITS2 Sequence PC2") + ylab("Relative (NDVI)") + geom_point() + theme_bw()+ geom_smooth(method = "lm", se = F, color = "blue")  + ggpubr::stat_cor(method = "pearson", size = 4)+ facet_wrap(~Site.name)
+
+```
+
+#Plot within-site relationships with a stronger trend (Lady musgrave and north direction)
+##Figure S7
+```{r }
+#lady musgrave
+p1 <- dat_all_symbionts %>% filter(Site.name == "Lady Musgrave")  %>% ggplot(aes(OTU_PC1,fvfm_ED50)) + xlab("") + ylab("ED50 (Fv/Fm)") + geom_point(aes(color = Clust)) + theme_bw()+ geom_smooth(method = "lm", se = F, color = "blue")  + ggpubr::stat_cor(method = "pearson", size = 5) +ylim(34.5,37.5) + scale_color_discrete(name = "Genomic Cluster") + ggtitle("Lady Musgrave")
+
+p2 <- dat_all_symbionts %>% filter(Site.name == "Lady Musgrave")  %>% ggplot(aes(OTU_PC1,RelativeFvFm9C)) + xlab("") + ylab("Retained Fv/Fm") + geom_point(aes(color = Clust)) + theme_bw()+ geom_smooth(method = "lm", se = F, color = "blue")  + ggpubr::stat_cor(method = "pearson", size = 5) + ylim(0.4,0.9)+ scale_color_discrete(name = "Genomic Cluster") + ggtitle("Lady Musgrave")
+
+p3 <- dat_all_symbionts %>% filter(Site.name == "Lady Musgrave")  %>% ggplot(aes(OTU_PC1,ndvi_ED50)) + xlab("ITS2 Sequence PC1") + ylab("ED50 (NDVI)") + geom_point(aes(color = Clust)) + theme_bw()+ geom_smooth(method = "lm", se = F, color = "blue")  + ggpubr::stat_cor(method = "pearson", size = 5) +  ylim(33.5,36.5)+ scale_color_discrete(name = "Genomic Cluster")
+
+p4 <- dat_all_symbionts %>% filter(Site.name == "Lady Musgrave")  %>% ggplot(aes(OTU_PC1,RelativeNDVI9C)) + xlab("ITS2 Sequence PC1") + ylab("Relative (NDVI)") + geom_point(aes(color = Clust)) + theme_bw()+ geom_smooth(method = "lm", se = F, color = "blue")  + ggpubr::stat_cor(method = "pearson", size = 5) + ylim(0,1.1)+ scale_color_discrete(name = "Genomic Cluster")
+
+
+(p1+p2)/(p3+p4) + plot_annotation(tag_levels = 'A') + plot_layout(guides = 'collect') & theme(text = element_text(size = 14))
+
+
+#north d
+p5 <- dat_all_symbionts %>% filter(Site.name == "North Direction")  %>% ggplot(aes(OTU_PC1,fvfm_ED50)) + xlab("") + ylab("ED50 (Fv/Fm)") + geom_point(aes(color = Clust)) + theme_bw()+ geom_smooth(method = "lm", se = F, color = "blue")  + ggpubr::stat_cor(method = "pearson", size = 5)  + scale_color_discrete(name = "Genomic Cluster")  + ggtitle("North Direction")+ xlab("ITS2 Sequence PC1") +  ylim(35,37.5)
+
+p6 <- dat_all_symbionts %>% filter(Site.name == "North Direction")  %>% ggplot(aes(OTU_PC1,RelativeFvFm9C)) + xlab("") + ylab("Retained Fv/Fm") + geom_point(aes(color = Clust)) + theme_bw()+ geom_smooth(method = "lm", se = F, color = "blue")  + ggpubr::stat_cor(method = "pearson", size = 5) + scale_color_discrete(name = "Genomic Cluster") + ggtitle("North Direction")+ xlab("ITS2 Sequence PC1")+  ylim(0.05,0.45)
+
+p7 <- dat_all_symbionts %>% filter(Site.name == "North Direction")  %>% ggplot(aes(OTU_PC1,ndvi_ED50)) + xlab("ITS2 Sequence PC1") + ylab("ED50 (NDVI)") + geom_point(aes(color = Clust)) + theme_bw()+ geom_smooth(method = "lm", se = F, color = "blue")  + ggpubr::stat_cor(method = "pearson", size = 5) + scale_color_discrete(name = "Genomic Cluster")
+
+p8 <- dat_all_symbionts %>% filter(Site.name == "North Direction")  %>% ggplot(aes(OTU_PC1,RelativeNDVI9C)) + xlab("ITS2 Sequence PC1") + ylab("Retained NDVI") + geom_point(aes(color = Clust)) + theme_bw()+ geom_smooth(method = "lm", se = F, color = "blue")  + ggpubr::stat_cor(method = "pearson", size = 5) +  scale_color_discrete(name = "Genomic Cluster")
+test <-  dat_all_symbionts %>% filter(Site.name == "North Direction") 
+
+
+(p1+p2)/(p3+p4)/(p5+p6)/(p7+p8) + plot_annotation(tag_levels = 'A') + plot_layout(guides = 'collect') & theme(text = element_text(size = 14))
+
+#put together
+(p1+p2)/(p5+p6) + plot_annotation(tag_levels = 'A') + plot_layout(guides = 'collect') & theme(text = element_text(size = 14))
+ggsave(paste0("../Outputs/Symbionts/FigureS7_",date,".png"), width = 9, height = 7)
+```
+
+#does diversity differ by shelf position
+```{r }
+dat_all_symbionts$Shelf.pos <- factor(dat_all_symbionts$Shelf.pos, levels = c("Outer", "Mid", "Inshore-mid", "Inshore"))
+
+shelfcols <- c("Outer" = "royalblue", "Mid" = "olivedrab3", "Inshore-mid" = "olivedrab3", "Inshore" = "goldenrod2")
+ggplot(dat_all_symbionts, aes(OTU_PC1, OTU_PC2, col = Shelf.pos)) + geom_point() + theme_bw() + stat_ellipse(geom = "polygon",alpha = 0.3, aes(fill = Shelf.pos)) + scale_fill_manual(name = "Shelf Position", values = shelfcols) + scale_color_manual(name = "Shelf Position", values = shelfcols) + xlab("ITS2 Sequence PC1") + ylab("ITS2 Sequence PC2")
+#for figure 5
+```
+
+#does diversity differ by shelf position
+Additional figs 
+```{r}
+dat_all_symbionts %>% group_by(Shelf.pos, dominant_type) %>% tally() 
+
+#remove type profiles with loe abundance for plotting 
+dat_all_symbionts$dominant_type <- factor(dat_all_symbionts$dominant_type, levels = c( "C3k/C50a/C50b/C50c-C3ba-C50q-C3-C50f", "C3k-C50a-C3-C3ba-C50q-C50f-C3dq-C3a", "C3k/C50a/C50c-C3-C3ba-C50q-C50f", "C3k-C3wy-C50a-C3wu-C3ba-C50q", "C3k/C50a/C1-C3-C3ba-C3dq-C50q-C3a", "C3k/C50b-C3ba-C50a-C50q-C3-C3bh", "C3k/C3bo-C3ba-C50a-C50q-C50b", "C3k/C50b-C50a-C3ba-C50q-C3-C50f", "A1-A1gr-A1gd"))
+
+dat_all_symbionts %>% filter(!is.na(dominant_type)) %>% ggplot(aes(Shelf.pos)) + geom_histogram(stat = "count", aes(fill = dominant_type)) + theme_bw()+ theme(axis.text.x = element_text(angle = 45, hjust = 1))  + xlab("") + ylab("Count")
+#more type profiles in outer reefs than inshore - but also fewer inshore sites 
+```
+
+
+
+
+#big symbiont fig
+#prep for figure 5 and S5
+```{r}
+colors_symbiont <- c("C3k" = "cadetblue4", 
+                     "C50a" = "goldenrod3", 
+                     "C50b" = "purple", 
+                     "C3ba" = "lightskyblue3", 
+                     "C50c" = "gold2", 
+                     "C50q" = "deepskyblue4", 
+                     "C3" = "mediumblue", 
+                     "C50f" = "palevioletred", 
+                     "C3dq" = "paleturquoise", 
+                     "C3bd" = "grey47", 
+                     "C3a" = "chocolate2",
+                     "C3bh" = "lightseagreen", 
+                     "C50aj" = "blue4",
+                     "C50bj" = "grey47", 
+                     "C3jv" = "grey47", 
+                     "A1" = "slateblue3", 
+                     "C3cz" = "grey47", 
+                     "C3bo" = "grey47", 
+                     "C3ah" = "grey47", 
+                     "X37134_C" = "grey47", 
+                     "A1gr" = "navy", 
+                     "C50p" = "pink", 
+                     "C3wy" = "grey47", 
+                     "A1gd" = "green", 
+                     "C3wu" = "grey47", 
+                     "C3bp" = "grey47", 
+                     "C3bm" = "darkgreen", 
+                     "C1" = "grey47", 
+                     "C3wv"  = "grey47", 
+                     "C3b" = "grey47", 
+                     "C50u" = "grey47", 
+                     "X298_C" = "grey47", 
+                     "C3ad" = "grey47", 
+                     "C21" = "grey47", 
+                     "C50v" = "grey47", 
+                     "X40872_C" = "grey47", 
+                     "X48186_C" = "grey47", 
+                     "C3ss" = "grey47", 
+                     "X40786_C" = "grey47", 
+                     "C3su" = "grey47", 
+                     "C50aq" = "grey47", 
+                     "X37138_C" = "grey47", 
+                     "X21216_C" = "grey47", 
+                     "C50ax" = "grey47", 
+                     "C3st" = "grey47", 
+                     "X21223_C" = "grey47", 
+                     "X21173_C" = "grey47", 
+                     "X1079331_C"= "grey47")
+
+colors_typeprof <- c(
+  "C50b.C50p.C3.C50f.C3bm.C3dt"          = "darkorange",       
+  "C3k.C50a.C3.C3ba.C50q.C50f.C3dq.C3a"  = "gold", 
+  "C3k.C50a.C50c.C3.C3ba.C50q.C50f"      = "green4", 
+  "C3k.C50a.C50b.C50c.C3ba.C50q.C3.C50f" = "steelblue4", 
+  "C3k.C3wy.C50a.C3wu.C3ba.C50q"         = "black", 
+  "C3k.C3bo.C3ba.C50a.C50q.C50b"         = "purple", 
+  "C3k.C50b.C3ba.C50a.C50q.C3.C3bh"      = "tan4", 
+  "C3k.C50a.C3wy.C50b.C3ba.C3wu"         = "red3", 
+  "C3k.C50b.C50a.C3ba.C50q.C3.C50f"      = "hotpink", 
+  "C3k.C50a.C1.C3.C3ba.C3dq.C50q.C3a"    = "olivedrab2", 
+  "A1.A1gr.A1gd"                         = "pink", 
+  "A1.A1gr.A1gd.A1mm.A1bf"               = "grey70" )
+
+symbiont_plot <- dat_all_symbionts  %>% pivot_longer(cols = c("C3k":"X1079331_C"), names_to = "OTU", values_to = "Count") %>% filter(!is.na(Count)) 
+
+
+symbiont_plot$OTU <- factor(symbiont_plot$OTU, levels = c("C3k","C50a", "C50b","C3ba","C50c","C50q","C3","C50f","C3dq","C3bd", "A1","A1gr","C3bo","C50p","C3wy","A1gd","C3a","C3wu","C3bp","C3bm","C1","C3bh","C3cz","C50bj","C3wv","C3b","C50u","C50aj","C3ah","X298_C","C3ad","C21","C50v","X40872_C","X48186_C","C3ss","C3jv","X40786_C","C3su","X37134_C","C50aq","X37138_C","X21216_C","C50ax","C3st","X21223_C","X21173_C","X1079331_C"))
+
+colMax <- function(data) sapply(data, max, na.rm = TRUE)
+otus <- as.data.frame(colSums(dat_all_symbionts[,39:86], na.rm = T))  %>% tibble::rownames_to_column("OTU") %>% dplyr::rename(count = 'colSums(dat_all_symbionts[, 39:86], na.rm = T)') 
+otus2 <- as.data.frame(colMax(dat_all_symbionts[,39:86])) %>% tibble::rownames_to_column("OTU") %>% left_join(otus)%>% dplyr::rename(max = 'colMax(dat_all_symbionts[, 39:86])') 
+otus2 <- otus2 %>% dplyr::arrange(desc(count))
+top_group <- otus2 %>% top_n(15, count) %>% pull(OTU)
+top_group_divs <- c("C3k" , "C50a" , "C50b", "C3ba", "C50c","C50q", "C3" , "C50f" , "C3dq", "C3a" ,  "C3bh" ,   "C50aj" ,  "A1", "A1gr", "C50p",  "A1gd" , "C3bm")
+
+
+symbiont_plot_types <- dat_all_symbionts  %>% pivot_longer(cols = c("C50b.C50p.C3.C50f.C3bm.C3dt":"A1.A1gr.A1gd.A1mm.A1bf"), names_to = "Type Profile", values_to = "Count") %>% filter(!is.na(Count)) 
+
+heron_dataframe <- lat %>% filter(Site.name == "Heron")
+
+clust_andorder <- clust %>% filter(!is.na(Clust)) %>% arrange(Clust) %>% mutate(order = row_number())
+
+#by site / lat
+sym_otu <- symbiont_plot %>% distinct() %>% filter(!is.na(OTU)) %>% full_join(heron_dataframe, suffix = c("", ".z")) %>% dplyr::select(-ends_with(".z")) %>% left_join(clust_andorder, by = c("Site.name","Sitename_geno_year"))  %>% ggplot(aes(x = reorder(Site_geno_year, order),y =  Count,  fill = OTU)) + geom_bar(stat = "identity", width = 1.1) + theme_bw() + ylab("ITS2 Sequence (DIV)") + xlab("") + scale_fill_manual(name = "ITS2 DIV", values = colors_symbiont, breaks = top_group_divs) + theme_void() + facet_grid(cols = vars(reorder(Site.name,desc(Lat))), scales = "free") + theme(axis.title.y = element_text(angle = 90, size = 10), strip.text.x = element_blank())
+
+sym_type <- symbiont_plot_types %>% distinct()  %>% filter(!is.na(Count)) %>% full_join(heron_dataframe, suffix = c("", ".z")) %>% dplyr::select(-ends_with(".z")) %>% left_join(clust_andorder, by = c("Site.name","Sitename_geno_year")) %>% ggplot(aes(x = reorder(Site_geno_year, order),y =  Count,  fill = `Type Profile`)) + geom_bar(stat = "identity", width = 1.1) + theme_bw() + ylab("ITS2 Type Profile") + xlab("")  + theme_void() + facet_grid(cols = vars(reorder(Site.name,desc(Lat))), scales = "free")+ scale_fill_manual(name = "ITS2 Type Profile", values = colors_typeprof)+ theme(  axis.title.y = element_text(angle = 90) , strip.text.x = element_blank())
+
+distcoast <- dat_all_symbionts  %>% select(Site.name,Shelf.pos, Lat) %>% distinct() %>%
+  ggplot(aes(x = reorder(Site.name, desc(Lat)),  fill = Shelf.pos)) +
+  geom_bar(position = "fill", width = 1)  + ylab("Shelf \nPosition") + xlab("") +
+  facet_grid(cols = vars(reorder(Site.name, desc(Lat))), scales = "free", switch = "x")+ theme_void() + theme( axis.title.y = element_text(angle = 90), strip.text.x = element_text(angle = 90, hjust = 1)) + scale_fill_manual(name = "Shelf Position", values = c("Inshore" = "goldenrod2","Mid" = "olivedrab3","Outer" = "royalblue")) 
+
+
+pmmm <- dat_all_symbionts  %>% select(Site.name, Lat) %>% distinct() %>% left_join(mmm) %>%
+  ggplot(aes(x = reorder(Site.name, desc(Lat)),  fill = MMM.)) +
+  geom_bar(position = "fill", width = 1.2)  + ylab("MMM") + xlab("") +
+  facet_grid(cols = vars(reorder(Site.name, desc(Lat))), scales = "free", switch = "x")+ theme_void() + theme( axis.title.y = element_text(angle = 90, size = 10), strip.text.x = element_text(angle = 90, hjust = 1))
+
+
+pclust <- clust_andorder  %>%  left_join(lat, by = "Site.name") %>% 
+  ggplot(aes(x = reorder(Sitename_geno_year, order),  fill = Clust)) +
+  geom_bar(position = "fill", width = 1)+ ylab("") + xlab("") + 
+  scale_fill_manual(name = "Genomic Cluster", values = c("Group1" = "#374e55","Group2" = "#00a1d5","Group3" = "#b24745","Group4" = "#df8f44"))+ facet_grid(cols = vars(reorder(Site.name, desc(Lat))), scales = "free", switch = "x")+ theme_void() + theme(axis.title.y = element_text(angle = 90, size = 9), axis.ticks = element_blank(), strip.text.y.left = element_text(angle = 0), strip.text.x = element_blank()) + ylab("Genomic\nCluster") 
+```
+
+##Figure S5
+```{r }
+library(patchwork)
+(sym_otu / sym_type / pclust/ distcoast) + plot_layout(nrow = 4, height = c(10,4,3, 1), guides = 'collect')& 
+  theme(legend.text = element_text(size = 5), legend.title = element_text(size = 5),legend.key.size = unit(0.7,"line"))
+ggsave(paste0("../Outputs/Symbionts/FigureS5_",date,".png"), width = 9, height = 7)
+
+```
+
+
+##Fig 5 - do ITS2 variants differ by shelf position 
+```{r}
+
+sym_otu <- symbiont_plot %>% distinct() %>% filter(!is.na(OTU)) %>%  dplyr::select(-ends_with(".z")) %>% left_join(clust_andorder, by = c("Site.name","Sitename_geno_year"))  %>% ggplot(aes(x = reorder(Site_geno_year, order),y =  Count,  fill = OTU)) + geom_bar(stat = "identity", width = 1.1) + theme_bw() + ylab("ITS2 \nSequence \n(ASV)") + xlab("") + scale_fill_manual(name = "ITS2 ASV", values = colors_symbiont, breaks = top_group_divs) + theme_void() + facet_grid(cols = vars(reorder(Site.name,desc(Lat))), scales = "free") + theme(axis.title.y = element_text(angle = 90, size = 10), strip.text.x = element_blank())
+
+sym2 <- ggplot(dat_all_symbionts, aes(OTU_PC1, OTU_PC2, col = Shelf.pos)) + geom_point() + theme_bw() + stat_ellipse(geom = "polygon",alpha = 0.3, aes(fill = Shelf.pos)) + scale_fill_manual(name = "Shelf Position", values = shelfcols) + scale_color_manual(name = "Shelf Position", values = shelfcols) + xlab("ITS2 Sequence PC1") + ylab("ITS2 Sequence \nPC2") 
+
+
+distcoast <- dat_all_symbionts %>% filter(!Site.name == "Heron") %>% select(Site.name,Shelf.pos, Lat) %>% distinct() %>%
+  ggplot(aes(x = reorder(Site.name, desc(Lat)),  fill = Shelf.pos)) +
+  geom_bar(position = "fill", width = 1)  + ylab("Shelf \nPosition") + xlab("") +
+  facet_grid(cols = vars(reorder(Site.name, desc(Lat))), scales = "free", switch = "x")+ theme_void() + theme( axis.title.y = element_text(angle = 90), strip.text.x = element_text(angle = 90, hjust = 1)) + scale_fill_manual(name = "Shelf Position", values = c("Inshore" = "goldenrod2","Mid" = "olivedrab3","Outer" = "royalblue")) + theme(legend.position = "none")
+
+
+(sym2 / sym_otu / distcoast) + plot_layout(nrow = 5, height = c(20, 15, 3), guides = 'collect')+ plot_annotation(tag_levels = 'A') & theme(legend.text = element_text(size = 5), legend.title = element_text(size = 5),legend.key.size = unit(0.7,"line")) 
+
+ggsave(paste0("../Outputs/Symbionts/Fig5_symbyshelfpos_",date,".png"), width = 6, height = 7)
+
+```
+
+#do clusts host diff symbionts
+No obvious trend here 
+```{r}
+
+
+pclust <- clust_andorder  %>%  left_join(lat, by = "Site.name") %>% 
+  ggplot(aes(x = reorder(Sitename_geno_year, order),  fill = Clust)) +
+  geom_bar(position = "fill", width = 1)+ ylab("") + xlab("") + 
+  scale_fill_manual(name = "Genomic Cluster", values = c("Group1" = "#374e55","Group2" = "#00a1d5","Group3" = "#b24745","Group4" = "#df8f44"))+ facet_grid(cols = vars(reorder(Clust, desc(Clust))), scales = "free", switch = "x")+ theme_void() + theme(axis.title.y = element_text(angle = 90, size = 9), axis.ticks = element_blank(), strip.text.y.left = element_text(angle = 0), strip.text.x = element_blank()) + ylab("Genomic\nCluster") 
+
+sym_otu_c <- symbiont_plot %>% distinct() %>% filter(!is.na(OTU))  %>% full_join(heron_dataframe, suffix = c("", ".z")) %>% dplyr::select(-ends_with(".z")) %>% left_join(clust_andorder, by = c("Site.name","Sitename_geno_year", "Clust")) %>% filter(!(Clust == "NA"))%>% filter(!is.na(Clust)) %>% ggplot(aes(x = reorder(Sitename_geno_year, order),y =  Count,  fill = OTU)) + geom_bar(stat = "identity", width = 1.1) + theme_bw() + ylab("ITS2 Sequence (DIV)") + xlab("") + scale_fill_manual(name = "ITS2 DIV", values = colors_symbiont, breaks = top_group_divs) + theme_void() + facet_grid(cols = vars(reorder(Clust,desc(Clust))), scales = "free") + theme(axis.title.y = element_text(angle = 90, size = 10), strip.text.x = element_blank())
+
+pclust / sym_otu_c+ plot_layout(nrow = 2, height = c(1,9), guides = 'collect')
+ggsave("../Outputs/Symbionts/clustbyDIV.png", height = 6, width = 6)
+```
+
+
+
+
+
+#Do ITS2 type profiles and sequences differ by latitude, shelf position, and/or host cluster? Examine using permanova 
+##Tables S4 and S5
+- first need to run function below 
+```{r}
+
+
+library(vegan)
+#seq permanova
+dat_all_symbionts_nonas <- dat_all_symbionts %>% filter(!is.na(C3k))%>% filter(!is.na(Clust))
+dat_all_symbionts.permanova <- dat_all_symbionts_nonas %>% dplyr::select(c(C3k:X1079331_C)) 
+
+dist <- vegan::vegdist(dat_all_symbionts.permanova, method="bray", na.rm = T)
+
+# default test by terms
+
+div <- vegan::adonis2(dat_all_symbionts.permanova ~ Shelf.pos * Lat * Clust, data = dat_all_symbionts_nonas, permutations = 999, method="bray")
+
+div
+adonis_OmegaSq(div)#function is below
+
+#type prof permanova
+
+dat_all_symbionts_nonas_types <- dat_all_symbionts %>% filter(!is.na(C50b.C50p.C3.C50f.C3bm.C3dt))%>% filter(!is.na(Clust))
+dat_all_symbionts.permanova_types <- dat_all_symbionts_nonas_types %>% dplyr::select(c(C50b.C50p.C3.C50f.C3bm.C3dt:A1.A1gr.A1gd.A1mm.A1bf)) %>% filter(!is.na(C50b.C50p.C3.C50f.C3bm.C3dt))
+
+dist2 <- vegdist(dat_all_symbionts.permanova_types, method="bray", na.rm = T)
+
+# default test by terms
+
+div2 <- adonis2(dat_all_symbionts.permanova_types ~ Shelf.pos * Lat * Clust, data = dat_all_symbionts_nonas_types, permutations = 999, method="bray")
+
+div2
+
+adonis_OmegaSq(div2) #function is below
+
+```
+
+
+#effect size function
+- run this to get omega squared values 
+```{r}
+adonis_OmegaSq <- function(adonisOutput, partial = TRUE){
+    if(!(is(adonisOutput, "adonis") || is(adonisOutput, "anova.cca")))
+        stop("Input should be an adonis object")
+    if (is(adonisOutput, "anova.cca")) {
+        aov_tab <- adonisOutput
+        aov_tab$MeanSqs <- aov_tab$SumOfSqs / aov_tab$Df
+        aov_tab$MeanSqs[length(aov_tab$Df)] <- NA
+    } else {
+        aov_tab <- adonisOutput$aov.tab
+    }
+    heading <- attr(aov_tab, "heading")
+    MS_res <- aov_tab[pmatch("Residual", rownames(aov_tab)), "MeanSqs"]
+    SS_tot <- aov_tab[rownames(aov_tab) == "Total", "SumsOfSqs"]
+    N <- aov_tab[rownames(aov_tab) == "Total", "Df"] + 1
+    if(partial){
+        omega <- apply(aov_tab, 1, function(x) (x["Df"]*(x["MeanSqs"]-MS_res))/(x["Df"]*x["MeanSqs"]+(N-x["Df"])*MS_res))
+        aov_tab$parOmegaSq <- c(omega[1:(length(omega)-2)], NA, NA)
+    } else {
+        omega <- apply(aov_tab, 1, function(x) (x["SumsOfSqs"]-x["Df"]*MS_res)/(SS_tot+MS_res))
+        aov_tab$OmegaSq <- c(omega[1:(length(omega)-2)], NA, NA)
+    }
+    if (is(adonisOutput, "adonis"))
+        cn_order <- c("Df", "SumsOfSqs", "MeanSqs", "F.Model", "R2",
+                      if (partial) "parOmegaSq" else "OmegaSq", "Pr(>F)")
+    else
+        cn_order <- c("Df", "SumOfSqs", "F", if (partial) "parOmegaSq" else "OmegaSq",
+                      "Pr(>F)")
+    aov_tab <- aov_tab[, cn_order]
+    attr(aov_tab, "names") <- cn_order
+    attr(aov_tab, "heading") <- heading
+    if (is(adonisOutput, "adonis"))
+        adonisOutput$aov.tab <- aov_tab
+    else
+        adonisOutput <- aov_tab
+    return(adonisOutput)
+}
+```
+
+
+
+#map of ITS2 type profs - visualize spatial variation of type profiles 
+Supports inshore-offshore trend with more variability in offshore sites 
+```{r}
+
+library("rnaturalearthdata")
+library("rnaturalearth")
+library("sf")
+library(scatterpie)
+dat_all_coords <- dat_all_symbionts %>%  filter(!(dominant_type == "C3k-C50a-C3wy-C50b-C3ba-C3wu" | dominant_type == "C50b/C50p-C3-C50f-C3bm-C3dt")) %>% filter(!is.na(dominant_type)) %>% group_by(Site.name, Lat, Lon, dominant_type) %>% tally() %>% pivot_wider(names_from = "dominant_type", values_from = "n", values_fill = 0 ) 
+dat_all_coords$Radius <- 0.5
+
+coords_before <- dat_all_coords %>% dplyr::select(Lon, Lat, Radius, Site.name) 
+coords_after <- as.data.frame(packcircles::circleLayout(coords_before))
+coords_after$Site.name <- dat_all_coords$Site.name
+coords_after <-  coords_after %>% dplyr::select(layout.x, layout.y, Site.name) %>% left_join(dat_all_coords, by = "Site.name")
+
+world <- ne_countries(scale = "medium", returnclass = "sf")
+class(world)
+
+ggplot(data = world) + 
+  geom_sf(fill = "gray70") + 
+  coord_sf(xlim = c(141, 155), ylim = c(-26, -11), expand = FALSE) + 
+  theme_bw() + 
+  geom_scatterpie(data = coords_after, aes(x=layout.x, y=layout.y, r = 0.5), alpha = 0.7, cols = c("C3k-C3wy-C50a-C3wu-C3ba-C50q","C3k-C50a-C3-C3ba-C50q-C50f-C3dq-C3a",  "C3k/C50a/C50b/C50c-C3ba-C50q-C3-C50f","C3k/C50a/C50c-C3-C3ba-C50q-C50f","C3k/C50b-C50a-C3ba-C50q-C3-C50f","A1-A1gr-A1gd","C3k/C50a/C1-C3-C3ba-C3dq-C50q-C3a" ,"C3k/C50b-C3ba-C50a-C50q-C3-C3bh","C3k/C3bo-C3ba-C50a-C50q-C50b"))  + xlab("") + ylab("") 
+
+
+ggsave(paste0("../Outputs/Symbionts/ITS2typeprof_map.png"), width = 10, height = 7)
+```
+
+
+
+
+
+
+
+
+

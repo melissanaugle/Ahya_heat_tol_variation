@@ -1,0 +1,147 @@
+---
+title: "Env_analysis_allvar"
+author: "Melissa Naugle"
+date: "11/21/2022"
+output: html_document
+---
+
+#Script to account for depth strafications for eReefs-derived environmental variables for each colony. 
+- Uses environmental variables generated for coordinates for each site 
+- Accounts for tide-normalized colony depth and selects the environmental value at the closest depth straification available on eReefs
+- Generates environmental data csv with values for each environmental variable for each colony 
+
+```{r setup, include=FALSE}
+setwd("/Users/Melissa/Desktop/GitHub/Ahya_heat_tol_variation/Rscripts_dataprocessing/")
+rm( list = ls())
+graphics.off()
+library(tidyverse)
+library(lmerTest)
+library(Hmisc)
+library(corrplot)
+library(factoextra)
+library(ggpmisc)
+library(car)
+library(MuMIn)
+library(AMR)
+date = format(Sys.Date(), "%Y_%m_%d")
+```
+
+#read in data
+```{r}
+
+#remove a spathulata from datasheet 
+envdata <- read.csv("../Rawdata/ECT1_sites_environmental_data.csv") %>%
+  filter(!Site.name == "Fitzroy Reef") %>%  
+  filter(!Metric == "DHW_collection_ A.spathulata _ 2") %>%
+  filter(!Metric == "DHW_collection_eReefs_ A.spathulata _ 2") %>%
+  #remove these and enter manually 
+  filter(!Metric == "DHW_collection_eReefs_ A.hyacenthus _ 1") %>%
+  filter(!Metric == "DHW_collection_eReefs_ A.hyacenthus _ 2") 
+  
+#fix naming   
+envdata$Site.name[envdata$Site.name == "Pelorus East"] <- "Pelorus"  
+envdata$Site.name[envdata$Site.name == "21-550"] <- "Reef21550"
+
+depths <- read_xlsx("../Rawdata/Coral colony metadata from the ECT1_RRAP_2023_11_16_AhyaCh1.xlsx", sheet = 2) %>% dplyr::select(locationID, yearCollected, monthCollected,dayCollected,Site.name, Site, Site_geno_year,Genotype, depthOfColonyinMetersCorrected, eventID) %>% dplyr::rename(Depth_corrected = depthOfColonyinMetersCorrected) %>% mutate(Depth_corrected = as.numeric(Depth_corrected))
+
+depths$Site.name_orig <- depths$Site.name
+
+#Hicks 1-7 were collected in a slightly different region (~7km away) from other Hicks colonies, and have different environmental data 
+depths$Site.name[(depths$Site.name == "Hicks" & (depths$Genotype == "1" | depths$Genotype == "2" | depths$Genotype == "3" | depths$Genotype == "4" | depths$Genotype == "5" | depths$Genotype == "6" | depths$Genotype == "7"))] <- "Hicks_2"
+
+
+depths$Site_year <- paste0(depths$Site,"_",depths$yearCollected)
+depths$SampleYear <- depths$yearCollected
+```
+
+
+#Find matching depth and input env variable 
+```{r}
+env_depths <- envdata %>% filter(!is.na(Depth.adjusted)) 
+metrics <- unique(env_depths$Metric) 
+
+#quick fix for issue for st crispin 255 where there's a tie between two depth levels
+depths$Depth_corrected[(depths$Site.name == "St Crispin" & depths$Depth_corrected == "-0.4")] <- -0.40001
+depths$Depth_corrected[(depths$Site_year == "Davies_2022" & depths$Depth_corrected == "-0.5")] <- -0.50001
+#assign mean depth for heron cols with no depth recorded
+depths$Depth_corrected[depths$Site.name == "Heron" & is.na(depths$Depth_corrected)] <- mean(depths$Depth_corrected[depths$Site.name == "Heron" & !is.na(depths$Depth_corrected)])
+
+#first for metrics with multiple depths 
+envdepth_cor <- envdata %>% filter(!is.na(Depth.adjusted)) %>% filter(Multi_level == "Yes") %>% dplyr::select(-c(Variable, Source, Spat_res, Time_res, Period, Multi_level)) 
+#subset of env variables first 
+metrics <- unique(envdepth_cor$Metric)
+depths_red <- depths %>% dplyr::select(Site.name, Site,Site_year, SampleYear, Depth_corrected, Genotype,Site_geno_year, eventID)
+depths_env <- depths_red
+for (i in 1:length(metrics)){
+  metric_touse <- metrics[i]
+  envmetricdat <- envdepth_cor %>% filter(Metric == metric_touse) 
+  pheno_temp <- right_join(depths_red, envmetricdat, by = "Site.name") %>% 
+  mutate(dist.compare = abs(Depth.adjusted - Depth_corrected)) %>% 
+  group_by(Site_geno_year) %>% 
+  filter(dist.compare == min(dist.compare)) %>%
+  pivot_wider(names_from = Metric, values_from = Value) 
+  pheno_temp$dist.compare <- NULL
+  depths_env <- left_join(pheno_temp, depths_env, by = "Site_geno_year", suffix = c("", ".z")) %>% 
+  dplyr::select(-ends_with(".z"))
+}
+
+
+
+```
+
+
+#add in metrics with only one depth / no depth 
+
+```{r }
+
+env_nodepth <- envdata %>% filter(is.na(Depth.adjusted)) %>%
+  filter(Multi_level == "No") %>% dplyr::select(-c(Variable,Depth,Spat_res,Source,Time_res,Period,Multi_level,Depth.adjusted))%>%
+  filter(!Metric == "DHW_collection_ A.hyacenthus _ 1") %>% filter(!Metric == "DHW_collection_ A.hyacenthus _ 2") %>%
+    pivot_wider(names_from = Metric, values_from = Value)
+
+pheno_env_2 <- right_join(depths_env, env_nodepth, by = "Site.name") 
+pheno_env_2$Site.name[pheno_env_2$Site.name == "Hicks_2"] <- "Hicks"
+
+#DHW at time of collection
+env_DHWcol <- envdata %>% filter(Metric == "DHW_collection_ A.hyacenthus _ 1" | Metric == "DHW_collection_ A.hyacenthus _ 2")
+env_DHWcol$SampleYear[env_DHWcol$Metric == "DHW_collection_ A.hyacenthus _ 1" ] <- "2021"
+env_DHWcol$SampleYear[env_DHWcol$Metric == "DHW_collection_ A.hyacenthus _ 2" ] <- "2022"
+env_DHWcol$Sitename_year <- paste0(env_DHWcol$Site.name,"_",env_DHWcol$SampleYear)
+
+env_DHWcol2 <- env_DHWcol %>%
+  dplyr::select(-c(Site.name)) %>% distinct() %>%
+  dplyr::select(Metric, Value, Sitename_year) %>%
+ pivot_wider(names_from = Metric, values_from = Value, values_fn = mean) %>% 
+  filter(!(Sitename_year == "Davies_2022" | Sitename_year == "Chicken_2022"))
+
+env_DHWcol2$DHW_collection <- paste0(env_DHWcol2$`DHW_collection_ A.hyacenthus _ 1`,env_DHWcol2$`DHW_collection_ A.hyacenthus _ 2`)
+env_DHWcol2$DHW_collection <- parse_number(env_DHWcol2$DHW_collection)
+env_DHWcol2 <- env_DHWcol2 %>% dplyr::select(-c(`DHW_collection_ A.hyacenthus _ 1`,`DHW_collection_ A.hyacenthus _ 2`))
+
+
+pheno_env_2$Sitename_year <- paste0(pheno_env_2$Site.name,"_",pheno_env_2$SampleYear)
+pheno_env_3 <- right_join(pheno_env_2,env_DHWcol2, by = "Sitename_year")
+
+#manually enter the DHW at time of collection for sites with multiple sampling times
+pheno_env_3$DHW_collection[pheno_env_3$Site_year == "StCrispin-30Mar_2021"] <- 0.760714286
+pheno_env_3$DHW_collection[pheno_env_3$Site_year == "StCrispin-15April_2021"] <- 0
+pheno_env_3$DHW_collection[pheno_env_3$Site_year == "Hicks-20March_2021"] <- 3.8958571
+pheno_env_3$DHW_collection[pheno_env_3$Site_year == "Hicks-21March_2021"] <- 3.7385714
+pheno_env_3$DHW_collection[pheno_env_3$Site_year == "NorthDirection-23March_2021"] <- 3.1725714
+pheno_env_3$DHW_collection[pheno_env_3$Site_year == "NorthDirection-24March_2021"] <- 3.0210000
+
+
+#remove columns not used - environmental variables unlikely to affect heat tolerance 
+pheno_env_4 <- pheno_env_3 %>% select(!c(v_OM,u_OM,v_LMsd,u_LMsd,v_HMsd, u_HMsd,v_LM,u_LM,u_OMsd,v_OMsd,v_HM,u_HM, eta_OM, eta_LMsd,eta_LM,eta_OMsd,eta_HM,eta_HMsd, salt_LMsd,salt_HMsd,salt_OMsd,salt_HM, salt_LM, alk_LMsd,alk_HMsd,alk_LM,alk_HM,alk_OMsd,  Oxygen_LMsd, Oxygen_LM, TOTAL_NITROGEN_LMsd, TOTAL_NITROGEN_LM, Secchi_LM, Secchi_LMsd, Chl_a_LM, Kd_490_LM, Kd_490_LMsd, Chl_a_LMsd, PIP_LMsd, PIP_LM, PH_LM, PH_LMsd, NO3_LMsd, NO3_LM))
+
+#remove natural bleaching for north direction 
+pheno_env_5 <- pheno_env_4 %>% filter(!Site == "North Direction-natbleach")
+
+write.csv(pheno_env_5, paste0("../Rawdata/ECT1_sites_environmental_data_depthsadjusted",date,".csv"), row.names = F)
+
+```
+
+
+
+
+

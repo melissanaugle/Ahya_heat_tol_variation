@@ -1,0 +1,52 @@
+﻿var,Predictor Type,name
+Depth_corrected,Depth,Depth 
+Lat,Latitude,Latitude
+MMM,Temperature: Climatology,MMM
+MMM_eReefs,Temperature: Climatology,MMM (eReefs)
+OM,Temperature: Climatology,Mean Temp.
+MMMsd,Temperature: Variability,SD of MMM
+OMsd,Temperature: Variability,SD of mean temp.
+AR,Temperature: Variability,Annual range
+DTR,Temperature: Variability,Daily Thermal Range
+DTR_ss,Temperature: Variability,Daily Thermal Range (spring/summer)
+ROTC_ss,Temperature: Variability,Rate of temp change during spring/summer
+DHW_collection,Temperature: Recent Heat Stress,DHW at collection
+DHW_freq_sup4,Temperature: Anomalies,Freq. of DHW > 4
+DHW_freq_sup4_eReefs,Temperature: Anomalies,Freq. of DHW > 4 (eReefs)
+DHW_freq_sup8,Temperature: Anomalies,Freq. of DHW > 8
+DHW_max,Temperature: Anomalies,Max DHW
+DHW_max_eReefs,Temperature: Anomalies,Max. DHW (eReefs)
+Env_PC1,Water Quality / Nutrients,Env_PC1
+Env_PC2,Water Quality / Nutrients,Env_PC2
+Env_PC3,Water Quality / Nutrients,Env_PC3
+SSTA_freq_mean,Temperature: Anomalies,Mean freq. anomalies
+SSTA_freq_mean_eReefs,Temperature: Anomalies,Mean freq. anomalies (eReefs)
+SSTA_freq_stdev,Temperature: Anomalies,SD of freq. anomalies
+SSTA_freq_stdev_eReefs,Temperature: Anomalies,SD of freq. anomalies (eReefs)
+TSA_DHW_mean,Temperature: Anomalies,Mean DHW
+TSA_DHW_mean_eReefs,Temperature: Anomalies,Mean DHW (eReefs)
+TSA_DHW_stdev,Temperature: Anomalies,SD of DHW
+TSA_DHW_stdev_eReefs,Temperature: Anomalies,SD of DHW (eReefs)
+dominant_type,Symbiont Community,dominant_type
+OTU_PC1,Symbiont Community,ITS2 ASV_PC1
+OTU_PC2,Symbiont Community,ITS2 ASV_PC2
+OTU_PC3,Symbiont Community,ITS2 ASV_PC3
+OTU_PC4,Symbiont Community,ITS2 ASV_PC4
+OTU_PC5,Symbiont Community,ITS2 ASV_PC5
+Clust,Host Genomic Cluster,Clust
+Light_PC1,Light Availability,Light_PC1
+Light_PC2,Light Availability,Light_PC2
+Nutrients_PC1,Nutrient Availability,Nutrients_PC1
+Nutrients_PC2,Nutrient Availability,Nutrients_PC2
+Health.Chart.num,Pigmentation,Health.Chart.num
+Shelf.pos,Shelf Position,Shelf Position
+TempVariability_PC1,Temperature: Variability,TempVariability_PC1
+TempVariability_PC2,Temperature: Variability,TempVariability_PC2
+TempClimatology_PC1,Temperature: Climatology,TempClimatology_PC1
+TempClimatology_PC2,Temperature: Climatology,TempClimatology_PC2
+TempAnomalies_PC1,Temperature: Anomalies,TempAnomalies_PC1
+TempAnomalies_PC2,Temperature: Anomalies,TempAnomalies_PC2
+NO3_OM,Nutrient Availability,Mean NO3
+PIP_OM,Nutrient Availability,Mean PIP
+TOTAL_NITROGEN_OM,Nutrient Availability,Mean Nitrogen
+CF_OM,Light Availability,Mean Cloud Fraction

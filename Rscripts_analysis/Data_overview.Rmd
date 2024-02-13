@@ -1,0 +1,400 @@
+---
+title: "Data_overview"
+author: "Melissa Naugle"
+date: "1/12/2023"
+output: html_document
+---
+
+# Exloratory script of heat tolerance data
+- Calculates summary statistics (for Table 1)
+- Plots heat tolerance performance among colonies and sites (Fig 2)
+- Explores distributions and correlations among phenotypic traits (Fig S2, S3)
+- Measures relationship between NDVI and lab-assayed chlorophyll (Fig S1)
+- Generates sampling figure (Fig 1)
+- Assess variation within versus among sites (Table 1)
+
+```{r setup, include=FALSE}
+setwd("/Users/Melissa/Desktop/GitHub/Ahya_heat_tol_variation//Rscripts_analysis/")
+rm(list = ls())
+graphics.off()
+library(tidyverse)
+library(patchwork)
+library(tidytext)
+library(PupillometryR)
+date = format(Sys.Date(), "%Y_%m_%d")
+outputpath <- "/Users/Melissa/Desktop/GitHub/Ahya_heat_tol_variation/Outputs/Data_exploration/"
+```
+
+#data in
+
+
+```{r}
+pheno <- read.csv("../CleanData/pheno_metadata_clean_2024_01_08.csv") 
+lat <- pheno %>% dplyr::select(Site.name,Lat) %>% distinct()
+env <- read.csv("../CleanData/Environmental_data_PCs_2024_01_08.csv")
+mmm <- env %>% dplyr::select(Site.name, MMM)%>% distinct()
+coast <- pheno %>% dplyr::select(Site.name, Km_to_coastline) %>% distinct()
+clust <- read.csv("../CleanData/2023_10_17_clust_data_edited.csv")
+symbiont <- read.csv("../CleanData/ITS2_types_OTUs_17_10_2023.csv")
+chlorophyll <- read.csv(("../Rawdata/TotalChlorophyll.csv")) %>% 
+  dplyr::select(-Species) %>% mutate(Genotype = as.character(Genotype), Rack.Pos = as.character(Rack.Pos))
+rawfvfm <- read.csv("../Rawdata/full_iPAM_data_2023_12_04.csv") 
+rawfvfm$Rack.Pos <-  sapply(strsplit(as.character(rawfvfm$Site_Rack), "_"), `[`, 2)
+rawndvi <- read.csv("../Rawdata/hyperspecdata_2023_12_04.csv") %>% mutate(Genotype = as.character(Genotype), Rack.Pos = as.character(Rack.Pos))
+
+```
+
+
+
+
+#summary stats
+Mean, median, and range for each trait
+```{r}
+print("fvfm_ED50")
+mean(pheno$fvfm_ED50, na.rm = T)
+range(pheno$fvfm_ED50, na.rm = T)
+median(pheno$fvfm_ED50, na.rm = T)
+
+print("RelativeFvFm9C")
+mean(pheno$RelativeFvFm9C, na.rm = T)
+range(pheno$RelativeFvFm9C, na.rm = T)
+median(pheno$RelativeFvFm9C, na.rm = T)
+
+print("ndvi_ED50")
+mean(pheno$ndvi_ED50, na.rm = T)
+range(pheno$ndvi_ED50, na.rm = T)
+median(pheno$ndvi_ED50, na.rm = T)
+
+print("RelativeNDVI9C")
+mean(pheno$RelativeNDVI9C, na.rm = T)
+range(pheno$RelativeNDVI9C, na.rm = T)
+median(pheno$RelativeNDVI9C, na.rm = T)
+```
+
+
+#Explore distributions of the 4 traits/metrics
+```{r}
+
+#by subregion
+pheno$Subregion <- factor(pheno$Subregion, levels = c("Cooktown", "Cairns", "Innisfail/Townsville", "Townsville" , "Swains", "Capricorn Bunker"))
+cols <-  c("Cooktown" = "red2", "Cairns" = "sienna1", "Innisfail/Townsville" = "gold2", "Townsville" = "seagreen3", "Swains" = "cornflower blue", "Capricorn Bunker" = "blue")
+
+p1 <- pheno %>% ggplot(aes(fvfm_ED50)) + geom_histogram(aes(fill = Subregion)) + theme_bw() + scale_color_manual(values = cols) + theme(legend.position = "none")
+p2 <- pheno %>% ggplot(aes(RelativeFvFm9C)) + geom_histogram(aes(fill = Subregion)) + theme_bw() + theme(legend.position = "none") + ylab("")+ scale_color_manual(values = cols)
+
+p4 <- pheno %>% ggplot(aes(ndvi_ED50)) + geom_histogram(aes(fill = Subregion)) + theme_bw() + theme(legend.position = "none")+ scale_color_manual(values = cols)
+p5 <- pheno %>% ggplot(aes(RelativeNDVI9C)) + geom_histogram(aes(fill = Subregion)) + theme_bw() + theme(legend.position = "none")+ ylab("")+ scale_color_manual(values = cols)
+
+(p1+p2) / (p4 + p5)+ plot_layout(guides = "collect") & theme(legend.position = "top")
+```
+
+#is there a relationship between traits?
+##Figure S3
+```{r }
+p1 <- pheno %>% ggplot(aes(RelativeFvFm9C, RelativeNDVI9C)) + geom_point() + theme_bw()+ geom_smooth(method = "lm", se = F, color = "blue")  + ggpubr::stat_cor(method = "pearson", size = 4)+ xlab("Retained Fv/Fm") + ylab("Retained NDVI")
+
+p3 <- pheno %>% ggplot(aes(fvfm_ED50, ndvi_ED50)) + geom_point() + theme_bw()+ geom_smooth(method = "lm", se = F, color = "blue")  + ggpubr::stat_cor(method = "pearson", size = 4)+ xlab("ED50 Fv/Fm") + ylab("ED50 NDVI")
+
+p3 + p1 
+ggsave(paste0(outputpath,"FigureS3_",date,".png"), width = 7, height = 4)
+```
+
+
+
+#is there a relationship between the metrics computed for each trait?
+##Figure S2
+```{r }
+p1 <- pheno %>% ggplot(aes(RelativeFvFm9C, fvfm_ED50)) + geom_point() + theme_bw()+ geom_smooth(method = "lm", se = F, color = "blue")  + ggpubr::stat_cor(method = "pearson", size = 4) + xlab("Relative Fv/Fm") + ylab("ED50 Fv/Fm") + xlim(c(0,0.8))
+
+p2 <- pheno %>% ggplot(aes(RelativeNDVI9C, ndvi_ED50)) + geom_point() + theme_bw()+ geom_smooth(method = "lm", se = F, color = "blue")  + ggpubr::stat_cor(method = "pearson", size = 4)+ xlab("Relative NDVI") + ylab("ED50 NDVI")+ xlim(c(0,0.8))
+
+p1 + p2
+#weak relationship 
+
+p1 <- pheno %>% ggplot(aes(RelativeFvFm9C, fvfm_ED50)) + geom_point() + theme_bw()+ geom_smooth(method = "lm", se = F, color = "blue")  + ggpubr::stat_cor(method = "pearson", size = 4) + xlab("Relative Fv/Fm") + ylab("ED50 Fv/Fm") + xlim(c(0,0.8)) + ylim(c(33,40)) + facet_wrap(~Site.name) 
+
+p2 <- pheno %>% ggplot(aes(RelativeNDVI9C, ndvi_ED50)) + geom_point() + theme_bw()+ geom_smooth(method = "lm", se = F, color = "blue")  + ggpubr::stat_cor(method = "pearson", size = 4)+ xlab("Relative NDVI") + ylab("ED50 NDVI")+ xlim(c(0,0.8)) + ylim(c(33,40))+ facet_wrap(~Site.name)
+
+p1 + p2
+#relationship exists within sites though 
+
+
+p1 <- pheno %>% ggplot(aes(RelativeFvFm9C.adj, fvfm_ED50.adj)) + geom_point() + theme_bw()+ geom_smooth(method = "lm", se = F, color = "blue")  + ggpubr::stat_cor(method = "pearson", size = 4) + xlab("Retained Fv/Fm (site-adjusted)") + ylab("ED50 Fv/Fm (site-adjusted)") + xlim(c(0,0.65))+ ylim(c(35,37.5))
+
+p2 <- pheno %>% ggplot(aes(RelativeNDVI9C.adj, ndvi_ED50.adj)) + geom_point() + theme_bw()+ geom_smooth(method = "lm", se = F, color = "blue")  + ggpubr::stat_cor(method = "pearson", size = 4)+ xlab("Retained NDVI (site-adjusted)") + ylab("ED50 NDVI (site-adjusted)")+ xlim(c(0,0.75))+ ylim(c(35,38.5))
+
+p1 + p2
+ggsave(paste0(outputpath,"FigureS2_",date,".png"), width = 7, height = 4)
+
+
+```
+
+#top 20% of performers according to each metric 
+
+```{r}
+pheno2_top.performers <- pheno %>% 
+    arrange(-fvfm_ED50) %>% mutate(Ranking_fvfm_ED50 = row_number()) %>% 
+    mutate(Ranking_fvfm_ED50 = replace(Ranking_fvfm_ED50, Ranking_fvfm_ED50 < (nrow(pheno)*0.2), "Top 20")) %>% 
+    mutate(Ranking_fvfm_ED50 = replace(Ranking_fvfm_ED50, Ranking_fvfm_ED50 != "Top 20", "Bottom 80")) %>%
+    arrange(-ndvi_ED50) %>% mutate(Ranking_ndvi_ED50 = row_number()) %>% 
+    mutate(Ranking_ndvi_ED50 = replace(Ranking_ndvi_ED50, Ranking_ndvi_ED50 < (nrow(pheno)*0.2), "Top 20")) %>% 
+    mutate(Ranking_ndvi_ED50 = replace(Ranking_ndvi_ED50, Ranking_ndvi_ED50 != "Top 20", "Bottom 80")) %>%
+    arrange(-RelativeFvFm9C) %>% mutate(Ranking_fvfm_rel9c = row_number()) %>%
+    mutate(Ranking_fvfm_rel9c = replace(Ranking_fvfm_rel9c, Ranking_fvfm_rel9c < (nrow(pheno)*0.2), "Top 20"))%>% 
+    mutate(Ranking_fvfm_rel9c = replace(Ranking_fvfm_rel9c, Ranking_fvfm_rel9c != "Top 20", "Bottom 80")) %>%
+     arrange(-RelativeNDVI9C) %>% mutate(Ranking_ndvi_rel9c = row_number()) %>%
+    mutate(Ranking_ndvi_rel9c = replace(Ranking_ndvi_rel9c, Ranking_ndvi_rel9c < (nrow(pheno)*0.2), "Top 20"))%>% 
+    mutate(Ranking_ndvi_rel9c = replace(Ranking_ndvi_rel9c, Ranking_ndvi_rel9c != "Top 20", "Bottom 80")) %>%
+    dplyr::select(Site.name, Ranking_fvfm_ED50,Ranking_ndvi_ED50,Ranking_fvfm_rel9c,Ranking_ndvi_rel9c, Site_year, Genotype, Lat, Lon)
+
+
+pheno2_top.performers$top20s <- rowSums(pheno2_top.performers == "Top 20")
+
+pheno2_top.performers$fvfm[pheno2_top.performers$Ranking_fvfm_ED50 == "Top 20" | pheno2_top.performers$Ranking_fvfm_rel9c == "Top 20"] <- 1
+pheno2_top.performers$fvfm[pheno2_top.performers$Ranking_fvfm_ED50 == "Top 20" & pheno2_top.performers$Ranking_fvfm_rel9c == "Top 20"] <- 2
+
+pheno2_top.performers$ndvi[pheno2_top.performers$Ranking_ndvi_ED50 == "Top 20" | pheno2_top.performers$Ranking_ndvi_rel9c == "Top 20"] <- 1
+pheno2_top.performers$ndvi[pheno2_top.performers$Ranking_ndvi_ED50 == "Top 20" & pheno2_top.performers$Ranking_ndvi_rel9c == "Top 20"] <- 2
+
+pheno2_top.performers$ed50[pheno2_top.performers$Ranking_ndvi_ED50 == "Top 20" | pheno2_top.performers$Ranking_fvfm_ED50 == "Top 20"] <- 1
+pheno2_top.performers$ed50[pheno2_top.performers$Ranking_ndvi_ED50 == "Top 20" & pheno2_top.performers$Ranking_fvfm_ED50 == "Top 20"] <- 2
+
+pheno2_top.performers$rel[pheno2_top.performers$Ranking_fvfm_rel9c == "Top 20" | pheno2_top.performers$Ranking_ndvi_rel9c == "Top 20"] <- 1
+pheno2_top.performers$rel[pheno2_top.performers$Ranking_fvfm_rel9c == "Top 20" & pheno2_top.performers$Ranking_ndvi_rel9c == "Top 20"] <- 2
+
+pheno2_top.performers
+
+
+pheno2_top.performers %>% filter(fvfm == 2)
+pheno2_top.performers %>% filter(ndvi == 2)
+pheno2_top.performers %>% filter(ed50 == 2)
+pheno2_top.performers %>% filter(rel == 2)
+```
+
+
+#Which colonies were within the top 20% of performers according to each trait/metric? 
+#Where do these top performing colonies occur (north/south and which sites)?
+##Figure 2
+```{r}
+pheno2_top.performers_2 <- pheno2_top.performers %>% left_join(pheno, by = c("Site_year", "Genotype", "Site.name", "Lat","Lon"))
+
+pheno2_top.performers_2$Ranking_fvfm_ED50[pheno2_top.performers_2$Ranking_fvfm_ED50 == "Top 20"] <- "Top 20 (Absolute)"
+pheno2_top.performers_2$Ranking_ndvi_ED50[pheno2_top.performers_2$Ranking_ndvi_ED50 == "Top 20"] <- "Top 20 (Absolute)"
+pheno2_top.performers_2$Ranking_fvfm_rel9c[pheno2_top.performers_2$Ranking_fvfm_rel9c == "Top 20"] <- "Top 20 (Retained)"
+pheno2_top.performers_2$Ranking_ndvi_rel9c[pheno2_top.performers_2$Ranking_ndvi_rel9c == "Top 20"] <- "Top 20 (Retained)"
+
+p1 <- pheno2_top.performers_2 %>%
+  filter(!is.na(fvfm_ED50)) %>%
+  mutate(Site.name = fct_reorder(Site.name, Lat)) %>%
+  ggplot(aes(x = reorder(Site.name, Lat), y = fvfm_ED50, group = Site.name)) +
+  geom_flat_violin(position = position_nudge(x = 0.2, y = 0), 
+                   adjust = 1, width = 2, alpha = 0.7, lwd = 0) +
+  geom_boxplot(position = position_nudge(x = -0.2, y = 0), width = 0.1,
+               outlier.shape = NA, lwd = 0.25) +
+  geom_point(aes(color = Ranking_fvfm_ED50), alpha = 0.6) +
+  coord_flip() +
+  theme_bw() +
+  labs(y = "Absolute ED50 (Fv/Fm)", x = "") + 
+  scale_color_manual(name = "Ranking", values = c("darkgrey","red"))
+
+
+p2 <- pheno2_top.performers_2 %>%
+  filter(!is.na(ndvi_ED50)) %>%
+  mutate(Site.name = fct_reorder(Site.name, Lat)) %>%
+  ggplot(aes(x = reorder(Site.name, Lat), y = ndvi_ED50, group = Site.name)) +
+  geom_flat_violin(position = position_nudge(x = 0.2, y = 0), 
+                   adjust = 1, width = 2, alpha = 0.7, lwd = 0) +
+  geom_boxplot(position = position_nudge(x = -0.2, y = 0), width = 0.1,
+               outlier.shape = NA, lwd = 0.25) +
+  geom_point(aes(color = Ranking_ndvi_ED50), alpha = 0.6) +
+  coord_flip() +
+  theme_bw() +
+  labs(y = "Absolute ED50 (NDVI)", x = "") + 
+  scale_color_manual(name = "Ranking", values = c("darkgrey","red"))+ 
+  theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
+
+
+p3 <- pheno2_top.performers_2 %>%
+  filter(!is.na(RelativeFvFm9C)) %>%
+  mutate(Site.name = fct_reorder(Site.name, Lat)) %>%
+  ggplot(aes(x = reorder(Site.name, Lat), y = RelativeFvFm9C, group = Site.name)) +
+  geom_flat_violin(position = position_nudge(x = 0.2, y = 0), 
+                   adjust = 1, width = 2, alpha = 0.7, lwd = 0) +
+  geom_boxplot(position = position_nudge(x = -0.2, y = 0), width = 0.1,
+               outlier.shape = NA, lwd = 0.25) +
+  geom_point(aes(color = Ranking_fvfm_rel9c), alpha = 0.6) +
+  coord_flip() +
+  theme_bw() +
+  labs(y = "Retained Fv/Fm", x = "") + 
+  scale_color_manual(name = "Ranking", values = c("darkgrey","blue"))
+
+
+p4 <- pheno2_top.performers_2 %>%
+  filter(!is.na(RelativeNDVI9C)) %>% 
+   add_row(Site.name = "Reef 21550", Lat = -21.9455) %>%
+  mutate(Site.name = fct_reorder(Site.name, Lat)) %>%
+  ggplot(aes(x = reorder(Site.name, Lat), y = RelativeNDVI9C, group = Site.name)) +
+  geom_flat_violin(position = position_nudge(x = 0.2, y = 0), 
+                   adjust = 1, width = 2, alpha = 0.7, lwd = 0) +
+  geom_boxplot(position = position_nudge(x = -0.2, y = 0), width = 0.2,
+               outlier.shape = NA, lwd = 0.25) +
+  geom_point(aes(color = Ranking_ndvi_rel9c), alpha = 0.6) +
+  coord_flip() +
+  theme_bw() +
+  labs(y = "Retained NDVI", x = "") + 
+  scale_color_manual(name = "Ranking", values = c("darkgrey","blue")) + 
+  theme(axis.text.y = element_blank(), axis.ticks.y = element_blank()) 
+
+
+pLAT <- pheno2_top.performers_2 %>% filter(!Site.name == "Reef21550") %>% select(Site.name,Lat) %>% distinct %>% ggplot(aes(x = reorder(Site.name, Lat),  fill = Lat)) + geom_bar(position = "fill", width = 1) + coord_flip()+ ylab("") + xlab("") + theme_minimal() + theme(axis.text.x = element_blank(), axis.ticks.x = element_blank()) + scale_fill_continuous(name = "Latitude")+ 
+  theme(axis.text.y = element_blank())
+
+
+pLAT + p1 + plot_layout(ncol = 2, widths = c(1,20), guides = "collect")
+(p1 + p2) / (p3 + p4) + plot_layout(guides = "collect")+ plot_annotation(tag_levels = 'A') & 
+  theme(text = element_text(size = 14))
+
+ggsave(paste0(outputpath,"Figure2_",date,".png"), width =8, height = 7)
+
+
+```
+
+
+#How does image-based NDVI relate to lab-assayed chlorophyll?
+##Figure S1
+
+```{r}
+rawfvfm <- rawfvfm %>% mutate(Genotype = as.character(Genotype))
+pheno_chlorophyll_fragment <-  left_join(chlorophyll, rawndvi, by = c("Site", "Genotype", "SampleYear", "Rack.Pos", "Treatment")) %>% left_join(rawfvfm, by = c("Site", "Genotype", "SampleYear", "Rack.Pos"), suffix = c("", ".y")) %>% dplyr::select(-ends_with(".y"))
+
+pheno_chlorophyll_colony <- pheno_chlorophyll_fragment  %>% dplyr::group_by(Site, SampleYear, Genotype, Treatment) %>% dplyr::summarise( MedNDVIgeno = mean(MedNDVI), chltot_dryweight = mean(Total.Chl..ug.mg.dry.weight.)) 
+
+formula <- y ~ poly(x, 3, raw = TRUE)
+
+
+a <- pheno_chlorophyll_fragment %>% ggplot(aes(MedNDVI, `Total.Chl..ug.mg.dry.weight.`)) + geom_point(aes(col = Site, shape = Treatment)) + theme_bw() + geom_smooth(method = "lm", se = F, color = "darkgrey", formula = y ~ x + I(x^2), size = 1) +  theme(legend.position = "none", plot.title = element_text(hjust = 0.5))+ ylab("Total Chlorophyll / dry weight") + xlab("Median NDVI") + ggtitle("Fragment-level") + ggpubr::stat_cor(method = "spearman", size = 4.9)+ theme( plot.title = element_text(hjust = 0.5), text = element_text(size = 16), title = element_text(size = 14)) + ylim(c(0,0.1))
+
+b <- pheno_chlorophyll_colony  %>% ggplot(aes(MedNDVIgeno, chltot_dryweight)) + geom_point(aes(col = Site, shape = Treatment)) + theme_bw() + geom_smooth(method = "lm", se = F, color = "darkgrey", formula = y ~ x + I(x^2), size = 1) + ylab("")+ xlab("Median NDVI") + ggpubr::stat_cor(method = "spearman", size = 4.9)+ ggtitle("Colony-level") + theme( plot.title = element_text(hjust = 0.5), text = element_text(size = 16), title = element_text(size = 14))+ ylim(c(0,0.1))
+
+
+a + b+ plot_annotation(tag_levels = 'A') 
+
+ggsave(paste0(outputpath,"FigureS1_",date,".png"), width = 9, height = 4)
+
+b
+
+#ggsave(paste0(outputpath,"NDVI_chlorophyll_colonylevel",date,".png"), width = 6, height = 4)
+
+```
+
+
+
+
+#map of sample reefs 
+##Figure 1
+
+```{r}
+
+library("rnaturalearthdata")
+library("rnaturalearth")
+library("sf")
+library(packcircles)
+library(tmap)
+
+sites <- pheno %>% dplyr::select(Lon, Lat, Site.name, Shelf.pos) %>% left_join(mmm, by = "Site.name") %>% group_by(Site.name, Lon, Lat, Shelf.pos,MMM) %>% tally() %>% dplyr::rename('Sample Size' = n) %>% distinct() %>% filter(!MMM == "28.591") #remove hicks_2
+
+sites$Radius <- 0.3
+
+coords_before <- sites %>% dplyr::select(Lon, Lat, Radius, Site.name, Shelf.pos, MMM)
+coords_after <- as.data.frame(packcircles::circleLayout(coords_before))
+coords_after$Site.name <- sites$Site.name
+coords_after$Shelf.pos <- sites$Shelf.pos
+coords_after$`Sample Size` <- sites$`Sample Size`
+coords_after$MMM <- sites$MMM
+coords_after <-  coords_after %>% dplyr::select(layout.x, layout.y, Site.name, Shelf.pos, `Sample Size`, MMM)
+
+
+world <- ne_countries(scale = "medium", returnclass = "sf")
+class(world)
+
+pmap <- ggplot(data = world) + 
+  geom_sf(fill = "gray70") + 
+  coord_sf(xlim = c(141, 155), ylim = c(-26, -11), expand = FALSE) + 
+  theme_bw()  + xlab("") + ylab("")+ 
+  geom_point(data = coords_after, aes(layout.x, layout.y, fill = MMM, size = `Sample Size`), alpha = 0.8, pch = 21) +scale_fill_viridis_c() + ggrepel::geom_text_repel(data = coords_after, aes(layout.x, layout.y, label = Site.name), size = 5) + theme(legend.position = "top") + scale_radius(range = c(6,10)) + 
+  guides(fill = guide_colourbar(title.position="top", title.hjust = 0.5),
+         size = guide_legend(title.position="top", title.hjust = 0.5))
+
+
+
+gbr_reefs = rgdal::readOGR("../Rawdata/GBR_features2/Marine_Bioregions_of_the_Great_Barrier_Reef__Reef_.shp")
+AG <- fortify(gbr_reefs)
+
+pmap2 <- ggplot(data = world) + 
+  geom_sf(fill = "gray70") + 
+  coord_sf(xlim = c(141, 155), ylim = c(-26, -11), expand = FALSE) + geom_polygon(data=AG, aes(long, lat, group = group), colour = alpha("grey25", 1/2), size = 0.5)+ 
+  theme_bw()  + xlab("") + ylab("")+ 
+  geom_point(data = sites, aes(Lon, Lat, fill = MMM), alpha = 0.8, pch = 21, size = 3) +scale_fill_viridis_c(limits = c(27,29)) + ggrepel::geom_label_repel(data = sites, aes(Lon, Lat, label = Site.name, fill = MMM), size = 5.5, col = "white") + theme(legend.position = c(.9,.88), text = element_text(size = 14)) 
+
+pmap2
+
+ggsave(paste0(outputpath,"Figure1_map_reefs_",date,".png"), width = 7, height = 8)
+
+```
+
+
+
+
+
+#how much variation exists within vs among sites?
+#how much variation exists within vs among sites and putative species?
+##Table 1
+
+```{r}
+library(lme4)
+m1 <- lmer(fvfm_ED50 ~ (1|Site.name), data = pheno)
+summary(m1)
+0.3035/0.1900 #1.60
+mean(pheno$fvfm_ED50, na.rm = T)
+range(pheno$fvfm_ED50, na.rm = T)
+
+m1 <- lmer(RelativeFvFm9C ~ (1|Site.name), data = pheno)
+summary(m1)
+0.044370/0.007378 #6.01
+mean(pheno$RelativeFvFm9C, na.rm = T)
+range(pheno$RelativeFvFm9C, na.rm = T)
+
+m1 <- lmer(ndvi_ED50 ~ (1|Site.name), data = pheno)
+summary(m1)
+0.5234/0.3578 #1.46
+mean(pheno$ndvi_ED50, na.rm = T)
+range(pheno$ndvi_ED50, na.rm = T)
+
+m1 <- lmer(RelativeNDVI9C ~ (1|Site.name), data = pheno)
+summary(m1)
+0.01361/0.01052 #1.29
+mean(pheno$RelativeNDVI9C, na.rm = T)
+range(pheno$RelativeNDVI9C, na.rm = T)
+
+pheno_clust <- left_join(pheno, clust, by = c("Sitename_geno_year", "Site.name"))
+
+#account for putative species
+m1 <- lmer(fvfm_ED50 ~ (1|Site.name) + (1|Clust), data = pheno_clust)
+summary(m1)
+0.301729/0.188341 #1.60
+m2 <- lmer(RelativeFvFm9C ~ (1|Site.name)+ (1|Clust), data = pheno_clust)
+summary(m2) 
+0.0434084/0.0072400 #6.00
+m3 <- lmer(ndvi_ED50 ~ (1|Site.name)+ (1|Clust), data = pheno_clust)
+summary(m3)
+0.51893/0.34939 #1.49
+m4 <- lmer(RelativeNDVI9C ~ (1|Site.name)+ (1|Clust), data = pheno_clust)
+summary(m4)
+0.01364/0.01051 #1.30
+pheno_clust %>% filter(!is.na(RelativeNDVI9C)) %>% group_by(Site.name, Clust) %>% tally()
+
+```
+
+
+
+

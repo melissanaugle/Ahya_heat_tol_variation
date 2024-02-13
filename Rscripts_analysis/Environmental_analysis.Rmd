@@ -1,0 +1,257 @@
+---
+title: "Environmental analysis"
+author: "Melissa Naugle"
+date: "11/22/2022"
+output: html_document
+---
+
+# Script to caluclate environmental PCs and basic env x pheno plots
+- Generate PCs for environmental variables 
+- plot MMM by heat tolerance traits (Figure S8)
+
+```{r setup, include=FALSE}
+setwd("/Users/Melissa/Desktop/GitHub/Ahya_heat_tol_variation/Rscripts_analysis/")
+rm(list = ls())
+graphics.off()
+library(tidyverse)
+library(lmerTest)
+library(Hmisc)
+library(corrplot)
+library(factoextra)
+library(ggpmisc)
+library(ggpubr)
+library(patchwork)
+library(reshape2)
+library(AMR)
+library(rstatix)
+date = format(Sys.Date(), "%Y_%m_%d")
+img_path=paste0("/Users/Melissa/Desktop/GitHub/Ahya_heat_tol_variation/Outputs/Environment")
+
+```
+
+#Data in
+```{r}
+#read in environmental data
+env <- read.csv("../Rawdata/ECT1_sites_environmental_data_depthsadjusted2023_12_04.csv")
+pheno <- read.csv("../CleanData/pheno_metadata_clean_2024_01_08.csv")
+
+```
+
+##environmental pc data prep
+Generate env PCs
+```{r}
+env.data_cor <- env %>% dplyr::select(-c(Site.name,Site_year,Site_geno_year,SampleYear,Depth,Depth.adjusted, Site,Genotype,Sitename_year))  #remove for now because character data 
+
+env.data_cor_nutrientWQ <- env.data_cor %>% dplyr::select("TOTAL_NITROGEN_HMsd",  "PIP_HMsd" , "PH_HMsd" ,  "Oxygen_HMsd" , "NO3_HMsd" , "Kd_490_HMsd","Chl_a_HMsd","TOTAL_NITROGEN_HM","PIP_HM" ,
+"PH_HM", "Oxygen_HM","NO3_HM" , "Kd_490_HM","Chl_a_HM" ,
+"TOTAL_NITROGEN_OMsd","PIP_OMsd","PH_OMsd" , "Oxygen_OMsd","NO3_OMsd",          
+ "Kd_490_OMsd","Chl_a_OMsd","salt_OM","alk_OM" , "TOTAL_NITROGEN_OM","PIP_OM", "PH_OM","Oxygen_OM","NO3_OM" ,"Kd_490_OM" , "Chl_a_OM" ,"CF_OM","CF_ss","Secchi_OM","Secchi_OMsd","Secchi_HM","Secchi_HMsd")
+
+env.data_cor_light<- env.data_cor %>% dplyr::select("Kd_490_HM","Kd_490_HMsd","Kd_490_OMsd","Kd_490_OM","CF_OM","CF_ss","Secchi_OM","Secchi_OMsd","Secchi_HM","Secchi_HMsd")
+
+
+env.data_cor_nutrients <- env.data_cor %>% dplyr::select("TOTAL_NITROGEN_HMsd",  "PIP_HMsd" ,"NO3_HMsd" ,"Chl_a_HMsd","TOTAL_NITROGEN_HM","PIP_HM" ,"NO3_HM" , "Chl_a_HM" ,"TOTAL_NITROGEN_OMsd","PIP_OMsd","NO3_OMsd", "Chl_a_OMsd", "TOTAL_NITROGEN_OM","PIP_OM", "NO3_OM" ,"Chl_a_OM")
+
+env.data_cor_anomalies <- env.data_cor %>% dplyr::select( "TSA_DHW_mean" ,"TSA_DHW_stdev","DHW_freq_sup4","DHW_freq_sup8","DHW_max" , "SSTA_freq_stdev","SSTA_freq_mean" )      
+env.data_cor_climatology <- env.data_cor %>% dplyr::select("MMM","OM","LMM")
+  
+env.data_cor_temp.variability <- env.data_cor %>% dplyr::select("DTR_ss","DTR","ROTC_ss","AR" )
+```
+
+
+#generate PC values - light, nutrients, temp, etc.
+To use with linear models to support BRTs (see supplemental info)
+```{r}
+set.seed(123)
+#light
+env.data_corr <-  as.data.frame(lapply(env.data_cor_light,as.numeric))
+env.data_corr$Site_geno_year <- NULL
+env.data_cor_light[rowSums(is.na(env.data_cor_light)) > 0,]
+rcorr(as.matrix(env.data_corr, type = c("pearson","spearman")))
+cor <- cor(env.data_corr)
+col<- colorRampPalette(c("blue", "white", "red"))(108)
+library(Hmisc)
+flattenCorrMatrix <- function(cormat, pmat) {
+  ut <- upper.tri(cormat)
+  data.frame(
+    row = rownames(cormat)[row(cormat)[ut]],
+    column = rownames(cormat)[col(cormat)[ut]],
+    cor  =(cormat)[ut],
+    p = pmat[ut])}
+res2<-rcorr(as.matrix(env.data_corr))
+cors <- flattenCorrMatrix(res2$r, res2$P)
+env.dataPCA <- env.data_corr
+env.dataPCA <-  as.data.frame(lapply(env.dataPCA,as.numeric))
+names(env.dataPCA)
+row.names(env.dataPCA) = env.data_cor_light$Site_geno_year
+res.pca <- prcomp(env.dataPCA, scale. = T)
+indPC = get_pca_ind(res.pca)
+indPC2 = indPC$coord[,1:2]
+colnames(indPC2) = c("Light_PC1", "Light_PC2")
+coral_pc_light <- as.data.frame(indPC2)
+coral_pc_light$Site_geno_year <- env$Site_geno_year
+
+#nutrients
+env.data_corr <-  as.data.frame(lapply(env.data_cor_nutrients,as.numeric))
+env.data_corr$Site_geno_year <- NULL
+env.data_cor_nutrients[rowSums(is.na(env.data_cor_nutrients)) > 0,]
+rcorr(as.matrix(env.data_corr, type = c("pearson","spearman")))
+cor <- cor(env.data_corr)
+res2<-rcorr(as.matrix(env.data_corr))
+cors <- flattenCorrMatrix(res2$r, res2$P) 
+env.dataPCA <- env.data_corr
+env.dataPCA <-  as.data.frame(lapply(env.dataPCA,as.numeric))
+names(env.dataPCA)
+row.names(env.dataPCA) = env.data_cor_nutrients$Site_geno_year
+res.pca <- prcomp(env.dataPCA, scale. = T)
+indPC = get_pca_ind(res.pca)
+indPC2 = indPC$coord[,1:2]
+colnames(indPC2) = c("Nutrients_PC1", "Nutrients_PC2")
+coral_pc_nutrients <- as.data.frame(indPC2)
+coral_pc_nutrients$Site_geno_year <- env$Site_geno_year
+
+#anomalies
+env.data_corr <-  as.data.frame(lapply(env.data_cor_anomalies,as.numeric))
+env.data_corr$Site_geno_year <- NULL
+env.data_cor_anomalies[rowSums(is.na(env.data_cor_anomalies)) > 0,]
+rcorr(as.matrix(env.data_corr, type = c("pearson","spearman")))
+cor <- cor(env.data_corr)
+res2<-rcorr(as.matrix(env.data_corr))
+cors <- flattenCorrMatrix(res2$r, res2$P)
+env.dataPCA <- env.data_corr
+env.dataPCA <-  as.data.frame(lapply(env.dataPCA,as.numeric))
+names(env.dataPCA)
+row.names(env.dataPCA) = env.data_cor_anomalies$Site_geno_year
+res.pca <- prcomp(env.dataPCA, scale. = T)
+indPC = get_pca_ind(res.pca)
+indPC2 = indPC$coord[,1:2]
+colnames(indPC2) = c("TempAnomalies_PC1", "TempAnomalies_PC2")
+coral_pc_temp.anom <- as.data.frame(indPC2)
+coral_pc_temp.anom$Site_geno_year <- env$Site_geno_year
+
+#climatology
+env.data_corr <-  as.data.frame(lapply(env.data_cor_climatology,as.numeric))
+env.data_corr$Site_geno_year <- NULL
+env.data_cor_climatology[rowSums(is.na(env.data_cor_climatology)) > 0,]
+rcorr(as.matrix(env.data_corr, type = c("pearson","spearman")))
+cor <- cor(env.data_corr)
+res2<-rcorr(as.matrix(env.data_corr))
+cors <- flattenCorrMatrix(res2$r, res2$P)
+env.dataPCA <- env.data_corr
+env.dataPCA <-  as.data.frame(lapply(env.dataPCA,as.numeric))
+names(env.dataPCA)
+row.names(env.dataPCA) = env.data_cor_climatology$Site_geno_year
+res.pca <- prcomp(env.dataPCA, scale. = T)
+indPC = get_pca_ind(res.pca)
+indPC2 = indPC$coord[,1:2]
+colnames(indPC2) = c("TempClimatology_PC1", "TempClimatology_PC2")
+coral_pc_climatology <- as.data.frame(indPC2)
+coral_pc_climatology$Site_geno_year <- env$Site_geno_year
+
+
+#temp variability 
+env.data_corr <-  as.data.frame(lapply(env.data_cor_temp.variability,as.numeric))
+env.data_corr$Site_geno_year <- NULL
+env.data_cor_temp.variability[rowSums(is.na(env.data_cor_temp.variability)) > 0,]
+rcorr(as.matrix(env.data_corr, type = c("pearson","spearman")))
+cor <- cor(env.data_corr)
+res2<-rcorr(as.matrix(env.data_corr))
+cors <- flattenCorrMatrix(res2$r, res2$P)
+env.dataPCA <- env.data_corr
+env.dataPCA <-  as.data.frame(lapply(env.dataPCA,as.numeric))
+names(env.dataPCA)
+row.names(env.dataPCA) = env.data_cor_temp.variability$Site_geno_year
+res.pca <- prcomp(env.dataPCA, scale. = T)
+indPC = get_pca_ind(res.pca)
+indPC2 = indPC$coord[,1:2]
+colnames(indPC2) = c("TempVariability_PC1", "TempVariability_PC2")
+coral_pc_tempvariability <- as.data.frame(indPC2)
+coral_pc_tempvariability$Site_geno_year <- env$Site_geno_year
+
+#merge all
+
+coral_pc <- full_join(env, coral_pc_tempvariability, by = "Site_geno_year") %>% left_join(coral_pc_climatology, by = "Site_geno_year") %>% left_join(coral_pc_temp.anom, by = "Site_geno_year") %>% left_join(coral_pc_nutrients, by = "Site_geno_year") %>% left_join(coral_pc_light, by = "Site_geno_year")
+
+write.csv(coral_pc,paste0("../CleanData/Environmental_data_PCs_",date,".csv"), row.names = F)
+
+```
+#correlations for PC values that will be used in LMERs 
+```{r}
+reorder_cormat <- function(cormat){
+dd <- as.dist((1-cormat)/2)
+hc <- hclust(dd)
+cormat <-cormat[hc$order, hc$order]}
+
+
+get_upper_tri <- function(cormat){
+  cormat[lower.tri(cormat)]<- NA
+  return(cormat)}
+
+
+lmers <- coral_pc[,72:82]
+lmers <- lmers %>% select(-c(ends_with("PC3")))
+env.data_corr <-  as.data.frame(lapply(lmers,as.numeric))
+env.data_cor_temp.variability[rowSums(is.na(env.data_cor_temp.variability)) > 0,]
+rcorr(as.matrix(env.data_corr, type = c("pearson","spearman")))
+cor <- cor(env.data_corr)
+res2<-rcorr(as.matrix(env.data_corr))
+cors <- flattenCorrMatrix(res2$r, res2$P)
+signifcors <- cors %>% filter(cor > 0.7 | cor < -0.7)
+
+cormat <- reorder_cormat(cor)
+upper_tri <- get_upper_tri(cormat)
+melted_cormat <- melt(upper_tri, na.rm = TRUE)
+ggplot(data = melted_cormat, aes(Var2, Var1, fill = value))+
+ geom_tile(color = "white")+
+ scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
+   midpoint = 0, limit = c(-1,1), space = "Lab", 
+   name="Pearson\nCorrelation") +
+  theme_minimal()+ 
+ theme(axis.text.x = element_text(angle = 90, vjust = 1, 
+    size = 5, hjust = 1), axis.text.y = element_text(size = 5))+
+ coord_fixed() + xlab("") + ylab("")
+
+ggsave(paste0(img_path,"/corrplot_PCvalues_forLMs",date,".png"), width = 7, height = 4)
+```
+
+
+
+#plots by basic env variables 
+##Figure S8
+```{r}
+
+pheno_env <- left_join(pheno,coral_pc, by = "Site_geno_year",  suffix = c("", ".z")) %>% 
+  dplyr::select(-ends_with(".z"))
+
+legend_title <- "Latitude"
+
+p1 <- ggplot(pheno_env, aes(MMM, fvfm_ED50)) + geom_point(aes(col = Lat)) + xlab("") + ylab("ED50 (FvFm)")+ theme_bw() + scale_color_gradient(legend_title,low = "dodgerblue4", high = "red")+ ggpubr::stat_cor(method = "spearman", size = 4) + ylim(c(min(pheno_env$fvfm_ED50, na.rm = T)*0.99, max(pheno_env$fvfm_ED50,na.rm = T)*1.03))+ geom_smooth(method = "lm", se = F, color = "black", formula = y ~ x + I(x^2), size = 0.7)
+
+p2 <- ggplot(pheno_env, aes(MMM, RelativeFvFm9C)) + geom_point(aes(col = Lat)) + xlab("") + ylab("Retained FvFm")+ theme_bw() + scale_color_gradient(legend_title,low = "dodgerblue4", high = "red")+ ggpubr::stat_cor(method = "spearman", size = 4)+ ylim(c(min(pheno_env$RelativeFvFm9C, na.rm = T)*0.99, max(pheno_env$RelativeFvFm9C,na.rm = T)*1.2))+ geom_smooth(method = "lm", se = F, color = "black", formula = y ~ x + I(x^2), size = 0.7)
+
+p4 <- ggplot(pheno_env, aes(MMM, ndvi_ED50)) + geom_point(aes(col = Lat)) + xlab("MMM") + ylab("ED50 (NDVI)")+ theme_bw()  + scale_color_gradient(legend_title,low = "dodgerblue4", high = "red")+ ggpubr::stat_cor(method = "spearman", size = 4)+ ylim(c(min(pheno_env$ndvi_ED50, na.rm = T)*0.99, max(pheno_env$ndvi_ED50,na.rm = T)*1.03))+ geom_smooth(method = "lm", se = F, color = "black", formula = y ~ x + I(x^2), size = 0.7)
+
+p5 <- ggplot(pheno_env, aes(MMM, RelativeNDVI9C)) + geom_point(aes(col = Lat)) + xlab("MMM") + ylab("Retained NDVI")+ theme_bw() + scale_color_gradient(legend_title,low = "dodgerblue4", high = "red")+ ggpubr::stat_cor(method = "spearman", size = 4)+ ylim(c(min(pheno_env$RelativeNDVI9C, na.rm = T)*0.99, max(pheno_env$RelativeNDVI9C,na.rm = T)*1.2)) + geom_smooth(method = "lm", se = F, color = "black", formula = y ~ x + I(x^2), size = 0.7)
+
+
+combined <- (p1 + p2) / (p4 + p5) & theme(legend.position = "bottom")
+combined + plot_layout(guides = "collect") + plot_annotation(tag_levels = 'A') 
+
+
+ggsave(paste0(img_path,"/FigureS8_",date,".png"), width = 6.5, height = 5.5)
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+

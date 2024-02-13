@@ -1,0 +1,333 @@
+---
+title: "sitelevel_ED50s"
+author: "Melissa Naugle"
+date: "10/4/2022"
+output: html_document
+---
+
+# Script to generate heat tolerance phenotype metrics for Fv/Fm 
+- Loads raw data from iPAM outputs for each colony
+- Calculates ED50 values across sites and for each colony
+- Plots ED50 curves for each colony and site 
+- Calculates retained Fv/Fm performance under heat stress for each colony 
+
+```{r setup, include=FALSE}
+setwd("/Users/Melissa/Desktop/GitHub/Ahya_heat_tol_variation/Rscripts_dataprocessing/")
+rm( list = ls())
+graphics.off()
+library(tidyverse)
+library(reshape2)
+library(gridExtra)
+library(PupillometryR)
+library(Rmisc)
+library(xlsx)
+library(ggpmisc)
+library(broom)
+
+date = format(Sys.Date(), "%Y_%m_%d")
+img_path=paste0("/Users/Melissa/Desktop/GitHub/Ahya_heat_tol_variation/Outputs/FvFm/iPAM_ED50s_", date)
+dir.create(img_path)
+```
+
+
+# load data and transform data to work with ed50 curves
+
+```{r load_data}
+
+#load fvfm data for each fragment
+ipam_dat <- read.csv("../Rawdata/full_iPAM_data_2023_12_04.csv") 
+
+
+#make list of each unique run in Seasim
+sites_list <- unique(ipam_dat$Site_year)
+
+#load actual hold temps
+holdtemps <- read.csv("../Rawdata/Seasim_holdtemps.csv")
+
+#merge data sets
+ipam_dat$Site_year_tank <- paste0(ipam_dat$Site,"_",ipam_dat$SampleYear,"_",ipam_dat$Tank)
+full_data <- left_join(ipam_dat, holdtemps, by = "Site_year_tank", suffix=c("",".y")) %>% dplyr::select(-ends_with(".y"))
+anti_join(ipam_dat,holdtemps,by = "Site_year_tank" ) #check that all tanks have temp data
+
+#select only relevant variables for absolute ed50 
+data_for_absoluteed50 <- full_data %>%
+  dplyr::select(Site,meanTemp_hold_corr, Y.II.mean, Genotype, SampleYear, Site.name, Site_year) %>% 
+  filter(!is.na(Y.II.mean)) #remove missing data 7405 to 7310 observations 
+
+#load mmms
+mmms <- read.csv("../Rawdata/Site_characteristics.csv") %>% dplyr::select(Site.name, MMM.)
+
+```
+
+#quick assessment of data
+```{r}
+
+full_data %>% group_by(Site, Genotype) %>% tally()
+full_data %>% filter(is.na(Y.II.mean))%>% group_by(Treatment) %>% tally()
+
+reps <- full_data %>% dplyr::select(Site, Genotype, Y.II.mean, Site_Rack_Year, Treatment) %>% group_by(Site, Genotype) %>% dplyr::mutate(GenomeanFvFm = mean(Y.II.mean))%>% dplyr::select(Site, Genotype,Site_Rack_Year,Y.II.mean,GenomeanFvFm,Treatment) %>% mutate(Site_geno_trt = paste0(Site, "_", Genotype,"_",Treatment))
+
+#how much variation is within 3 replicates of each unique genotype and treatment at each site, versus among them 
+m1 <- lmer(Y.II.mean ~ (1|Site_geno_trt), data = reps)
+summary(m1)
+#more variation among site_geno_trt than within reps = good
+
+```
+
+
+
+
+#site level - absolute ed50 
+
+
+```{r }
+set.seed(123)
+library(drc)
+ll3_site <- function(data) {
+  drm(meanfvfm ~ meanTemp_hold_corr, data = data, 
+      fct = LL.3(names = c("hill", "max", "ED50")),
+      upperl = c(120, 0.80, 40), # these are the upper lims
+      lowerl = c(10, 0.25, 28))} #lower lims 
+
+# Fit model to each coral, get parameters, fitted values, and residuals
+mods_absolute_site <- data_for_absoluteed50 %>%
+  group_by(Site_year, meanTemp_hold_corr) %>%
+  dplyr::summarise(meanfvfm = mean(Y.II.mean)) %>%  
+  nest(data = c(meanTemp_hold_corr, meanfvfm)) %>%
+  # Fit the model to each coral
+  mutate(ll3_site = map(data, ll3_site)) %>%
+  # Get model parameters and fitted values/residuals
+  mutate(pars = map(ll3_site, tidy),
+         pred = map2(ll3_site, data, ~augment(.x, drop_na(.y, meanfvfm))))
+
+res.all_absolute_site <- mods_absolute_site %>%
+  unnest(pars) %>%
+  pivot_wider(names_from = term, 
+              values_from = c(estimate, std.error, statistic, p.value)) %>%
+  dplyr::select(!where(is.list), -curve)
+
+res.all_absolute_site
+
+```
+
+
+
+
+
+#Geno level 
+```{r, include=FALSE}
+set.seed(123)
+dir.create(paste0(img_path,"/ED50_curves_site"))
+site_list <- unique(data_for_absoluteed50$Site_year)
+
+site_ed50s <- data.frame()
+ed50_cis <- data.frame()
+
+for (i in 1:length(site_list)){
+  Site_year = site_list[i]
+  site <- unique(data_for_absoluteed50[(data_for_absoluteed50$Site_year == Site_year),"Site.Original.Name"])
+  
+  data_for_absoluteed50_subset <- data_for_absoluteed50[(data_for_absoluteed50$Site_year == Site_year),]
+  
+  data <- drm(Y.II.mean ~ meanTemp_hold_corr, data = data_for_absoluteed50[data_for_absoluteed50$Site_year==Site_year,], curveid=Genotype, fct = LL.3(),
+      upperl = c(120, 0.8, 40),
+      lowerl = c(10, 0, 28))  
+  preddata = data.frame(temp = seq(27,40, length.out = 100))
+  pred = as.data.frame(predict(data, newdata = preddata, interval = 'confidence'))
+  preddata = data.frame(preddata, fvfm = pred$Prediction, Lower = pred$Lower, Upper = pred$Upper)
+  
+  genocoeffs_50<-data.frame(ED(data, c(50),interval = "delta"))
+  coeff_mean<-mean(genocoeffs_50$Estimate)
+  genocoeffs_50 <- genocoeffs_50 %>% mutate(Site = Site_year)
+  
+  summary<-data.frame(CI(genocoeffs_50$Estimate, ci=0.95))
+  summary_long <- tibble::rownames_to_column(summary, "ci")
+  summary_long <- summary_long %>% pivot_wider(names_from = ci, values_from = CI.genocoeffs_50.Estimate..ci...0.95.) %>% 
+    mutate(Site = Site_year) %>%
+    dplyr::select(Site, mean, lower, upper)
+  coeff_lower<-summary[3,]
+  coeff_upper<-summary[1,]
+  
+  print(ggplot() +
+  geom_jitter(data = data_for_absoluteed50_subset, aes(x = meanTemp_hold_corr, y = Y.II.mean), size = 0.75, width = 0.25) +
+  
+  geom_line(data = preddata, aes(x = temp, y = fvfm), color = 'royalblue2', show.legend = FALSE) +
+  geom_ribbon(data = preddata, aes(x = temp, ymin=Lower, ymax=Upper), color = 'royalblue2', linetype=2, alpha = 0.2) +
+  geom_vline(aes(xintercept = coeff_mean), color = 'royalblue2', show.legend = FALSE) +
+  annotate("rect", xmin=coeff_lower, xmax=coeff_upper, ymin=-Inf, ymax=Inf, fill= 'royalblue2',  alpha = 0.1) +
+  geom_text(aes(label=round(coeff_mean, digits = 2)), x = 31, y = 0.3, show.legend = FALSE, color = 'royalblue2') +
+    
+  scale_color_manual(values=c("royalblue2")) +
+  ylab("Fv/Fm") +
+  xlab("Temperature (°C)") +
+  theme_bw() + ggtitle(Site_year))
+  
+  ggsave(paste0(img_path, "/ED50_curves_site/",Site_year, ".png"), width = 8, height = 6)
+
+  site_ed50s <- rbind(site_ed50s, genocoeffs_50)
+  ed50_cis <- rbind(ed50_cis, summary_long)
+  
+}  
+
+#clean up datasheets
+ed50_cis <- ed50_cis %>% 
+  dplyr::rename(Site_year = Site) %>% 
+  dplyr::rename(lower_ci = lower) %>% 
+  dplyr::rename(upper_ci = upper) %>% 
+  dplyr::rename(mean_ci = mean)
+
+site_ed50s2 <- site_ed50s %>%
+   dplyr::rename(Site_year = Site) %>%
+   dplyr::rename(Absolute_estimate_ED50 = Estimate) 
+
+site_ed50s2$curveID <- rownames(site_ed50s2)
+
+site_ed50s2$Genotype = sapply(strsplit(site_ed50s2[,6],":"), `[`, 2)
+site_ed50s2$Site = sapply(strsplit(site_ed50s2[,5],"_"), `[`, 1)
+site_ed50s2$SampleYear = sapply(strsplit(site_ed50s2[,5],"_"), `[`, 2)
+site_ed50s2$Site_geno_year = paste0(site_ed50s2$Site, "_", site_ed50s2$Genotype,"_", site_ed50s2$SampleYear)
+  
+site_ed50s2 <- site_ed50s2 %>%
+  dplyr:: mutate(fvfm_ED50CIrange = Upper - Lower) %>%
+  dplyr::rename(LowerCI_fvfmED50 = Lower, UpperCI_fvfmED50 = Upper) %>% 
+  dplyr::select(Site_year, Site, Site_geno_year, Genotype, SampleYear, Absolute_estimate_ED50, fvfm_ED50CIrange, LowerCI_fvfmED50, UpperCI_fvfmED50, Std..Error)
+
+
+ids <- read.csv("../Rawdata/GenomicdatafromtheECT1_RRAP_2023_10_29_depths2023-12-04.csv") %>% dplyr::select(eventID, Site_geno_year)
+site_ed50s3 <- left_join(site_ed50s2, ids)
+
+write.csv(site_ed50s3, paste0("../CleanData/iPAM/ed50s_genos_", date, ".csv"))
+
+res.all_absolute_site_cis <- left_join(res.all_absolute_site, ed50_cis, by = "Site_year") %>% dplyr::select(Site_year, estimate_ED50,p.value_ED50, lower_ci, upper_ci)
+
+write.csv(res.all_absolute_site_cis, paste0("../CleanData/iPAM/absoluteED50s_sitelevel_",date,".csv"), row.names = F)
+
+site_ed50s2_nas <- site_ed50s2 %>% filter(is.na(fvfm_ED50CIrange))
+site_ed50s2_largeCIs <- site_ed50s2 %>% filter(fvfm_ED50CIrange > 5)
+```
+
+#range within each site
+```{r}
+site_ed50s2 %>% dplyr::filter(fvfm_ED50CIrange < 5) %>% dplyr::select(Site, Absolute_estimate_ED50) %>% group_by(Site) %>% dplyr::mutate(min = min(Absolute_estimate_ED50), max = max(Absolute_estimate_ED50), range = (min(Absolute_estimate_ED50) - max(Absolute_estimate_ED50))) %>% dplyr::select(-Absolute_estimate_ED50) %>% distinct()
+```
+
+
+#Run genotype level models to plot
+```{r warnings=F}
+data_for_absoluteed50$Site_geno_year <- paste0(data_for_absoluteed50$Site,"_", data_for_absoluteed50$Genotype,"_",data_for_absoluteed50$SampleYear)
+
+geno_list <- unique(data_for_absoluteed50$Site_geno_year)
+dir.create(paste0(img_path,"/ED50_curves_geno"))
+
+for (i in 1:length(geno_list)){
+  Site_geno_year = geno_list[i]
+  site <- unique(data_for_absoluteed50[(data_for_absoluteed50$Site_geno_year == Site_geno_year),"Site.Original.Name"])
+  
+  data_for_absoluteed50_subset <- data_for_absoluteed50[(data_for_absoluteed50$Site_geno_year == Site_geno_year),]
+  
+  data <- drm(Y.II.mean ~ meanTemp_hold_corr, data = data_for_absoluteed50[data_for_absoluteed50$Site_geno_year==Site_geno_year,], fct = LL.3(),
+      upperl = c(120, 0.80, 40),
+      lowerl = c(10, 0, 28))
+  preddata = data.frame(temp = seq(27,40, length.out = 100))
+  pred = as.data.frame(predict(data, newdata = preddata, interval = 'confidence'))
+  preddata = data.frame(preddata, fvfm = pred$Prediction, Lower = pred$Lower, Upper = pred$Upper)
+  
+  genocoeffs_50<-data.frame(ED(data, c(50)))
+  coeff_mean<-mean(genocoeffs_50$Estimate)
+  
+  summary<-data.frame(CI(genocoeffs_50$Estimate, ci=0.95))
+  coeff_lower<-summary[3,]
+  coeff_upper<-summary[1,]
+  
+  print(ggplot() +
+  geom_jitter(data = data_for_absoluteed50_subset, aes(x = meanTemp_hold_corr, y = Y.II.mean), size = 0.75, width = 0.25) +
+  
+  geom_line(data = preddata, aes(x = temp, y = fvfm), color = 'royalblue2', show.legend = FALSE) +
+  geom_ribbon(data = preddata, aes(x = temp, ymin=Lower, ymax=Upper), color = 'royalblue2', linetype=2, alpha = 0.2) +
+  geom_vline(aes(xintercept = coeff_mean), color = 'royalblue2', show.legend = FALSE) +
+  annotate("rect", xmin=coeff_lower, xmax=coeff_upper, ymin=-Inf, ymax=Inf, fill= 'royalblue2',  alpha = 0.1) +
+  geom_text(aes(label=round(coeff_mean, digits = 2)), x = 31, y = 0.3, show.legend = FALSE, color = 'royalblue2') +
+    
+    
+  scale_color_manual(values=c("royalblue2")) +
+  ylab("Fv/Fm") +
+  xlab("Temperature (°C)") +
+  theme_bw() + ggtitle(Site_geno_year))
+  
+  ggsave(paste0(img_path, "/ED50_curves_geno/",Site_geno_year, ".png"), width = 8, height = 6)
+  
+
+}  
+
+```
+
+
+## Generate retained FvFm values
+Script to generate 
+1. Retained FvFm(+9 / MMM)
+2. Retained FvFm (+6 / MMM)
+
+#clean data
+```{r}
+full_ipam_dat <- left_join(ipam_dat,mmms, by = "Site.name", suffix = c("", ".z")) %>%
+  dplyr::select(-ends_with(".z"))
+
+full_ipam_dat <- left_join(full_ipam_dat,holdtemps, by = "Site_year_tank", suffix = c("", ".z")) %>%
+  dplyr::select(-ends_with(".z"))
+
+full_ipam_dat <- full_ipam_dat %>%
+  dplyr::rename(MMM = MMM.) %>%
+  filter(!is.na(Y.II.mean)) %>%
+  group_by(Site_year, Treatment, Genotype) %>%
+  dplyr::mutate(geno_Y.II_mean = mean(Y.II.mean), geno_F0mean = mean(F0mean), geno_FMmean = mean(FMmean), meanTemp_hold_corr_trtmean = mean(meanTemp_hold_corr)) %>%
+  dplyr::select(Site, Site.name, Genotype, Site_year, Site_geno_year, Collection.date, SampleYear, Treatment, geno_Y.II_mean, geno_F0mean, geno_FMmean, meanTemp_hold_corr_trtmean, MMM) %>%
+  distinct() 
+
+```
+
+
+
+```{r }
+
+#trt temps 
+ipam_dat_tanktemps <- full_ipam_dat %>%
+  dplyr::group_by(Genotype, Site_year) %>%
+  dplyr::select(Site, Site.name, Genotype,Site_year, Site_geno_year, SampleYear, Treatment, meanTemp_hold_corr_trtmean, MMM) %>%
+  pivot_wider(names_from = Treatment, values_from = meanTemp_hold_corr_trtmean, names_prefix = "trt_temp") 
+
+#fvfm
+ipam_dat_fvfm <- full_ipam_dat %>%
+  dplyr::select(Site, Site.name, Genotype,Site_year, Site_geno_year, SampleYear, Treatment, geno_Y.II_mean) %>% 
+  dplyr::group_by(Genotype, Site_year,Site_geno_year,SampleYear,Site) %>%
+  tidyr::pivot_wider(names_from = Treatment, values_from = geno_Y.II_mean, names_prefix = "fvfm") 
+  
+ipam_dat_all <- left_join(ipam_dat_fvfm, ipam_dat_tanktemps, by='Site_geno_year', suffix = c("", ".z")) %>%
+  dplyr::select(-ends_with(".z")) 
+
+ipam_dat_all$tempcorrection9C <- (ipam_dat_all$`trt_temp+9C` - ipam_dat_all$MMM) / 9
+ipam_dat_all$tempcorrection6C <- (ipam_dat_all$`trt_temp+6C` - ipam_dat_all$MMM) / 6
+ipam_dat_all$RelativeFvFm9C <- ipam_dat_all$`fvfm+9C` / ipam_dat_all$fvfmMMM * ipam_dat_all$tempcorrection9C
+ipam_dat_all$RelativeFvFm6C <- ipam_dat_all$`fvfm+6C` / ipam_dat_all$fvfmMMM * ipam_dat_all$tempcorrection6C
+ipam_dat_all$MMM <- NULL
+
+ipam_dat_all_reducedcols <- ipam_dat_all %>% dplyr::select(Site, Site_geno_year, Site_year, Site.name, Genotype, SampleYear,RelativeFvFm9C)
+
+ipam_dat_all_reducedcolsids <- left_join(ipam_dat_all_reducedcols, ids)
+
+write.csv(ipam_dat_all_reducedcolsids, paste0("../CleanData/iPAM/relativeFvFm_correctedtemps_",date,".csv"), row.names = F)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

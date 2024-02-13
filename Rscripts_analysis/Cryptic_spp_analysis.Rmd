@@ -1,0 +1,231 @@
+---
+title: "Analysis_cryptic_spp"
+author: "Melissa Naugle"
+date: "5/20/2022"
+output: html_document
+---
+
+# Script to analyze heat tolerance differences among cryptic species 
+- Map cryptic species sampled at each site (Fig 4A)
+- Compare heat tolerance traits among cryptic species (Fig 4B-D)
+- Compare bleaching phenotype among clusters during natural bleaching event at North Direction (Fig S4)
+
+
+```{r setup, include=FALSE}
+setwd("/Users/Melissa/Desktop/GitHub/Ahya_heat_tol_variation/Rscripts_analysis/")
+rm( list = ls())
+graphics.off()
+library(tidyverse)
+library(reshape2)
+library(gridExtra)
+library(PupillometryR)
+library(Rmisc)
+library(patchwork)
+library("rnaturalearthdata")
+library("rnaturalearth")
+library("sf")
+library(scatterpie)
+
+date = format(Sys.Date(), "%Y_%m_%d")
+outputpath = "../Outputs/Cryptic_spp/"
+```
+
+
+
+#load data 
+```{r}
+pheno <- read.csv("../CleanData/pheno_metadata_clean_2024_01_08.csv") 
+pheno$Sitename_geno_year <- paste0(pheno$Site.name,"_",pheno$Genotype,"_",pheno$SampleYear)
+clust <- read.csv("../CleanData/2023_10_17_clust_data_edited.csv") 
+clust_ND <- read.csv("../CleanData/2023_05_03_naturalbleachingnorthdirection_clust.csv") %>% dplyr::rename(Site.name = Site.Name) %>% mutate(Genotype = parse_number(Genotype))
+
+dat_all <- left_join(pheno, clust, by = "Sitename_geno_year", suffix = c("", ".z")) %>%
+  dplyr::select(-ends_with(".z"))
+dat_all[is.na(dat_all$Clust),]
+anti_join(pheno, clust, by = "Sitename_geno_year")
+anti_join(clust, pheno, by = "Sitename_geno_year")
+
+#cols with acute heat stress assay
+dat_all %>% dplyr::select(Sitename_geno_year, Clust) %>% distinct() %>% group_by(Clust) %>% tally()
+
+#cols with ND natural bleaching data 
+clust_ND %>% dplyr::select(Genotype, Clust) %>% distinct() %>% group_by(Clust) %>% tally()
+
+#clust sample sizes from both acute heat stress and natural bleaching datasets
+dplyr::full_join(dat_all, clust_ND)%>% dplyr::select(Genotype, Site.name,Clust) %>% distinct() %>% group_by(Clust) %>% tally()
+
+#see how many of each clust occur at each site 
+dat_all %>% group_by(Site.name, Clust) %>% tally()
+
+
+```
+
+#plot clusters on map 
+```{r}
+
+dat_all_coords <- dat_all %>% filter(!is.na(Clust)) %>% group_by(Site.name, Lat, Lon, Clust) %>% tally() %>% pivot_wider(names_from = "Clust", values_from = "n", values_fill = 0 ) 
+dat_all_coords$Radius <- 0.5
+
+coords_before <- dat_all_coords %>% dplyr::select(Lon, Lat, Radius, Site.name) 
+coords_after <- as.data.frame(packcircles::circleLayout(coords_before))
+coords_after$Site.name <- dat_all_coords$Site.name
+coords_after <-  coords_after %>% dplyr::select(layout.x, layout.y, Site.name) %>% left_join(dat_all_coords, by = "Site.name")
+
+world <- ne_countries(scale = "medium", returnclass = "sf")
+class(world)
+cols = c("Group2" = "#00a1d5","Group3" = "#b24745","Group4" = "#df8f44","Group1" = "#374e55")
+clust_map <- ggplot(data = world) + 
+  geom_sf(fill = "gray70") + 
+  coord_sf(xlim = c(142.5, 155), ylim = c(-29, -10), expand = FALSE) + 
+  theme_bw() + 
+  geom_scatterpie(data = coords_after, aes(x=layout.x, y=layout.y, r = 0.5), alpha = 0.7, cols = c("Group1","Group2","Group3","Group4")) + scale_fill_manual(name = "Host Genomic Cluster", values = cols) + xlab("Longitude") + ylab("Latitude") + theme(legend.position = "top") + 
+  guides(fill = guide_legend(title.position="top", title.hjust = 0.5)) + 
+  geom_rect(aes(xmin = 150.5, xmax = 153.75, ymin = -25.5, ymax = -20.5), color = "black", fill = NA)
+clust_map
+
+
+
+```
+
+#Plot to visualize differences in heat tolerance among clusters at each site
+differences appear site and metric specific 
+```{r }
+
+
+#select all sites with multiple clusters
+
+dat_all_multiclust <- dat_all %>% filter(Site.name == "East Cay" | Site.name == "Lady Musgrave" | Site.name == "Sykes" | Site.name == "North Direction" | Site.name == "Fitzroy Island"| Site.name == "Heron") 
+
+dat_all_multiclust$Clust <- factor(dat_all_multiclust$Clust , levels=c("Group1", "Group2", "Group3", "Group4"))
+
+p1 <- ggplot(dat_all_multiclust, aes(Site.name, RelativeFvFm9C.adj, fill = Clust)) + geom_boxplot()  + theme_bw()  + ylab("Relative FvFm \n site adj")+ xlab("") + theme(axis.text.x = element_text(size =0), legend.position = "top", text = element_text(size = 15))+ guides(fill=guide_legend(title="Cluster"))
+
+p2 <- ggplot(dat_all_multiclust, aes(Site.name, fvfm_ED50.adj, fill = Clust)) + geom_boxplot()  + theme_bw()  + ylab("FvFm ED50 \n site adj")+ xlab("") + theme(axis.text.x = element_text(size = 0), legend.position = "none", text = element_text(size = 15))+ guides(fill=guide_legend(title="Cluster"))
+
+p3 <- ggplot(dat_all_multiclust, aes(Site.name, RelativeNDVI9C.adj, fill = Clust)) + geom_boxplot()  + theme_bw()  + ylab("Relative NDVI \n site adj")+ xlab("") + theme(axis.text.x = element_text(size = 0), legend.position = "none", text = element_text(size = 15))+ guides(fill=guide_legend(title="Cluster"))
+
+p4 <- ggplot(dat_all_multiclust, aes(Site.name, ndvi_ED50.adj, fill = Clust)) + geom_boxplot()  + theme_bw()  + ylab("NDVI ED50 \n site adj")+ xlab("") + theme(axis.text.x = element_text(angle = 45, hjust=1), legend.position = "none", text = element_text(size = 15))+ guides(fill=guide_legend(title="Cluster"))
+
+p1/p2/p3/p4
+ggsave("../Outputs/Cryptic_spp/allsiteswithvar_heattoldiff.png", width = 6, height = 8)
+
+my_comparisons <- list( c("Group1", "Group2"), c("Group1", "Group3"), c("Group1", "Group4") , c("Group2", "Group3"), c("Group2", "Group4"), c("Group3", "Group4"))
+
+#how diff are clusts by lat 
+ggpubr::ggboxplot(dat_all_multiclust, x = "Clust", y = "Lat", fill = "Clust")+ 
+  ggpubr::stat_compare_means(comparisons = my_comparisons) + xlab("Genomic Cluster") + ylab("Latitude")+ scale_fill_manual(name = "Host Genomic Cluster", values = cols) 
+```
+#Restrict to southern sites to remove latitudinal variation in heat tol
+##Figure 4
+no significant variation in heat tol among 5 southern sites 
+```{r }
+dat_all_multiclust <- dat_all %>% filter(Site.name == "East Cay" | Site.name == "Lady Musgrave" | Site.name == "Sykes" |  Site.name == "Reef21550"| Site.name == "Heron") 
+dat_all_multiclust$Clust <- factor(dat_all_multiclust$Clust , levels=c("Group1", "Group2", "Group3", "Group4"))
+
+dat_all_multiclust %>% group_by(Site.name, Clust) %>% tally()
+dat_all_multiclust %>% group_by(Clust) %>% tally()
+
+#reduce lat variation, but still some
+ggpubr::ggboxplot(dat_all_multiclust, x = "Clust", y = "Lat", fill = "Clust")+ 
+  ggpubr::stat_compare_means(comparisons = my_comparisons) + xlab("Genomic Cluster") + ylab("Latitude")+ scale_fill_manual(name = "Host Genomic Cluster", values = cols)
+
+
+summary(aov(fvfm_ED50.adj ~ Clust, data = dat_all_multiclust))
+TukeyHSD(aov(fvfm_ED50.adj ~ Clust, data = dat_all_multiclust))
+
+summary(aov(RelativeFvFm9C.adj ~ Clust, data = dat_all_multiclust))
+TukeyHSD(aov(RelativeFvFm9C.adj ~ Clust, data = dat_all_multiclust))
+
+summary(aov(ndvi_ED50.adj ~ Clust, data = dat_all_multiclust))
+TukeyHSD(aov(ndvi_ED50.adj ~ Clust, data = dat_all_multiclust))
+
+summary(aov(RelativeNDVI9C.adj ~ Clust, data = dat_all_multiclust))
+TukeyHSD(aov(RelativeNDVI9C.adj ~ Clust, data = dat_all_multiclust))
+
+
+p1 <- ggpubr::ggboxplot(dat_all_multiclust, x = "Clust", y = "fvfm_ED50.adj", fill = "Clust")+ xlab("") + ylab("ED50 (FvFm) adjusted")  + labs(fill='Host Genomic Cluster') +theme(axis.text.x = element_blank())+ scale_fill_manual(name = "Host Genomic Cluster", values = cols) + ggpubr::stat_compare_means(method = "anova", label = "p.format")  + ylim(c(35.25,37.75))
+
+p2 <- ggpubr::ggboxplot(dat_all_multiclust, x = "Clust", y = "RelativeFvFm9C.adj", fill = "Clust")+ xlab("") + ylab("Retained FvFm adjusted")  + labs(fill='Host Genomic Cluster') +theme(axis.text.x = element_blank())+ scale_fill_manual(name = "Host Genomic Cluster", values = cols)+ ggpubr::stat_compare_means(method = "anova", label = "p.format") + ylim(c(0,0.65))
+
+
+p4 <- ggpubr::ggboxplot(dat_all_multiclust, x = "Clust", y = "ndvi_ED50.adj", fill = "Clust")+ xlab("") + ylab("ED50 (NDVI) adjusted")+ labs(fill='Host Genomic Cluster') +theme(axis.text.x = element_text(angle = 45, hjust = 1))+ scale_fill_manual(name = "Host Genomic Cluster", values = cols) + ggpubr::stat_compare_means(method = "anova", label = "p.format")  + ylim(c(33,37.25))
+
+p5 <- ggpubr::ggboxplot(dat_all_multiclust, x = "Clust", y = "RelativeNDVI9C.adj", fill = "Clust")+ xlab("") + ylab("Retained NDVI adjusted") + labs(fill='Host Genomic Cluster')+theme(axis.text.x = element_text(angle = 45, hjust = 1))+ scale_fill_manual(name = "Host Genomic Cluster", values = cols) + ggpubr::stat_compare_means(method = "anova", label = "p.format") + ylim(c(0,0.85))
+
+(clust_map | (((p1 | p2) / ( p4 | p5)& theme(legend.position = "none") )) + plot_layout(widths = c(1, 1))) + plot_annotation(tag_levels = 'A') 
+
+ggsave(paste0(outputpath,"Figure4_",date,".png"), width = 9.2, height = 7.3)
+```
+
+
+#Do clusters vary in heat tol when accounting for site - using LMERs
+nope 
+```{r}
+
+library(lmerTest)
+m1 <- lmer(RelativeFvFm9C ~Clust + (1|Site.name) , data = dat_all)
+m2 <- lmer(RelativeNDVI9C ~Clust +  (1|Site.name) , data = dat_all)
+m3 <- lmer(fvfm_ED50 ~Clust +  (1|Site.name) , data = dat_all)
+m4 <- lmer(ndvi_ED50 ~Clust +  (1|Site.name) , data = dat_all)
+summary(m1)
+summary(m2)
+summary(m3)
+summary(m4)
+
+
+
+```
+
+#natural bleaching
+##Figure S4
+```{r}
+samplinginfo_nd <- read.csv("../CleanData/2023_05_03_naturalbleachingnorthdirection_clust.csv")
+cols = c("Group2" = "#00a1d5","Group3" = "#b24745","Group4" = "#df8f44","Group1" = "#374e55")
+
+my_comparisons <- list( c("Group1", "Group2"),  c("Group1", "Group4") ,  c("Group2", "Group3"),  c("Group2", "Group4"), c("Group3", "Group4"))
+
+samplinginfo_nd %>% group_by(Clust) %>% tally()
+
+ggplot(samplinginfo_nd, aes(Clust, Numerical.health, fill = Clust)) + geom_boxplot() + theme_bw() + ggtitle("Variation in natural bleaching at North Direction \nby host genomic cluster")+ 
+  ggpubr::stat_compare_means(comparisons = my_comparisons) + ylab("Colour Health Chart Score")+ scale_fill_manual(name = "Host Genomic Cluster", values = cols) + xlab("") + theme(text = element_text(size = 16))
+
+m1 <- aov(Numerical.health ~ Clust,samplinginfo_nd)
+tukey <- TukeyHSD(m1)
+library(multcompView)
+cld <- multcompLetters4(m1, tukey)
+cld2 <- as.data.frame.list(cld$Clust)
+cld2$Clust <- row.names(cld2)
+
+#manually add these in based on above 
+samplinginfo_nd2 <- left_join(samplinginfo_nd, cld2, by = "Clust") 
+samplinginfo_nd$Letters[(samplinginfo_nd$Numerical.health == 4 & samplinginfo_nd$Clust == "Group1")] <- "ab"
+samplinginfo_nd$Letters[(samplinginfo_nd$Numerical.health == 3 & samplinginfo_nd$Clust == "Group2")] <- "b"
+samplinginfo_nd$Letters[(samplinginfo_nd$Numerical.health == 3.5 & samplinginfo_nd$Clust == "Group3")] <- "b"
+samplinginfo_nd$Letters[(samplinginfo_nd$Numerical.health == 4.5 & samplinginfo_nd$Clust == "Group4")] <- "a"
+
+
+samplinginfo_nd %>% ggplot(aes(Clust, Numerical.health, fill = Clust)) + geom_boxplot() + theme_bw() +  ggpubr::stat_compare_means(method = "anova") + ylab("Colour Health Chart Score")+ scale_fill_manual(name = "Host Genomic Cluster", values = cols) + xlab("") + theme(text = element_text(size = 16), legend.position = "none") + geom_text(aes(label = Letters), vjust = -0.5, size = 4) + ylim(c(1,4.75))
+ggsave(paste0("../Outputs/Cryptic_spp/FigureS4_",date,".png"), width = 4,height = 3.5)
+
+```
+
+
+# Do cryptic species occupy diff depths 
+
+```{r}
+my_comparisons <- list( c("Group1", "Group2"), c("Group1", "Group3"), c("Group1", "Group4") ,  c("Group2", "Group3") , c("Group2", "Group4"), c("Group3", "Group4"))
+ggplot(dat_all,aes(Clust, Depth_corrected, fill = Clust)) + 
+  geom_boxplot()  + theme_bw()  + 
+  ggpubr::stat_compare_means(comparisons = my_comparisons)
+
+
+m1 <- aov(Depth_corrected ~ Clust,dat_all)
+tukey <- TukeyHSD(m1)
+library(multcompView)
+cld <- multcompLetters4(m1, tukey)
+cld2 <- as.data.frame.list(cld$Clust)
+cld2$Clust <- row.names(cld2)
+```
+
+
+

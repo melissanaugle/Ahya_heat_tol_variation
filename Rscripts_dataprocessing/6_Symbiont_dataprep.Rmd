@@ -1,0 +1,506 @@
+---
+title: "Symbiont_dataprep_MN"
+author: "Melissa Naugle"
+date: "10/17/2023"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+setwd("/Users/Melissa/Desktop/GitHub/Ahya_heat_tol_variation//Rscripts_dataprocessing/")
+rm( list = ls())
+graphics.off()
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#Script to explore ITS2 data, adjust by negative controls, and produce PC values for ITS2 variants
+
+Authors: P Laffy and M Naugle
+
+# Exploratory data analysis
+
+This document demonstrates the findings of ITS2 community profiles of Acropora hyacinthus samples from the ECT01 fieldwork in 2021-2022. The analysis of this data was done using the symportal platform, the results of which were downloaded here and used is input for phyloseq import and data exploration
+
+```{r reading in data pre phyloseq}
+its2seq=read.delim("../Rawdata/ITS2/ITS2seqs.absolute.abund_only.txt",header=TRUE, check.names=FALSE)
+its2seqflip=read.delim("../Rawdata/ITS2/ITS2seqs.absolute.abund_only_otuflip.txt",header=TRUE, check.names=FALSE)
+its2metadata=read.delim("../Rawdata/ITS2/ITS2seqs.absolute.meta_reef.txt",header=TRUE, check.names=FALSE)
+#head(its2metadata)
+its2taxonomy=read.delim("../Rawdata/ITS2/RRAP.taxonomy.txt",header=TRUE, check.names=FALSE)
+
+```
+
+```{r loading libraries, echo=FALSE, warning=FALSE}
+library(devtools) 
+library(ggplot2)
+library(ggpubr)
+library(RColorBrewer)
+library(vegan)
+library(Redmonder)
+library(reshape2)
+library(phyloseq)
+library(magrittr)
+library(dplyr)
+library(ochRe)
+library(microbiome)
+library(ggpubr)
+```
+
+these first few blocks experimented importing the symportal data to determine the best way of importing this form of data, and piping into phyloseq
+
+the phyloseq object ps is the initial read-in of the OTU data
+  Initial data exploration investigating a minimal read cutoff of 4000 reads, but the current min read count for this phyloseq object is 10,000 reads, based on the demographic result of negative control samples within the dataset (will become evident later).
+  I also created a cutoff, whereby a minimum abundance value of 10 needed to be achieved, and if this condition wasnt met, the sample was removed.
+  as requested, a cutoff was also added that removed taxa where a minimum abundance value for the otu needed to be 10, if less than this, the taxa was removed. this resulted in 604 different taxa being reduced down to 52 taxa.
+
+following this, I normalized the abundance values using median sequencing depths
+
+
+```{R data processing, echo=FALSE}
+otu_mat <- its2seqflip %>% tibble::column_to_rownames("otu")
+tax_mat <- its2taxonomy %>% tibble::column_to_rownames("otu")
+samples_df <- its2metadata %>% tibble::column_to_rownames("sample_uid")
+otu_mat <-as.matrix(otu_mat)
+tax_mat <-as.matrix(tax_mat)
+
+#PS IS ORIGINAL OBJECT
+ps <-phyloseq(otu_table(otu_mat, taxa_are_rows=TRUE),sample_data(samples_df),tax_table(tax_mat))
+################################################################################################################### threshold 1 
+ps.min4000 <-prune_samples(sample_sums(ps)>7500,ps) #7500 was the threshold below which we keep negative controls
+ps.min4000 <-prune_samples(sample_sums(ps.min4000)>=10,ps.min4000)#the following 3 lines aims to remove all taxa whose average abundance is <10 in read count
+to_remove <-c("150223","150224")
+ps.min4000 <-prune_samples(!(sample_names(ps.min4000) %in% to_remove), ps.min4000)
+ntaxa(ps.min4000)
+myTaxa=filter_taxa(ps.min4000, function(x) mean(x)>=10,TRUE)
+rmtaxa=taxa_names(myTaxa)
+ps.min4000 <-prune_taxa(rmtaxa,ps.min4000)
+ntaxa(ps.min4000) #PS.MIN4000HAS CUTOFF OF 4000 READS
+
+#normalize using median sequencing depth
+total=median(sample_sums(ps.min4000))
+standf=function(x, t=total) round(t * (x /sum(x)))
+ps.transform <-transform_sample_counts(ps.min4000, standf)
+ntaxa(ps.transform) #ps.transform IS ps.min4000 NORMALIZED TO SEQ DEPTH -- USE THIS?
+#use min readcount
+
+#normalize unfiltered data for emily
+ps.emily <-prune_samples(sample_sums(ps)>=10,ps)
+to_remove <-c("150223","150224")
+ps.emily <-prune_samples(!(sample_names(ps.emily) %in% to_remove), ps.emily)
+totalemily=median(sample_sums(ps.emily))
+standf.emily=function(x, t=totalemily) round(t * (x /sum(x)))
+ps.emily.transform <-transform_sample_counts(ps.emily, standf.emily)
+ntaxa(ps.emily.transform) #PSEMILY TRANSFORM IS NORMALIZED UNFILTERED DATA (DO NOT USE)
+
+# remove positive controls from dataset
+negtoremove <-c("150225","150226","150227","150228","150229","150230","150231","150232")
+ps.negrem.emily.transform<-prune_samples(!(sample_names(ps) %in% negtoremove), ps)
+ps.negrem.emily.transform <-prune_samples(sample_sums(ps.negrem.emily.transform)>=10,ps.negrem.emily.transform)
+ps.negrem.emily.transform <-prune_samples(!(sample_names(ps.negrem.emily.transform) %in% to_remove), ps.negrem.emily.transform)
+#then normalize using median sequencing depth
+total=median(sample_sums(ps.negrem.emily.transform))
+standf=function(x, t=total) round(t * (x /sum(x)))
+ps.negrem.emily.transform <-transform_sample_counts(ps.negrem.emily.transform, standf) 
+# ps.negrem.emily.transform IS ORIGINAL DATASET WITH NO POSITIVE CONTROLS AND NO READ CUTOFF - DO NOT USE?
+
+
+ntaxa(ps.negrem.emily.transform)
+
+
+
+
+```
+
+
+```{r moreplots}
+#SHANNON AND SIMPSON DIVERSITY RICHMENT PLOTS
+plot_richness(ps, x="reef", measures=c("Shannon", "Simpson")) +
+  theme_bw(base_size = 13) +
+  theme(axis.text.x = element_text(angle=90, hjust = 1)) +
+  geom_point(size = 3)
+#plot_bar(ps.min4000)
+
+```
+
+# ITS2 SYMPORTAL type profiling plots
+In addition to OTU level assignment, the benefit of the Symportal analysis is that it breaks down the overall sample profiles to a discrete Type profile, correcting for the increased ITS2 copy number observations and simplifying the overall symbiodinium composition of each sample.
+the data is provided mostly the same was as the OTU table, and can be read into phyloseq as such, although needs to be handled a little differently
+Based on the ITS2 type profiles of the negative controls, we used a minimum 2000 cutoff value per sample, and the same min samplesum cutoff of 10, and the min read count cutoff for type profile classification was also 10, although i dont think this will have an impact due to the nature of this data.
+```{r reading in Symportal type profiling data}
+its2type=read.delim("../Rawdata/ITS2/ITS2profiles.absolute.abund_only.txt")
+its2typeflip=read.delim("../Rawdata/ITS2/ITS2profiles.absolute.abund_only.flip.txt",header=TRUE, check.names=FALSE)
+#I think the taxonomy file for this is the following
+its2typetaxonomy=read.delim("../Rawdata/ITS2/ITS2profiles.meta_only.txt",header=TRUE, check.names=FALSE)
+its2typemeta=read.delim("../Rawdata/ITS2/ITS2seqs.absolute.meta_reef.txt",header=TRUE, check.names=FALSE)
+
+type_mat <-its2typeflip %>% tibble::column_to_rownames("typeid")
+type_tax <-its2typetaxonomy %>% tibble::column_to_rownames("typeid")
+type_samples_df <- its2typemeta %>% tibble::column_to_rownames("sample_uid")
+
+type_mat <-as.matrix(type_mat)
+type_tax <-as.matrix(type_tax)
+
+ps.type <-phyloseq(otu_table(type_mat, taxa_are_rows=TRUE),sample_data(type_samples_df),tax_table(type_tax))
+
+############################################################################################threshold its2-type profile 
+ps.typemin <-prune_samples(sample_sums(ps.type)>6100,ps.type)
+ps.typemin <-prune_samples(sample_sums(ps.typemin)>=10,ps.typemin)
+ps.typemin <-prune_samples(!(sample_names(ps.typemin) %in% to_remove), ps.typemin)
+
+
+#the following 3 lines aims to remove all taxa whose average abundance is <10 in read count
+mytypeTaxa=filter_taxa(ps.typemin, function(x) mean(x)>=10,TRUE)
+rmtypetaxa=taxa_names(mytypeTaxa)
+ps.typemin <-prune_taxa(rmtypetaxa,ps.typemin)
+
+total=median(sample_sums(ps.typemin))
+standf=function(x,t=total) round(t * (x /sum(x)))
+ps.typetransform <-transform_sample_counts(ps.typemin,standf)
+
+#ps.typemin is type profiles filtered
+```
+
+Summary plots for OTU and ITS2 typeprofile data
+```{r ggplot 4 OTU}
+meltotutransform<-psmelt(ps.transform)
+
+cladecolorset.OTU=c("Symbiodinaceae" = ochre_palettes$olsen_seq[1],
+                    "Cladocopium"= ochre_palettes$olsen_seq[4],
+                    "Durusdinium"= ochre_palettes$olsen_seq[6])
+cladecolorset.Type=c("A" = ochre_palettes$olsen_seq[1],
+                    "C"= ochre_palettes$olsen_seq[4],
+                    "D"= ochre_palettes$olsen_seq[6])
+meltotutransform$Genus=factor(meltotutransform$Genus,levels=(c("Symbiodinaceae","Cladocopium","Durusdinium")))
+#the following shows the proportional composition of the OTU level classification of the filtered data
+ggplot(meltotutransform, aes(x=Sample, y=Abundance, color=Genus, fill=Genus ))+
+  geom_bar(position="fill",stat="identity", color="black")+
+  theme_minimal()+
+  scale_fill_manual(values=cladecolorset.OTU)+#, name="",drop=FALSE)+
+  theme(axis.text.x=element_blank(),legend.key.size=unit(0.2,'cm'),legend.text=element_text(size=6),legend.title=element_text(size=8))+
+  facet_wrap(vars(reef), scales ="free_x",ncol=4)
+ggplotOTUGenus=ggplot(meltotutransform, aes(x=Sample, y=Abundance, color=Genus, fill=Genus ))+
+  geom_bar(position="fill",stat="identity", color="black")+
+  theme_minimal()+
+  scale_fill_manual(values=cladecolorset.OTU)+#, name="",drop=FALSE)+
+  #scale_color_ochre(palette="emu_woman_paired")
+  theme(axis.text.x=element_blank(),axis.title.x.bottom =element_blank(),axis.title.x.top =element_blank(),legend.key.size=unit(0.2,'cm'),legend.text=element_text(size=6),legend.title=element_text(size=8), axis.title.y=element_text(size=8),axis.text.y=element_text(size=6))+
+  facet_wrap(vars(reefbible,binarytime), scales ="free_x",ncol=4)
+#plot to show average for each reef
+ggplotOTU=ggplot(meltotutransform, aes(x=reef, y=Abundance, fill= Genus ))+
+  geom_bar(position="fill",stat="identity") +#, color="black")+
+  theme_minimal()+
+  scale_fill_manual(values=cladecolorset.OTU)+#, name="",drop=FALSE)+
+  theme(axis.text.x=element_blank(),legend.key.size=unit(0.2,'cm'),legend.text=element_text(size=6),legend.title=element_text(size=8))+
+  facet_wrap(vars(reef), scales ="free_x",ncol=4)
+#ggplotOTU
+ggplotOTUtype=ggplot(meltotutransform, aes(x=Sample, y=Abundance , color=Symportal.type, fill=Genus ))+
+  geom_bar(position="fill",stat="identity", color="black")+
+  theme_minimal()+
+  #scale_fill_manual(values=cladecolorset.OTU)+#, name="",drop=FALSE)+
+  #scale_color_ochre(palette="emu_woman_paired")
+  theme(axis.text.x=element_blank(),axis.title.x.bottom =element_blank(),axis.title.x.top =element_blank(),legend.key.size=unit(0.2,'cm'),legend.text=element_text(size=6),legend.title=element_text(size=8), axis.title.y=element_text(size=8),axis.text.y=element_text(size=6))+
+  facet_wrap(vars(reef), scales ="free_x",ncol=4)
+#the following shows the OTU profiling of the data, coloured by Genus
+
+#ggplotOTUtype
+#plot to show average OTU profile for each reef
+ggplot(meltotutransform, aes(x=reef, y=Abundance, fill= Genus ))+
+  geom_bar(position="fill",stat="identity") +#, color="black")+
+  theme_minimal()+
+  #scale_fill_manual(values=cladecolorset.OTU)+#, name="",drop=FALSE)+
+  theme(axis.text.x=element_blank(),legend.key.size=unit(0.2,'cm'),legend.text=element_text(size=6),legend.title=element_text(size=8))+
+  facet_wrap(vars(reef), scales ="free_x",ncol=4)
+#at emilys request, want to plot the community of the unfiltered samples
+
+#ggplotOTUtypeemily
+meltotutransform4emily<-psmelt(ps.emily.transform)
+meltotutransform4emily$Genus=factor(meltotutransform4emily$Genus,levels=(c("Symbiodinaceae","Cladocopium","Durusdinium")))
+ggplotOTUemily=ggplot(meltotutransform4emily, aes(x=Sample, y=Abundance, color=Symportal.type, fill=Genus ))+
+  geom_bar(position="fill",stat="identity", color="black")+
+  theme_minimal()+
+  #scale_fill_manual(values=cladecolorset.OTU)+#, name="",drop=FALSE)+
+  #scale_color_ochre(palette="emu_woman_paired")
+  theme(axis.text.x=element_blank(),axis.title.x.bottom =element_blank(),axis.title.x.top =element_blank(),legend.key.size=unit(0.2,'cm'),legend.text=element_text(size=6),legend.title=element_text(size=8), axis.title.y=element_text(size=8),axis.text.y=element_text(size=6))+
+  facet_wrap(vars(reef), scales ="free_x",ncol=4)
+#ggplotOTUemily
+composite4emily<-ggarrange(ggplotOTUtype,ggplotOTUemily,nrow=2,ncol=1,align="v",heights=c(1,1),labels="AUTO")
+#composite4emily
+
+```
+
+
+
+```{r ggplot 4 type}
+melttypetransform<-psmelt(ps.typetransform)
+#melttypetransform$binarytime=factor(melttypetransform$binarytime, levels=(c("pre","post")))
+#melttypetransform$Clade=factor(melttypetransform$Clade,levels=(c("A","C","D")))
+#THE FOLLOWING SHOWS THE ITS2 TYPE PROFILE FOR ALL SAMPLES, coloured by CLADE
+ggplot(melttypetransform, aes(x=Sample, y=Abundance, color=Clade, fill=Clade))+#fill=Majority.ITS2.sequence, color=Clade))+
+#ggplot(melttypetransform, aes(x=Sample, y=Abundance, color=Majority.ITS2.sequence, fill=Clade))+#Majority.ITS2.sequence))+  
+  geom_bar(position="fill",stat="identity", color="black")+
+  theme_minimal()+
+  scale_fill_manual(values=cladecolorset.Type)+#, name="",drop=FALSE)+
+  theme(axis.text.x=element_blank(),legend.key.size=unit(0.2,'cm'),legend.text=element_text(size=6),legend.title=element_text(size=8))+
+facet_wrap(vars(reef), scales ="free_x",ncol=4)
+GGplotTYPEClade=ggplot(melttypetransform, aes(x=Sample, y=Abundance, color=Clade, fill=Clade))+#fill=Majority.ITS2.sequence, color=Clade))+
+#ggplot(melttypetransform, aes(x=Sample, y=Abundance, color=Majority.ITS2.sequence, fill=Clade))+#Majority.ITS2.sequence))+  
+  geom_bar(position="fill",stat="identity", color="black")+
+  theme_minimal()+
+  scale_fill_manual(values=cladecolorset.Type)+#, name="",drop=FALSE)+
+  theme(axis.text.x=element_blank(),axis.title.x.bottom =element_blank(),axis.title.x.top =element_blank(),legend.key.size=unit(0.2,'cm'),legend.text=element_text(size=6),legend.title=element_text(size=8), axis.title.y=element_text(size=8),axis.text.y=element_text(size=6))+
+facet_wrap(vars(reef), scales ="free_x",ncol=4)+theme(strip.background=element_blank(),strip.text.x=element_blank())
+#AND THIS IS THE MAJORITY ITS2 TYPE TRANSFORM, colored by Majority type profile
+ggplot(melttypetransform, aes(x=Sample, y=Abundance, color=Majority.ITS2.sequence, fill=Majority.ITS2.sequence))+#Majority.ITS2.sequence))+  
+  geom_bar(position="fill",stat="identity", color="black")+
+  theme_minimal()+
+  #scale_fill_manual(values=cladecolorset.Type)+#, name="",drop=FALSE)+
+  theme(axis.text.x=element_blank(),legend.key.size=unit(0.2,'cm'),legend.text=element_text(size=6),legend.title=element_text(size=6))+
+facet_wrap(vars(reef), scales ="free_x",ncol=4)+
+  guides(fill=guide_legend(ncol=1))
+GGplotTYPEtype=ggplot(melttypetransform, aes(x=Sample, y=Abundance, color=Majority.ITS2.sequence, fill=Majority.ITS2.sequence))+#Majority.ITS2.sequence))+  
+  geom_bar(position="fill",stat="identity", color="black")+
+  theme_minimal()+
+  #scale_fill_manual(values=cladecolorset.Type)+#, name="",drop=FALSE)+
+  theme(axis.text.x=element_blank(),axis.title.x.bottom =element_blank(),axis.title.x.top =element_blank() ,legend.key.size=unit(0.2,'cm'),legend.text=element_text(size=6),legend.title=element_text(size=6),axis.title.y=element_text(size=8),axis.text.y=element_text(size=6))+
+facet_wrap(vars(reef), scales ="free_x",ncol=4)+
+  theme(strip.background=element_blank(),strip.text.x=element_blank())+
+  guides(fill=guide_legend(ncol=1))
+#THE FOLLOWING SHOWS THE OVERALL ITS2 TYPE PROFILES, coloured by type profiles
+ggplot(melttypetransform, aes(x=Sample, y=Abundance, color=ITS2.type.profile, fill=ITS2.type.profile))+#Majority.ITS2.sequence))+  
+  geom_bar(position="fill",stat="identity", color="black")+
+  theme_minimal()+
+  #scale_fill_manual(values=cladecolorset.Type)+#, name="",drop=FALSE)+
+  theme(axis.text.x=element_blank(),legend.key.size=unit(0.2,'cm'),legend.text=element_text(size=6),legend.title=element_text(size=6))+
+facet_wrap(vars(reef), scales ="free_x",ncol=4)+
+  guides(fill=guide_legend(ncol=1))
+
+
+#ps.typetransform
+head(melttypetransform)
+```
+
+# MN edits
+ps.transform is the phyloseq object of filtered dataset for ITS2 variants 
+meltotutransform is the filtered dataset for ITS2 variants 
+
+ps.typetransform is the phyloseq object of filtered dataset for ITS2type profiles 
+melttypetransform is the filtered dataset for ITS2type profiles 
+
+# Explore sample sizes after filtering 
+```{r}
+n_distinct(meltotutransform$sample_name) #431 in meltotutransform
+ps.transform #431 samples
+otu_unique <- as.data.frame(unique(meltotutransform$sample_name))
+names(otu_unique) <- "V1"
+
+n_distinct(melttypetransform$sample_name) #437 in melttypetransform
+type_unique <- as.data.frame(unique(melttypetransform$sample_name))
+names(type_unique) <- "V1"
+
+anti_join(otu_unique, type_unique)
+anti_join(type_unique, otu_unique)
+inner_join(type_unique, otu_unique)  #426 match
+
+#total samples = 426 + 5 + 11
+426+5+11
+#426 have both type and seq data
+#5 have seq but not type data
+#11 have type but no seq data 
+
+its2metadata %>% filter(!grepl("Control",sample_name)) # 57- -> 561 without controls
+```
+
+
+# Clean names and select relevant variables for ITS2 variants
+
+```{r}
+meltotutransform_clean <- meltotutransform %>% dplyr::select(sample_name, OTU, Abundance)
+meltotutransform_clean_wide <- meltotutransform_clean %>% pivot_wider(names_from = OTU, values_from = Abundance)
+meltotutransform_clean_wide$TotalAbundance <- rowSums(meltotutransform_clean_wide[2:ncol(meltotutransform_clean_wide)])
+
+#these are the 48 OTUs 
+#meltotutransform_clean_wide[,2:49]
+
+meltotutransform_clean_wide$SampleYear <- sapply(strsplit(as.character(meltotutransform_clean_wide$sample_name), "_"), `[`, 3)
+meltotutransform_clean_wide$Sitecode <- sapply(strsplit(as.character(meltotutransform_clean_wide$sample_name), "_"), `[`, 5)
+meltotutransform_clean_wide$Genotype <- parse_number(sapply(strsplit(as.character(meltotutransform_clean_wide$sample_name), "_"), `[`, 6))
+
+
+meltotutransform_clean_wide$Site.name[meltotutransform_clean_wide$Sitecode == "CBLM"] <- "Lady Musgrave"
+meltotutransform_clean_wide$Site.name[meltotutransform_clean_wide$Sitecode == "21550"] <- "Reef21550"
+meltotutransform_clean_wide$Site.name[meltotutransform_clean_wide$Sitecode == "21"] <- "Reef21550"
+meltotutransform_clean_wide$Site.name[meltotutransform_clean_wide$Sitecode == "21-550"] <- "Reef21550"
+meltotutransform_clean_wide$Site.name[meltotutransform_clean_wide$Sitecode == "ECAY"] <- "East Cay"
+meltotutransform_clean_wide$Site.name[meltotutransform_clean_wide$Sitecode == "SYKE"] <- "Sykes"
+meltotutransform_clean_wide$Site.name[meltotutransform_clean_wide$Sitecode == "NDIR"] <- "North Direction"
+meltotutransform_clean_wide$Site.name[meltotutransform_clean_wide$Sitecode == "FITZ"] <- "Fitzroy Island"
+meltotutransform_clean_wide$Site.name[meltotutransform_clean_wide$Sitecode == "MOOR"] <- "Moore"
+meltotutransform_clean_wide$Site.name[meltotutransform_clean_wide$Sitecode == "OCDA"] <- "Davies"
+meltotutransform_clean_wide$Site.name[meltotutransform_clean_wide$Sitecode == "KELS"] <- "Kelso"
+meltotutransform_clean_wide$Site.name[meltotutransform_clean_wide$Sitecode == "OCCH"] <- "Chicken"
+meltotutransform_clean_wide$Site.name[meltotutransform_clean_wide$Sitecode == "HICK"] <- "Hicks"
+meltotutransform_clean_wide$Site.name[meltotutransform_clean_wide$Sitecode == "NONA"] <- "No Name"
+meltotutransform_clean_wide$Site.name[meltotutransform_clean_wide$Sitecode == "PAPE"] <- "Pelorus"
+meltotutransform_clean_wide$Site.name[meltotutransform_clean_wide$Sitecode == "MACK"] <- "Mackay"
+meltotutransform_clean_wide$Site.name[meltotutransform_clean_wide$Sitecode == "STCR"] <- "St Crispin"
+meltotutransform_clean_wide$Site.name[meltotutransform_clean_wide$Sitecode == "MART"] <- "Martin"
+
+meltotutransform_clean_wide <- meltotutransform_clean_wide 
+meltotutransform_clean_wide$Site.name_geno_year <- paste0(meltotutransform_clean_wide$Site.name,"_",meltotutransform_clean_wide$Genotype,"_",meltotutransform_clean_wide$SampleYear)
+
+head(meltotutransform_clean_wide)
+meltotutransform_clean_wide[duplicated(meltotutransform_clean_wide$Site.name_geno_year),]
+
+#remove duplicates - select one with higher read count
+meltotutransform_clean_wide_ordered <- meltotutransform_clean_wide[order( meltotutransform_clean_wide$TotalAbundance, decreasing=TRUE),]
+meltotutransform_clean_nodups <- meltotutransform_clean_wide_ordered[!duplicated(meltotutransform_clean_wide_ordered$Site.name_geno_year),]
+meltotutransform_clean_nodups # OTU dataframe to use
+
+#totals to get # of reads for each 
+meltotutransform_clean_nodups %>% select(-c(sample_name, TotalAbundance, SampleYear, Sitecode, Genotype, Site.name, Site.name_geno_year))%>% colSums()
+Areads = 41433 + 15190 + 3755
+totalreads = sum(meltotutransform_clean_nodups %>% select(-c(sample_name, TotalAbundance, SampleYear, Sitecode, Genotype, Site.name, Site.name_geno_year))%>% colSums())
+Areads / totalreads
+Creads = (totalreads-Areads)/totalreads
+
+#totals to get # of reads for each - only A cols
+Acols <- meltotutransform_clean_nodups %>% filter(!(A1 == 0 & A1gr == 0 & A1gd == 0)) 
+nrow(Acols) / nrow(meltotutransform_clean_nodups) # 22% of cols had any A reads
+totalreads2 <- sum(Acols %>% select(-c(sample_name, TotalAbundance, SampleYear, Sitecode, Genotype, Site.name, Site.name_geno_year))%>% colSums())
+Acols %>% select(-c(sample_name, TotalAbundance, SampleYear, Sitecode, Genotype, Site.name, Site.name_geno_year))%>% colSums()
+
+Areads = 41433 + 15190 + 3755
+Areads / totalreads2
+
+#how many samples have some c3k -> all 
+meltotutransform_clean_nodups %>% filter(C3k >0 )
+```
+
+# PCA of ITS2 variants 
+
+```{r }
+#get PC values
+library(factoextra)
+OTU_cor <- meltotutransform_clean_nodups[,2:49]
+OTU_cor2 <-  as.data.frame(lapply(OTU_cor,as.numeric))
+otuPCA <- OTU_cor2
+otuPCA <-  as.data.frame(lapply(otuPCA,as.numeric))
+names(otuPCA)
+row.names(otuPCA) = meltotutransform_clean_nodups$Site.name_geno_year
+res.pca <- prcomp(otuPCA, scale. = T)
+fviz_eig(res.pca, 
+         addlabels = TRUE)
+fviz_pca_var(res.pca,col.var = "contrib",gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),repel = TRUE)
+indPC = get_pca_ind(res.pca)
+indPC2 = indPC$coord[,1:6]
+indPC2 <- as.data.frame(indPC2)
+indPC2$Site.name_geno_year <- meltotutransform_clean_nodups$Site.name_geno_year
+
+indPC2_more <- left_join(indPC2, meltotutransform_clean_nodups, by = "Site.name_geno_year") %>% 
+  dplyr::rename(OTU_PC1 = Dim.1,OTU_PC2 = Dim.2,OTU_PC3 = Dim.3,OTU_PC4 = Dim.4,OTU_PC5 = Dim.5,OTU_PC6 = Dim.6) %>% select(Site.name_geno_year, OTU_PC1,OTU_PC2,OTU_PC3,OTU_PC4,OTU_PC5,OTU_PC6)
+  
+```
+
+# Clean names and select relevant variables for ITS2 Type profiles 
+```{r}
+ps.typetransform
+head(melttypetransform)
+
+melttypetransform_clean <- melttypetransform %>% dplyr::select(Sample, sample_name,reef,Abundance, raw_contigs, post_qc_absolute_seqs,post_qc_unique_seqs, ITS2.type.profile, Majority.ITS2.sequence,Average.defining.sequence.proportions.and..stdev.,ITS2.profile.abundance.local, ITS2.profile.abundance.DB, Associated.species)
+melttypetransform_clean$Genotype <- parse_number(sapply(strsplit(as.character(melttypetransform_clean$sample_name), "_"), `[`, 6))
+melttypetransform_clean$SampleYear <- sapply(strsplit(as.character(melttypetransform_clean$sample_name), "_"), `[`, 3)
+
+melttypetransform_clean <- melttypetransform_clean %>% dplyr::rename(Site.name = reef)
+
+#12 per sample - because 12 type profiles exist here! 
+test <- melttypetransform_clean %>% group_by(sample_name) %>% tally()
+test2 <- melttypetransform_clean %>% group_by(sample_name,Majority.ITS2.sequence) %>% tally()
+melttypetransform_clean %>% group_by(sample_name,Abundance,post_qc_absolute_seqs,ITS2.type.profile) %>% tally()
+melttypetransform_clean %>% group_by(ITS2.type.profile) %>% tally()
+melttypetransform_clean %>% group_by(Majority.ITS2.sequence) %>% tally() #a function of the type profile 
+melttypetransform_clean %>% group_by(Average.defining.sequence.proportions.and..stdev.) %>% tally() #also a function of the type profile 
+melttypetransform_clean %>% group_by(Abundance) %>% tally() 
+melttypetransform_clean %>% group_by(ITS2.profile.abundance.local) %>% tally() #also a function of the type profile 
+melttypetransform_clean %>% group_by(ITS2.profile.abundance.DB) %>% tally() #also a function of the type profile 
+melttypetransform_clean %>% group_by(ITS2.type.profile,post_qc_absolute_seqs) %>% tally() 
+melttypetransform_clean %>% group_by(Sample, sample_name) %>% tally() 
+
+melttypetransform_clean_towrite <- melttypetransform_clean %>% dplyr::select(sample_name,Site.name,Genotype, ITS2.type.profile, Abundance)
+
+melttypetransform_clean_towrite[melttypetransform_clean_towrite$sample_name == "RRAP_ECT01_2021_Ahya_OCDA_341" | melttypetransform_clean_towrite$sample_name == "RRAP_ECT01_2021_Ahya_HICK_16",] # so only one type profile with abundance > 0 per sample?
+
+test3 <- melttypetransform_clean_towrite[melttypetransform_clean_towrite$Abundance > 0,]
+test3 %>% group_by(sample_name) %>% tally() # most have 1 type profile, a few have 2
+
+test3[test3$sample_name == "RRAP_ECT01_2021_Ahya_CBLM_116",]
+
+melttypetransform_clean_towrite2 <- melttypetransform_clean_towrite %>% pivot_wider(names_from = "ITS2.type.profile", values_from = "Abundance")
+
+unique(melttypetransform_clean_towrite2$Site.name)
+
+melttypetransform_clean_towrite2$Site.name[melttypetransform_clean_towrite2$Site.name == "Pelorus East"] <- "Pelorus"
+melttypetransform_clean_towrite2$Site.name[melttypetransform_clean_towrite2$Site.name == "Hicks Reef"] <- "Hicks"
+melttypetransform_clean_towrite2$Site.name[melttypetransform_clean_towrite2$Site.name == "Moore Reef"] <- "Moore"
+melttypetransform_clean_towrite2$Site.name[melttypetransform_clean_towrite2$Site.name == "Martin Reef"] <- "Martin"
+melttypetransform_clean_towrite2$Site.name[melttypetransform_clean_towrite2$Site.name == "Moore reef"] <- "Moore"
+melttypetransform_clean_towrite2$Site.name[melttypetransform_clean_towrite2$Site.name == "No Name Reef"] <- "No Name"
+melttypetransform_clean_towrite2$Site.name[melttypetransform_clean_towrite2$Site.name == "No Name reef"] <- "No Name"
+melttypetransform_clean_towrite2$Site.name[melttypetransform_clean_towrite2$Site.name == "North Direction Island Reef"] <- "North Direction"
+melttypetransform_clean_towrite2$Site.name[melttypetransform_clean_towrite2$Site.name == "Mackay Reef"] <- "Mackay"
+
+
+symbiont_typeprofiles <- melttypetransform_clean_towrite2 %>%
+  mutate(dominant_type = names(melttypetransform_clean_towrite2[,4:15])[max.col(melttypetransform_clean_towrite2[,4:15])]) 
+
+symbiont_typeprofiles$Site.name[symbiont_typeprofiles$Site.name == "21-550"] <- "Reef21550"
+symbiont_typeprofiles$Site.name[symbiont_typeprofiles$Site.name == "Fitzroy"] <- "Fitzroy Island"
+    
+symbiont_typeprofiles2 <- symbiont_typeprofiles %>%
+  rowwise() %>%
+  mutate(all_typeprofs = paste0(names(symbiont_typeprofiles[,4:15])[c_across(cols = c(4:15)) > 0], collapse = ','))
+
+symbiont_typeprofiles2$SampleYear <- sapply(strsplit(as.character(symbiont_typeprofiles2$sample_name), "_"), `[`, 3)
+symbiont_typeprofiles2$Site.name_geno_year <- paste0(symbiont_typeprofiles2$Site.name,"_",symbiont_typeprofiles2$Genotype,"_",symbiont_typeprofiles2$SampleYear)
+
+symbiont_typeprofiles2[duplicated(symbiont_typeprofiles2$Site.name_geno_year),]
+#remove duplicates 
+symbiont_typeprofiles2_nodups <- symbiont_typeprofiles2[!duplicated(symbiont_typeprofiles2$Site.name_geno_year),]
+symbiont_typeprofiles2[duplicated(symbiont_typeprofiles2$Site.name_geno_year),]
+
+symbiont_typeprofiles2_nodups %>% filter(grepl(",", all_typeprofs))
+12/nrow(symbiont_typeprofiles2_nodups) #77.2 % of cols had a single type prof
+
+types_sums <- symbiont_typeprofiles2_nodups %>% group_by(dominant_type) %>% tally()
+total_types = sum(types_sums$n)
+300/total_types
+70/total_types
+17/total_types
+```
+
+
+# Merge variants, type profiles, and PC values into one datasheet 
+```{r }
+#merge with PC values 
+symbiont_typeprofiles2_nodups <- symbiont_typeprofiles2_nodups %>% select(-sample_name)
+meltotutransform_clean_nodups <- meltotutransform_clean_nodups %>% select(-sample_name)
+indPC2_more
+
+its2_types_otus <- full_join(symbiont_typeprofiles2_nodups,meltotutransform_clean_nodups, by = c("Site.name_geno_year", "Site.name","Genotype","SampleYear")) 
+anti_join(symbiont_typeprofiles2_nodups,meltotutransform_clean_nodups, by = "Site.name_geno_year")
+anti_join(meltotutransform_clean_nodups,symbiont_typeprofiles2_nodups, by = "Site.name_geno_year")
+
+
+its2_data_touse <- full_join(its2_types_otus,indPC2_more, by = "Site.name_geno_year") 
+#write.csv(its2_data_touse, "../CleanData/ITS2_types_OTUs_",date,".csv", row.names = F)
+
+
+```
+
+
+
+
+
+
+
